@@ -5,6 +5,21 @@ const portInput = document.getElementById('port-input');
 const btnStart = document.getElementById('btn-start');
 const btnStop = document.getElementById('btn-stop');
 const errorMsg = document.getElementById('error-msg');
+const btnDownloadLicense = document.getElementById('btnDownloadLicense');
+
+if (btnDownloadLicense) {
+  btnDownloadLicense.addEventListener('click', async () => {
+    try {
+      const success = await window.adminAPI.generateAako();
+      if (success) {
+        alert('Master License Token saved successfully to your USB Drive!');
+      }
+    } catch (err) {
+      console.error('Failed to generate license:', err);
+      alert('Error generating license: ' + err.message);
+    }
+  });
+}
 
 const serverLogs = document.getElementById('server-logs');
 const adminId = document.getElementById('admin-id');

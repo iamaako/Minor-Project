@@ -12,7 +12,9 @@ const {
 } = require('electron');
 const path = require('path');
 const http = require('http');
-const { spawn } = require('child_process');
+const fs = require('fs');
+const crypto = require('crypto');
+const { spawn, execSync } = require('child_process');
 
 const { 
   startInteractiveProcess, writeToProcess, killInteractiveProcess,
@@ -35,6 +37,86 @@ let usbPollingInterval = null;
 let blockKeysProcess = null;
 let usbDetectorProcess = null;
 let screenStreamInterval = null;
+let isLicenseValid = false;
+
+const LICENSE_DIR = 'C:\\ProgramData\\AMUExamPortal';
+const LICENSE_FILE = path.join(LICENSE_DIR, 'sys_lock.dat');
+const MASTER_SECRET = 'AMU_AI_CENTER_AARIF_SECURE_2026';
+
+function getMachineUUID() {
+  try {
+    const output = execSync('powershell.exe -Command "Get-CimInstance -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID"').toString().trim();
+    return output;
+  } catch (err) {
+    return 'UNKNOWN_UUID';
+  }
+}
+
+function checkLicense() {
+  if (!fs.existsSync(LICENSE_FILE)) return false;
+  
+  try {
+    const encryptedData = fs.readFileSync(LICENSE_FILE, 'utf8');
+    const parts = encryptedData.split(':');
+    if (parts.length !== 2) return false;
+    
+    const iv = Buffer.from(parts[0], 'hex');
+    const encryptedText = Buffer.from(parts[1], 'hex');
+    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(MASTER_SECRET.padEnd(32, '0')), iv);
+    
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    
+    const storedUUID = decrypted.toString();
+    const currentUUID = getMachineUUID();
+    
+    return storedUUID === currentUUID;
+  } catch (err) {
+    console.error('License verification failed:', err);
+    return false;
+  }
+}
+
+function createHardwareLock() {
+  if (!fs.existsSync(LICENSE_DIR)) {
+    fs.mkdirSync(LICENSE_DIR, { recursive: true });
+  }
+  const currentUUID = getMachineUUID();
+  
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(MASTER_SECRET.padEnd(32, '0')), iv);
+  
+  let encrypted = cipher.update(currentUUID);
+  encrypted = Buffer.concat([encrypted, cipher.final()]);
+  
+  const lockedData = iv.toString('hex') + ':' + encrypted.toString('hex');
+  fs.writeFileSync(LICENSE_FILE, lockedData, 'utf8');
+}
+
+function verifyAakoLicense(filePath) {
+  try {
+    const fileContent = fs.readFileSync(filePath, 'utf8');
+    // Basic verification: The Admin server will generate an AES encrypted generic token
+    const parts = fileContent.split(':');
+    if (parts.length !== 2) return false;
+    
+    const iv = Buffer.from(parts[0], 'hex');
+    const encryptedText = Buffer.from(parts[1], 'hex');
+    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(MASTER_SECRET.padEnd(32, '0')), iv);
+    
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    
+    if (decrypted.toString() === 'AMU_MASTER_LICENSE_AUTHORIZED') {
+      createHardwareLock();
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error('AAKO verification failed:', err);
+    return false;
+  }
+}
 
 // ═══════════════════════════════════════════════════════════
 //  1.  Window Creation
@@ -71,10 +153,15 @@ function createMainWindow() {
     },
   });
 
-  // Load the renderer
-  mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+  isLicenseValid = checkLicense();
 
-  if (!isDevMode) {
+  if (isLicenseValid) {
+    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+  } else {
+    mainWindow.loadFile(path.join(__dirname, '../renderer/setup.html'));
+  }
+
+  if (!isDevMode && isLicenseValid) {
     // Extreme top-level to hide Windows Start Menu
     mainWindow.setAlwaysOnTop(true, 'screen-saver');
     // Hook into blur to aggressively steal back focus
@@ -614,7 +701,9 @@ function startUsbDetection() {
   const { spawn } = require('child_process');
   const path = require('path');
   
-  const exePath = path.join(__dirname, '..', '..', 'DetectUSB.exe');
+  const exePath = app.isPackaged 
+    ? path.join(process.resourcesPath, 'DetectUSB.exe')
+    : path.join(__dirname, '..', '..', 'DetectUSB.exe');
   
   usbDetectorProcess = spawn(exePath);
   
@@ -637,6 +726,118 @@ function startUsbDetection() {
 }
 
 app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') app.quit();
+});
+
+// ═══════════════════════════════════════════════════════════
+//  LICENSE AND SETUP LOGIC
+// ═══════════════════════════════════════════════════════════
+
+ipcMain.handle('manual-license-browse', async () => {
+  if (!isDevMode) {
+    mainWindow.setAlwaysOnTop(false);
+  }
+
+  // Create a dummy transparent window to host the dialog so it doesn't freeze under kiosk mode
+  const dummyWin = new BrowserWindow({
+    show: false,
+    alwaysOnTop: true,
+    transparent: true,
+    frame: false,
+    width: 10,
+    height: 10
+  });
+
+  const { canceled, filePaths } = await dialog.showOpenDialog(dummyWin, {
+    title: 'Select AMU License Token',
+    filters: [{ name: 'AMU License', extensions: ['aako'] }],
+    properties: ['openFile']
+  });
+  
+  dummyWin.close();
+
+  if (!isDevMode) {
+    mainWindow.setAlwaysOnTop(true, 'screen-saver');
+  }
+
+  if (canceled || filePaths.length === 0) return false;
+
+  mainWindow.webContents.send('license-processing');
+  const valid = verifyAakoLicense(filePaths[0]);
+  
+  if (valid) {
+    mainWindow.webContents.send('license-success');
+    isLicenseValid = true;
+    
+    // Slight delay so the renderer promise resolves cleanly before context is destroyed
+    setTimeout(() => {
+      mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+      if (!isDevMode) {
+        mainWindow.setAlwaysOnTop(true, 'screen-saver');
+      }
+    }, 1000);
+    
+    return true;
+  } else {
+    mainWindow.webContents.send('license-error', 'Invalid or Corrupted License Token.');
+    return false;
+  }
+});
+
+function startUSBDetector() {
+  const detectorPath = path.join(__dirname, '../../DetectUSB.exe');
+  if (fs.existsSync(detectorPath)) {
+    usbDetectorProcess = spawn(detectorPath, [], { detached: true });
+    
+    usbDetectorProcess.stdout.on('data', (data) => {
+      const output = data.toString().trim();
+      if (output.includes('USB_INSERTED')) {
+        console.log('[AntiCheat] USB Insertion Detected via WMI Event');
+        
+        // If in setup mode, scan for amutestlicense.aako
+        if (!isLicenseValid && mainWindow) {
+          mainWindow.webContents.send('usb-inserted');
+          setTimeout(() => {
+            mainWindow.webContents.send('license-processing');
+            let found = false;
+            // Scan D: to Z:
+            for (let i = 68; i <= 90; i++) {
+              const drive = String.fromCharCode(i) + ':\\';
+              const licensePath = path.join(drive, 'amutestlicense.aako');
+              if (fs.existsSync(licensePath)) {
+                found = true;
+                const valid = verifyAakoLicense(licensePath);
+                if (valid) {
+                  mainWindow.webContents.send('license-success');
+                  isLicenseValid = true;
+                  
+                  // Redirect instantly
+                  mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+                  if (!isDevMode) {
+                    mainWindow.setAlwaysOnTop(true, 'screen-saver');
+                  }
+                  break;
+                } else {
+                  mainWindow.webContents.send('license-error', 'Token found on USB, but it is invalid or corrupted.');
+                  break;
+                }
+              }
+            }
+            if (!found) {
+              mainWindow.webContents.send('license-error', 'No amutestlicense.aako found on the inserted USB.');
+            }
+          }, 300); // 300ms delay so the UI can briefly show "USB Inserted"
+        }
+      }
+    });
+
+    usbDetectorProcess.on('error', (err) => {
+      console.error('[AntiCheat] Failed to start USB Detector:', err);
+    });
+  }
+}
+
+app.on('window-all-closed', () => {
   if (usbPollingInterval) clearInterval(usbPollingInterval);
   if (socketClient) socketClient.disconnect();
   globalShortcut.unregisterAll();
@@ -646,10 +847,14 @@ app.on('window-all-closed', () => {
   app.quit();
 });
 
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createMainWindow();
-  }
+app.whenReady().then(() => {
+  registerKeyboardLocks();
+  startUSBDetector();
+  createMainWindow();
+  
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
+  });
 });
 
 // Prevent creating additional windows (security)

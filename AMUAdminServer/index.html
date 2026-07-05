@@ -43,8 +43,11 @@
 <body>
 
   <!-- Title Bar Custom -->
-  <div class="xp-title-bar" style="-webkit-app-region: drag; position: absolute; top: 0; left: 0; width: 100%;">
-    <div class="xp-title-text">AMU Exam Admin Server v1.0</div>
+  <div class="xp-title-bar" style="-webkit-app-region: drag; position: absolute; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: center;">
+    <div class="xp-title-text" style="padding-left: 5px;">AMU Exam Admin Server v1.0</div>
+    <div style="-webkit-app-region: no-drag; padding-right: 5px;">
+      <button id="btnDownloadLicense" style="background: none; border: none; color: white; cursor: pointer; font-size: 26px;" title="Download Master License Token">📥</button>
+    </div>
   </div>
 
   <div class="xp-window admin-window" id="setup-panel">

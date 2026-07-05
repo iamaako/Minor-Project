@@ -49,6 +49,13 @@ contextBridge.exposeInMainWorld('examAPI', {
   deleteWorkspace: (filename) => ipcRenderer.invoke('delete-workspace', filename),
   clearWorkspace: () => ipcRenderer.invoke('clear-workspace'),
 
+  // ── Setup & License ──
+  manualLicenseBrowse: () => ipcRenderer.invoke('manual-license-browse'),
+  onUsbInserted: (callback) => ipcRenderer.on('usb-inserted', () => callback()),
+  onLicenseProcessing: (callback) => ipcRenderer.on('license-processing', () => callback()),
+  onLicenseSuccess: (callback) => ipcRenderer.on('license-success', () => callback()),
+  onLicenseError: (callback) => ipcRenderer.on('license-error', (_event, msg) => callback(msg)),
+
   finalSubmitAll: (codeBuffers, rollNumber) =>
     ipcRenderer.invoke('final-submit-all', { codeBuffers, rollNumber }),
 

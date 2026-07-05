@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld('adminAPI', {
   startServer: (port) => ipcRenderer.invoke('start-server', port),
   stopServer: () => ipcRenderer.invoke('stop-server'),
   getConnectedClients: () => ipcRenderer.invoke('get-connected-clients'),
+  generateAako: () => ipcRenderer.invoke('generate-aako'),
 
   onClientsUpdate: (callback) => {
     ipcRenderer.on('clients-update', (_event, clients) => callback(clients));

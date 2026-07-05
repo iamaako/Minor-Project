@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AMU Examination Portal</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/xp-theme.css" />
+  <link rel="stylesheet" href="css/login.css" />
+  <link rel="stylesheet" href="css/editor.css" />
+</head>
+
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN 0: Server Setup
+     Asks for Exam Server IP and Port
+═══════════════════════════════════════════════════════ -->
+<div id="setup-screen">
+  <div class="login-window" style="width: 400px;">
+    <div class="xp-titlebar">
+      <span class="xp-titlebar-icon">🌐</span>
+      <span class="xp-titlebar-text">Connect to Exam Server</span>
+    </div>
+    <div class="login-body" style="display: flex; flex-direction: column; gap: 16px; padding: 24px;">
+      <div style="font-size: 13px; margin-bottom: 8px;">
+        Please enter the Exam Server address provided by the invigilator.
+      </div>
+      
+      <div style="display: flex; gap: 12px; align-items: flex-end;">
+        <div style="flex: 2;">
+          <label for="input-server-ip" class="xp-label">Server IP Address:</label>
+          <input type="text" id="input-server-ip" class="xp-input" placeholder="e.g. 192.168.1.50" value="127.0.0.1" style="width: 100%;" />
+        </div>
+        <div style="flex: 1;">
+          <label for="input-server-port" class="xp-label">Port:</label>
+          <input type="text" id="input-server-port" class="xp-input" placeholder="3000" value="3000" style="width: 100%;" />
+        </div>
+      </div>
+
+      <div id="setup-error" style="color: red; font-size: 11px; min-height: 16px;"></div>
+
+      <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
+        <button id="btn-connect-server" class="xp-button">Connect</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN 1: Connecting
+     Shown while app establishes server connection
+═══════════════════════════════════════════════════════ -->
+<div id="connecting-screen">
+  <div class="connecting-box">
+    <div style="padding: 28px 36px; text-align:center; background: var(--clr-window-bg);">
+      <img src="../../AMULogo.png" alt="AMU Logo" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 14px;" />
+      <div style="font-weight:bold; font-size:13px; margin-bottom:4px;">Aligarh Muslim University</div>
+      <div style="font-size:10px; color:#808080; margin-bottom:20px;">Online Examination System v1.0</div>
+      <div class="spinner-xp"></div>
+      <div style="font-size:11px; margin-top:10px;">
+        Connecting to exam server<span id="connecting-dots">...</span>
+      </div>
+      <div id="connect-status" style="font-size:10px; color:#808080; margin-top:6px; min-height:16px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN 2: Login Dialog
+     Classic Windows XP logon dialog
+═══════════════════════════════════════════════════════ -->
+<div id="login-screen" class="hidden">
+  <div class="login-window">
+    <div class="login-banner">
+      <img src="../../AMULogo.png" alt="AMU Logo" class="login-banner-icon" style="width: 48px; height: 48px; object-fit: contain; filter: invert(1) brightness(1.5);" />
+      <div class="login-banner-text">
+        <span class="institution">Aligarh Muslim University</span>
+        <span class="title">Examination Portal</span>
+        <span class="subtitle">Secure Online Assessment System</span>
+      </div>
+    </div>
+    <div class="login-divider"></div>
+
+    <!-- Form body -->
+    <div class="login-body" id="login-body">
+      <div class="login-instruction">
+        Enter your student credentials to begin the examination.<br/>
+        Contact your invigilator if you face any issues.
+      </div>
+
+      <!-- Server status info row -->
+      <div class="login-server-info">
+        <span class="conn-dot connecting" id="login-conn-dot"></span>
+        <span class="server-label">Server:</span>
+        <span class="server-ip" id="login-server-url">192.168.1.50:3000</span>
+        <span style="margin-left:auto; color:#808080; font-size:10px;">
+          Seat IP: <span id="login-client-ip">—</span>
+        </span>
+      </div>
+
+      <!-- Roll Number -->
+      <div class="login-field">
+        <label for="input-roll" class="xp-label">Roll Number:</label>
+        <input
+          type="text"
+          id="input-roll"
+          class="xp-input"
+          placeholder="e.g. GQ0103"
+          autocomplete="off"
+          spellcheck="false"
+          maxlength="20"
+        />
+      </div>
+
+      <!-- Exam Password -->
+      <div class="login-field">
+        <label for="input-password" class="xp-label">Exam Password:</label>
+        <input
+          type="password"
+          id="input-password"
+          class="xp-input"
+          style="width:100%;"
+          placeholder="Enter exam password"
+          autocomplete="off"
+          maxlength="50"
+        />
+        <span class="login-capslock-warn" id="capslock-warn">⚠ Caps Lock is ON</span>
+      </div>
+
+      <!-- Error message area -->
+      <div class="login-error hidden" id="login-error">
+        <span class="err-icon">⚠</span>
+        <span id="login-error-text">Invalid credentials.</span>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <div class="login-spinner" id="login-spinner"></div>
+      <button class="xp-button default" id="btn-login">Log On</button>
+      <button class="xp-button" id="btn-cancel" disabled>Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN 2.5: Instructions
+═══════════════════════════════════════════════════════ -->
+<div id="instructions-screen" class="hidden" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #008080;">
+  <div class="xp-window" style="width: 700px; max-width: 90%;">
+    <div class="xp-titlebar" style="height: 26px; padding: 0 4px; display: flex; align-items: center;">
+      <span class="xp-titlebar-text" style="margin-left: 4px;">AMU Examination — General Instructions</span>
+    </div>
+    
+    <div style="text-align: center; margin: 20px 0;">
+      <img src="../../AMULogo.png" alt="AMU Logo" style="width: 80px; height: 80px; background: white; border-radius: 50%; padding: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
+      <h3 style="margin: 10px 0 0 0; font-family: 'Tahoma', sans-serif; font-size: 16px;">General Instructions</h3>
+    </div>
+
+    <div class="xp-group-box" style="margin: 0 20px 15px 20px; background: white; padding: 20px;">
+      <div class="xp-group-box-title" style="font-size: 12px; font-weight: bold;">Please read carefully before proceeding</div>
+      <div class="xp-group-box-content" style="font-size: 13px; line-height: 1.8; color: #333;">
+        <ul style="margin: 0; padding-left: 20px;">
+          <li style="margin-bottom: 8px;"><strong>Strictly Closed-Book:</strong> This is a closed-book programming examination. Any unauthorized material is prohibited.</li>
+          <li style="margin-bottom: 8px;"><strong>Anti-Cheat Active:</strong> This application operates in full lockdown mode. Do not attempt to switch tabs, minimize the window, or use unauthorized keyboard shortcuts. Violations will be recorded.</li>
+          <li style="margin-bottom: 8px;"><strong>Data Persistence:</strong> Click the <b>Save</b> button frequently to ensure your code is backed up to the server.</li>
+          <li><strong>Final Submission:</strong> Once you complete your exam, click <b>Final Submit</b>. Your session will be terminated and no further modifications will be allowed.</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div style="margin: 0 20px 20px 20px; display: flex; flex-direction: column; gap: 15px; align-items: center;">
+      <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; color: #000;">
+        <input type="checkbox" id="chk-agree-instructions" style="margin: 0;">
+        I have read and agree to abide by all the instructions mentioned above.
+      </label>
+      <button class="xp-button default large" id="btn-proceed-instructions" style="width: 250px; font-weight: bold; font-size: 14px; padding: 6px;" disabled>Proceed to Exam Room</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN 2.6: Waiting
+═══════════════════════════════════════════════════════ -->
+<div id="waiting-screen" class="hidden" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #008080;">
+  <div class="xp-window" style="width: 400px; max-width: 90%;">
+    <div class="xp-titlebar" style="height: 26px; padding: 0 4px; display: flex; align-items: center;">
+      <span class="xp-titlebar-text" style="margin-left: 4px;">Please Wait</span>
+    </div>
+    
+    <div style="text-align: center; margin: 30px 20px;">
+      <img src="../../AMULogo.png" alt="AMU Logo" style="width: 80px; height: 80px; background: white; border-radius: 50%; padding: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
+      <h3 style="margin: 15px 0 5px 0; font-family: 'Tahoma', sans-serif; font-size: 16px; color: #000;">Waiting for Admin</h3>
+      <p id="waiting-message" style="margin: 5px 0; color: #333; font-size: 13px;">Waiting for the Admin to start the exam...</p>
+      <div id="scheduled-timer" style="margin-top: 15px; font-size: 16px; font-family: 'Tahoma', sans-serif; font-weight: bold; color: #d32f2f;">
+        <!-- Timer will appear here if scheduled -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN 3: Exam Environment
+     Main split-screen testing interface
+═══════════════════════════════════════════════════════ -->
+<div id="exam-screen" class="hidden">
+  <div class="exam-window">
+
+    <!-- Title Bar / Main Exam Header -->
+    <div class="xp-titlebar" id="exam-titlebar" style="height: 60px; padding: 4px 16px; gap: 12px; background: #fff; border-bottom: 2px solid var(--clr-primary);">
+      <!-- Left side: Brand Logo & Title -->
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <img src="../../AMULogo.png" alt="AMU Logo" style="width: 40px; height: 40px; object-fit: contain;" />
+        <div style="display: flex; flex-direction: column; color: var(--clr-primary);">
+          <span style="font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;">Aligarh Muslim University</span>
+          <span style="font-size: 11px; opacity: 0.9; font-weight: 500;">Programming Examination Portal</span>
+        </div>
+      </div>
+
+      <!-- Center: Exam Title -->
+      <div id="header-exam-title-display" style="flex: 1; text-align: center; color: var(--clr-title-text); font-size: 15px; font-weight: bold; letter-spacing: 1px; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">
+        End Semester Examination 2025-26
+      </div>
+
+      <!-- Right side: Timer & Student Info -->
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <!-- Live Timer -->
+        <div style="display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.2); padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.15);">
+          <span style="font-size: 14px;">⏱️</span>
+          <span id="timer-display" style="font-family: var(--font-mono); font-size: 16px; font-weight: bold; color: #FFF; min-width: 50px;">90:00</span>
+        </div>
+
+        <!-- Student Profile Section -->
+        <div style="display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); padding: 3px 10px; border: 1px solid rgba(255,255,255,0.25);">
+          <span style="font-size: 16px;">👤</span>
+          <span id="header-student-name" style="color: var(--clr-title-text); font-weight: bold; font-size: 11px;">CS2021-001</span>
+        </div>
+
+        <!-- Full Screen Button (Removed per request) -->
+
+      </div>
+    </div>
+
+    <!-- Hidden standard exam-titlebar-text to prevent JS errors -->
+    <span class="hidden" id="exam-title-text"></span>
+
+    <!-- Pause Banner (hidden unless paused) -->
+    <div class="xp-pause-banner hidden" id="pause-banner">
+      ⏸ &nbsp;EXAM PAUSED — Please wait for the invigilator to resume the exam.
+    </div>
+
+    <!-- Toolbar (Simplified without duplicate timer) -->
+    <div class="exam-toolbar">
+      <!-- Question tabs (injected dynamically) -->
+      <div class="exam-toolbar-group" id="question-tabs-container"></div>
+
+      <!-- Progress bar of timer still shown underneath or in background -->
+      <div class="xp-progress hidden" style="width:0px;"><div class="xp-progress-fill" id="timer-progress"></div></div>
+
+      <div class="exam-toolbar-spacer"></div>
+
+      <!-- Language selector -->
+      <div class="exam-toolbar-group">
+        <span class="lang-label">Language:</span>
+        <select class="xp-select" id="lang-select" style="width:82px;">
+          <option value="python">Python</option>
+          <option value="c">C</option>
+          <option value="cpp">C++</option>
+        </select>
+      </div>
+
+      <div class="exam-toolbar-sep"></div>
+
+      <!-- Action buttons -->
+      <div class="exam-toolbar-group">
+        <button class="xp-button large" id="btn-run">Run Code</button>
+        <button class="xp-button large" id="btn-submit">Save Code</button>
+        <button class="xp-button large danger" id="btn-final-submit">Final Submit</button>
+      </div>
+    </div>
+
+    <!-- Main content area -->
+    <div class="exam-content">
+      <div class="exam-top-row">
+
+        <!-- Left: Question/Files Panel -->
+        <div class="question-panel" id="question-panel">
+          <div class="question-panel-header" style="display:flex; gap:10px; align-items:center;">
+            <button id="tab-btn-questions" class="xp-button" style="font-weight:bold; background:#ece9d8;">Questions</button>
+            <button id="tab-btn-files" class="xp-button" style="font-weight:normal;">Workspace Files</button>
+          </div>
+          <div class="question-panel-content" id="question-content">
+            <div style="color:#808080;font-size:11px;margin-top:24px;text-align:center;">
+              Loading questions...
+            </div>
+          </div>
+          <div class="question-panel-content" id="files-content" style="display:none; padding:10px; flex-direction:column;">
+            <button id="btn-new-file" class="xp-button" style="width:100%; margin-bottom:10px; min-height: 24px;">+ New File</button>
+            <div id="new-file-container" style="display:none; margin-bottom:10px; gap:5px;">
+              <input type="text" id="input-new-file" class="xp-input" placeholder="filename.py" style="flex:1; font-size:12px;">
+              <button id="btn-create-file" class="xp-button" style="padding:0 8px;">OK</button>
+              <button id="btn-cancel-file" class="xp-button" style="padding:0 8px;">✕</button>
+            </div>
+            <div id="file-list-container" style="overflow-y:auto; flex:1;">
+              <ul id="file-list" style="list-style: none; padding: 0; margin: 0; font-size: 13px;">
+                <!-- Files injected here -->
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vertical divider -->
+        <div class="xp-divider-v"></div>
+
+        <!-- Right: Monaco Editor Panel -->
+        <div class="editor-panel">
+          <div class="editor-panel-header">
+            <span>📄</span>
+            <span class="editor-file-name" id="editor-filename">solution.py</span>
+            <span class="editor-modified-dot" id="editor-modified-dot"></span>
+            <span style="flex:1;"></span>
+            <button class="xp-button" id="btn-theme-toggle" style="padding: 2px 6px; font-size: 10px; margin-right: 8px;">🌙 Dark Mode</button>
+            <span style="font-size:10px;color:#555;">Monaco Editor</span>
+          </div>
+          <div id="monaco-container"></div>
+        </div>
+
+      </div><!-- .exam-top-row -->
+
+      <!-- Horizontal divider -->
+      <div class="xp-divider-h"></div>
+
+      <!-- Bottom: Terminal Panel -->
+      <div class="terminal-panel">
+        <div class="terminal-header">
+          <span class="terminal-title">C:\AMU&gt; Output Console</span>
+          <span class="terminal-exec-time" id="terminal-exec-time"></span>
+          <button class="terminal-btn-clear" id="btn-clear-terminal">Clear</button>
+        </div>
+        <div id="terminal-output" tabindex="0"><span class="term-info">AMU Test Portal — Code Execution Engine v1.0</span><br><span class="term-info">Write your solution and click [▶ Run] to execute.</span><br><span class="term-info">Click here and type if your code requires input.</span><br></div>
+      </div>
+
+    </div><!-- .exam-content -->
+
+    <!-- Status Bar -->
+    <div class="xp-statusbar">
+      <div class="xp-statusbar-panel flex-1" id="status-main">Ready</div>
+      <div class="xp-statusbar-panel">
+        <span class="conn-dot connecting" id="status-conn-dot"></span>
+        <span id="status-conn-text">Connecting...</span>
+      </div>
+      <div class="xp-statusbar-panel">Roll: <span id="status-roll">—</span></div>
+      <div class="xp-statusbar-panel">Seat: <span id="status-seat">—</span></div>
+      <div class="xp-statusbar-panel" id="status-violations" title="Focus violations">⚠ 0</div>
+    </div>
+
+  </div><!-- .exam-window -->
+</div><!-- #exam-screen -->
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN 4: Submitted
+═══════════════════════════════════════════════════════ -->
+<div id="submitted-screen" class="hidden">
+  <div class="submitted-box">
+    <div class="xp-titlebar">
+      <span class="xp-titlebar-icon">✅</span>
+      <span class="xp-titlebar-text">Exam Submitted Successfully</span>
+    </div>
+    <div class="submitted-body">
+      <div class="submitted-icon">🎉</div>
+      <div class="submitted-title">Exam Submitted Successfully</div>
+      <div class="submitted-subtitle">
+        Your solutions have been recorded.<br/>
+        Please remain seated until the invigilator dismisses the class.
+      </div>
+      <div style="font-size:10px;color:#808080;font-family:var(--font-mono);margin-top:8px;" id="submit-timestamp"></div>
+    </div>
+    <div class="xp-statusbar">
+      <div class="xp-statusbar-panel flex-1">Submission complete. Do not close this window.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     OVERLAY: Lock Screen
+═══════════════════════════════════════════════════════ -->
+<div class="xp-lock-overlay hidden" id="lock-overlay">
+  <div class="lock-icon">🔒</div>
+  <div class="lock-title">Session Locked</div>
+  <div class="lock-message" id="lock-message">
+    Your session has been locked by the invigilator.<br/>
+    Please wait for further instructions.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     OVERLAY: Anti-cheat Warning
+═══════════════════════════════════════════════════════ -->
+<div class="xp-overlay hidden" id="warn-overlay">
+  <div class="xp-dialog anticheat-warn-dialog">
+    <div class="xp-titlebar">
+      <span class="xp-titlebar-icon">⚠</span>
+      <span class="xp-titlebar-text">Security Warning — AMU Exam System</span>
+    </div>
+    <div class="xp-dialog-body">
+      <div class="xp-dialog-icon">⚠️</div>
+      <div class="xp-dialog-message" id="warn-message">
+        Window focus was lost. This incident has been logged and reported.
+      </div>
+    </div>
+    <div class="xp-dialog-footer">
+      <button class="xp-button default" id="btn-warn-ok">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     OVERLAY: Final Submit Confirmation
+═══════════════════════════════════════════════════════ -->
+<div class="xp-overlay hidden" id="confirm-submit-overlay">
+  <div class="xp-dialog">
+    <div class="xp-titlebar">
+      <span class="xp-titlebar-icon">📝</span>
+      <span class="xp-titlebar-text">Confirm Final Submission</span>
+    </div>
+    <div class="xp-dialog-body">
+      <div class="xp-dialog-icon">❓</div>
+      <div class="xp-dialog-message">
+        Are you sure you want to submit your final answers?<br/><br/>
+        <strong>This action cannot be undone.</strong><br/>
+        All your code buffers will be submitted to the server.
+      </div>
+    </div>
+    <div class="xp-dialog-footer">
+      <button class="xp-button default danger" id="btn-confirm-submit">Submit Now</button>
+      <button class="xp-button" id="btn-cancel-submit">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     OVERLAY: Delete File Confirm Modal
+═══════════════════════════════════════════════════════ -->
+<div id="delete-confirm-screen" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index: 300;">
+  <div class="xp-window" style="width:300px;">
+    <div class="xp-window-titlebar">
+      <div class="xp-window-title">Confirm Delete</div>
+    </div>
+    <div class="xp-window-content" style="display:flex; flex-direction:column; gap:15px; padding:20px;">
+      <div id="delete-confirm-msg">Are you sure you want to delete this file?</div>
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button id="btn-delete-yes" class="xp-button danger" style="padding:4px 15px;">Yes, Delete</button>
+        <button id="btn-delete-no" class="xp-button" style="padding:4px 15px;">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     OVERLAY: Dynamic Notifications (Warnings / Announcements)
+═══════════════════════════════════════════════════════ -->
+<div id="notification-container" style="position: fixed; top: 70px; right: 20px; z-index: 9998; display: flex; flex-direction: column; gap: 10px;">
+  <!-- Notifications will be injected here -->
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     Scripts — loaded in dependency order
+     1. Sub-modules (globals: SocketBridge, Timer, Terminal…)
+     2. Monaco environment config
+     3. Monaco AMD loader
+     4. App Bootloader
+═══════════════════════════════════════════════════════ -->
+<script src="js/socket.js"></script>
+<script src="js/timer.js"></script>
+<script src="js/terminal.js"></script>
+<script src="js/workspace.js"></script>
+<script src="js/questions.js"></script>
+<script src="js/anticheat.js"></script>
+<script src="js/login.js"></script>
+<script src="js/editor.js"></script>
+
+<script src="js/monaco-env.js"></script>
+<script src="../../node_modules/monaco-editor/min/vs/loader.js"></script>
+<script>
+  // Monaco configurations and main bootloader in one place
+  require.config({
+    paths: { 'vs': '../../node_modules/monaco-editor/min/vs' }
+  });
+  require(['vs/editor/editor.main'], function() {
+    console.log('[HTML] Monaco loaded. Booting app...');
+    // Boot app manually now that Monaco is global
+    if (window.bootApp) {
+      window.bootApp();
+    }
+  });
+</script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
+
+</body>
+</html>

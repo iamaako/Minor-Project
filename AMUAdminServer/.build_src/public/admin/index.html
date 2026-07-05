@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AMU Web Admin Login</title>
+  <link rel="stylesheet" href="/css/xp-theme.css">
+  <style>
+    body {
+      background-color: var(--clr-bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-box { width: 400px; }
+  </style>
+</head>
+<body>
+  <div class="xp-window login-box">
+    <div class="xp-title-bar">
+      <div class="xp-title-text">AMU Web Admin Panel</div>
+    </div>
+    
+    <div style="text-align: center; margin: 20px 0;">
+      <img src="/assets/AMULogo.png" alt="AMU Logo" style="width: 80px; height: 80px; background: white; border-radius: 50%; padding: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
+      <h3 style="margin: 10px 0 0 0;">Authentication Required</h3>
+      <p style="margin: 5px 0; color: #666; font-size: 12px;">Please enter the password shown on the Server window.</p>
+    </div>
+
+    <div class="xp-group-box" style="margin: 15px;">
+      <div class="xp-group-box-title">Security Check</div>
+      <div class="xp-group-box-content">
+        <label style="display: block; margin-bottom: 5px;">Admin Password:</label>
+        <input type="password" id="passInput" class="xp-input" style="width: 100%; box-sizing: border-box;" autocomplete="off">
+        <p id="errorMsg" style="color: red; margin: 5px 0; font-size: 12px; height: 14px;"></p>
+        <button class="xp-btn" id="btnLogin" style="width: 100%; font-weight: bold; margin-top: 10px;">Login to Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const btnLogin = document.getElementById('btnLogin');
+    const passInput = document.getElementById('passInput');
+    const errorMsg = document.getElementById('errorMsg');
+
+    btnLogin.addEventListener('click', async () => {
+      const password = passInput.value.trim();
+      if (!password) {
+        errorMsg.textContent = 'Please enter the password.';
+        return;
+      }
+      
+      btnLogin.disabled = true;
+      errorMsg.textContent = 'Authenticating...';
+      errorMsg.style.color = '#333';
+
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+          localStorage.setItem('adminToken', data.adminToken);
+          errorMsg.textContent = 'Success! Redirecting...';
+          errorMsg.style.color = 'green';
+          window.location.href = '/admin/dashboard';
+        } else {
+          errorMsg.textContent = data.message || 'Invalid password.';
+          errorMsg.style.color = 'red';
+          btnLogin.disabled = false;
+        }
+      } catch (err) {
+        errorMsg.textContent = 'Server error. Try again.';
+        errorMsg.style.color = 'red';
+        btnLogin.disabled = false;
+      }
+    });
+
+    passInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') btnLogin.click();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AMU Student Portal Setup</title>
+  <link rel="stylesheet" href="css/xp-theme.css">
+  <style>
+    body {
+      background-color: #008080;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+    .setup-box { width: 450px; background-color: #f8ffd6; }
+    
+    .profile-container {
+      text-align: center;
+      margin: 15px 0;
+    }
+    .profile-container img {
+      width: 100px;
+      height: 100px;
+      background: white;
+      border-radius: 50%;
+      padding: 3px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      object-fit: cover;
+    }
+    
+    .status-panel {
+      background: #fff;
+      border: 1px inset #ccc;
+      padding: 10px;
+      margin: 10px 0;
+      min-height: 20px;
+      font-size: 13px;
+      color: #333;
+    }
+    .status-error {
+      color: #b00;
+      font-weight: bold;
+    }
+    .status-success {
+      color: #008000;
+      font-weight: bold;
+    }
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="xp-window setup-box">
+    <div class="xp-title-bar" style="-webkit-app-region: drag;">
+      <div class="xp-title-text">AMU Exam Portal Activation</div>
+    </div>
+    
+    <div class="profile-container">
+      <img src="assets/aarif_profile.png" alt="Aarif Khan" onerror="this.src='../assets/AMULogo.png'">
+      <h3 style="margin: 10px 0 5px 0;">Developer Setup Mode</h3>
+      <p style="margin: 0; color: #555; font-size: 11px;">
+        This tool is developed by <strong>Aarif Khan</strong> (Artificial Intelligence branch).<br>
+        Under <i>Interdisciplinary Center for Artificial Intelligence</i>.
+      </p>
+    </div>
+
+    <div class="xp-group-box" style="margin: 15px;">
+      <div class="xp-group-box-title">Hardware Lock Activation</div>
+      <div class="xp-group-box-content">
+        <p style="margin-top: 0; font-size: 13px;">Please insert the USB Master License Token to run this application.</p>
+        
+        <div class="status-panel" id="statusPanel">
+          <span id="statusMsg">Waiting for USB Insertion...</span>
+        </div>
+        
+        <button class="xp-btn" id="btnBrowse" style="width: 100%; margin-top: 5px;">Browse USB Manually</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/setup.js"></script>
+</body>
+</html>

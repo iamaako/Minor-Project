@@ -1,6 +1,7 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const crypto = require('crypto');
+const fs = require('fs');
 const { startServer, stopServer, getLocalIpAddress, getConnectedClients } = require('./server');
 const { initDB, setAdminPassword } = require('./db');
 
@@ -91,4 +92,28 @@ ipcMain.handle('stop-server', () => {
 
 ipcMain.handle('get-connected-clients', () => {
   return getConnectedClients();
+});
+
+ipcMain.handle('generate-aako', async () => {
+  const MASTER_SECRET = 'AMU_AI_CENTER_AARIF_SECURE_2026';
+  
+  const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
+    title: 'Save Master License Token to USB',
+    defaultPath: 'amutestlicense.aako',
+    filters: [{ name: 'AMU License', extensions: ['aako'] }]
+  });
+
+  if (canceled || !filePath) return false;
+
+  const payload = 'AMU_MASTER_LICENSE_AUTHORIZED';
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(MASTER_SECRET.padEnd(32, '0')), iv);
+  
+  let encrypted = cipher.update(payload);
+  encrypted = Buffer.concat([encrypted, cipher.final()]);
+  
+  const lockedData = iv.toString('hex') + ':' + encrypted.toString('hex');
+  fs.writeFileSync(filePath, lockedData, 'utf8');
+  
+  return true;
 });

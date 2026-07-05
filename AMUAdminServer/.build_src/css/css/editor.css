@@ -1,0 +1,557 @@
+/* ============================================================
+   editor.css — Exam Split-Screen Layout & Terminal
+   ============================================================ */
+
+/* ──────────────────────────────────────────────────────────
+   Exam Screen — Outer Shell
+────────────────────────────────────────────────────────── */
+#exam-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--clr-desktop);
+  overflow: hidden;
+}
+
+/* Full-height main window frame */
+.exam-window {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--clr-window-bg);
+  border-style: solid;
+  border-width: 2px;
+  border-color: #FFFFFF #404040 #404040 #FFFFFF;
+  outline: 1px solid #808080;
+  margin: 4px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Toolbar / Action Bar
+────────────────────────────────────────────────────────── */
+.exam-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 4px 6px;
+  background: var(--clr-window-bg);
+  border-bottom: 2px solid var(--clr-3d-midshadow);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  min-height: 34px;
+}
+
+.exam-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.exam-toolbar-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--clr-3d-midshadow);
+  border-right: 1px solid var(--clr-3d-midlight);
+  margin: 0 2px;
+}
+
+.exam-toolbar-spacer {
+  flex: 1;
+}
+
+/* Language selector label */
+.lang-label {
+  font-size: var(--font-size-ui);
+  color: var(--clr-text);
+  white-space: nowrap;
+}
+
+/* Run button — iconic green feel */
+#btn-run {
+  background: #C8E8C8;
+  font-weight: bold;
+}
+
+#btn-run:hover {
+  background: #B0D8B0;
+}
+
+#btn-run:active {
+  background: #98C898;
+}
+
+/* Submit button — important action */
+#btn-submit {
+  background: #C8D8F0;
+  font-weight: bold;
+}
+
+#btn-submit:hover {
+  background: #B0C8E8;
+}
+
+/* Final submit — danger zone */
+#btn-final-submit {
+  background: #F0C8C8;
+  font-weight: bold;
+  border-color: #C08080 #401010 #401010 #C08080;
+}
+
+#btn-final-submit:hover {
+  background: #E8B0B0;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Main Content Area — Three-Panel Layout
+────────────────────────────────────────────────────────── */
+.exam-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Top row: Question panel + Editor panel side by side */
+.exam-top-row {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Question Panel (Left)
+────────────────────────────────────────────────────────── */
+.question-panel {
+  width: 380px;
+  min-width: 260px;
+  max-width: 50%;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--clr-3d-midshadow);
+  background: var(--clr-window-bg);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.question-panel-header {
+  padding: 4px 8px;
+  background: var(--clr-face);
+  border-bottom: 1px solid var(--clr-3d-midshadow);
+  font-size: var(--font-size-ui);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  min-height: 24px;
+}
+
+.question-panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* Question header info */
+.question-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--clr-3d-midshadow);
+}
+
+.question-number {
+  background: var(--clr-select-bg);
+  color: var(--clr-select-text);
+  padding: 2px 8px;
+  font-size: var(--font-size-ui);
+  font-weight: bold;
+}
+
+.question-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--clr-text);
+  flex: 1;
+}
+
+.difficulty-badge {
+  font-size: 9px;
+  padding: 1px 6px;
+  border: 1px solid;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: bold;
+}
+
+.difficulty-badge.easy   { color: #006600; border-color: #006600; background: #E0FFE0; }
+.difficulty-badge.medium { color: #CC6600; border-color: #CC6600; background: #FFF4E0; }
+.difficulty-badge.hard   { color: #CC0000; border-color: #CC0000; background: #FFE0E0; }
+
+/* Problem statement text */
+.question-description {
+  font-size: var(--font-size-ui);
+  line-height: 1.7;
+  color: var(--clr-text);
+  margin-bottom: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Section headers inside question */
+.question-section-title {
+  font-size: var(--font-size-ui);
+  font-weight: bold;
+  color: var(--clr-text);
+  margin-bottom: 4px;
+  margin-top: 10px;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--clr-3d-midshadow);
+  padding-bottom: 2px;
+}
+
+/* Constraints list */
+.question-constraints {
+  font-size: var(--font-size-ui);
+  line-height: 1.8;
+  color: var(--clr-text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  white-space: pre-wrap;
+  background: var(--clr-face);
+  padding: 6px 8px;
+  border-style: solid;
+  border-width: 1px;
+  border-color:
+    var(--clr-3d-midshadow)
+    var(--clr-3d-midlight)
+    var(--clr-3d-midlight)
+    var(--clr-3d-midshadow);
+  margin-bottom: 10px;
+}
+
+/* Sample I/O block */
+.question-io-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.io-row {
+  display: flex;
+  gap: 8px;
+}
+
+.io-label {
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--clr-text-disabled);
+  width: 60px;
+  flex-shrink: 0;
+  padding-top: 4px;
+}
+
+.io-value {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: #FFFFFF;
+  padding: 4px 8px;
+  border-style: solid;
+  border-width: 1px;
+  border-color:
+    var(--clr-3d-midshadow)
+    var(--clr-3d-midlight)
+    var(--clr-3d-midlight)
+    var(--clr-3d-midshadow);
+  flex: 1;
+  white-space: pre-wrap;
+  word-break: break-all;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.question-explanation {
+  font-size: var(--font-size-ui);
+  line-height: 1.6;
+  color: #444444;
+  font-style: italic;
+  padding: 6px 8px;
+  border-left: 3px solid var(--clr-select-bg);
+  background: #F0F4FF;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Editor Panel (Right)
+────────────────────────────────────────────────────────── */
+.editor-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  background: #1E1E1E; /* Monaco dark background */
+}
+
+.editor-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  background: #2D2D2D;
+  border-bottom: 1px solid #1A1A1A;
+  font-size: var(--font-size-sm);
+  color: #AAAAAA;
+  flex-shrink: 0;
+  min-height: 22px;
+  font-family: var(--font-mono);
+}
+
+.editor-file-name {
+  color: #DDDDDD;
+  font-weight: bold;
+}
+
+.editor-modified-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #E8A020;
+  display: none;
+}
+
+.editor-modified-dot.visible {
+  display: inline-block;
+}
+
+#monaco-container {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Terminal Panel (Bottom)
+────────────────────────────────────────────────────────── */
+.terminal-panel {
+  height: 220px;
+  min-height: 100px;
+  max-height: 50%;
+  display: flex;
+  flex-direction: column;
+  border-top: 2px solid var(--clr-3d-shadow);
+  flex-shrink: 0;
+  background: var(--clr-terminal-bg);
+}
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  background: #1A1A1A;
+  border-bottom: 1px solid #000000;
+  flex-shrink: 0;
+  min-height: 22px;
+}
+
+.terminal-title {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: #888888;
+  flex: 1;
+}
+
+.terminal-exec-time {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: #666666;
+}
+
+.terminal-btn-clear {
+  font-size: var(--font-size-sm);
+  color: #888888;
+  background: none;
+  border: 1px solid #444444;
+  padding: 1px 8px;
+  cursor: pointer;
+  font-family: var(--font-ui);
+}
+
+.terminal-btn-clear:hover {
+  background: #333333;
+  color: #CCCCCC;
+}
+
+/* The actual terminal output area */
+#terminal-output {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-mono);
+  line-height: 1.5;
+  color: var(--clr-terminal-text);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Terminal output line types */
+.term-line { display: block; }
+.term-stdout { color: var(--clr-terminal-text); }
+.term-stderr { color: var(--clr-terminal-red); }
+.term-info   { color: var(--clr-terminal-cyan); }
+.term-success { color: var(--clr-terminal-green); }
+.term-warn   { color: var(--clr-terminal-yellow); }
+.term-prompt {
+  color: var(--clr-terminal-green);
+  margin-bottom: 4px;
+  margin-top: 8px;
+  border-top: 1px solid #1A1A1A;
+  padding-top: 4px;
+}
+
+/* Blinking cursor */
+.term-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background: var(--clr-terminal-cursor);
+  vertical-align: text-bottom;
+  animation: cursor-blink 1s step-end infinite;
+  margin-left: 2px;
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* Running indicator */
+.term-running {
+  color: var(--clr-terminal-yellow);
+  animation: term-pulse 0.5s ease-in-out infinite;
+}
+
+@keyframes term-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* Scrollbar in terminal */
+#terminal-output::-webkit-scrollbar {
+  width: 14px;
+}
+
+#terminal-output::-webkit-scrollbar-track {
+  background: #1A1A1A;
+  border-left: 1px solid #333;
+}
+
+#terminal-output::-webkit-scrollbar-thumb {
+  background: #888888;
+  border: 1px solid #111;
+  border-radius: 2px;
+}
+
+#terminal-output::-webkit-scrollbar-thumb:hover {
+  background: #AAAAAA;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Anti-cheat Warning Dialog
+────────────────────────────────────────────────────────── */
+.anticheat-warn-dialog {
+  background: var(--clr-window-bg);
+  border-style: solid;
+  border-width: 2px;
+  border-color: #FFFFFF #404040 #404040 #FFFFFF;
+  outline: 1px solid #808080;
+  width: 380px;
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+  animation: warn-shake 0.4s ease-out;
+}
+
+@keyframes warn-shake {
+  0%   { transform: translateX(0); }
+  20%  { transform: translateX(-8px); }
+  40%  { transform: translateX(8px); }
+  60%  { transform: translateX(-5px); }
+  80%  { transform: translateX(5px); }
+  100% { transform: translateX(0); }
+}
+
+/* ──────────────────────────────────────────────────────────
+   Exam Submitted Screen
+────────────────────────────────────────────────────────── */
+#submitted-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--clr-desktop);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.submitted-box {
+  background: var(--clr-window-bg);
+  border-style: solid;
+  border-width: 2px;
+  border-color: #FFFFFF #404040 #404040 #FFFFFF;
+  outline: 1px solid #808080;
+  padding: 0;
+  width: 400px;
+  text-align: center;
+  box-shadow: 4px 4px 12px rgba(0,0,0,0.4);
+}
+
+.submitted-body {
+  padding: 32px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.submitted-icon {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.submitted-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--clr-success);
+}
+
+.submitted-subtitle {
+  font-size: var(--font-size-ui);
+  color: var(--clr-text-disabled);
+  line-height: 1.5;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Connecting Screen (shown before login)
+────────────────────────────────────────────────────────── */
+#connecting-screen {
+  position: fixed;
+  inset: 0;
+  background: #008080;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}

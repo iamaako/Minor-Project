@@ -7,7 +7,7 @@
  */
 module.exports = {
   // ── Server Connection ──
-  SERVER_URL: 'http://192.168.1.50:3000',
+  // Server URL is dynamically set during setup.
 
   // ── Code Execution ──
   EXECUTION_TIMEOUT_MS: 120000,
