@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AMU Admin Server</title>
+  <link rel="stylesheet" href="css/xp-theme.css">
+  <style>
+    /* Custom Admin adjustments */
+    body {
+      background-color: var(--clr-bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .admin-window {
+      width: 500px;
+      margin: auto;
+    }
+    .logo-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .logo-container img {
+      width: 120px;
+      height: 120px;
+    }
+    .admin-credentials {
+      background: #f8f8f8;
+      border: 1px inset #ccc;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+    .admin-credentials strong {
+      color: #b00;
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- Title Bar Custom -->
+  <div class="xp-title-bar" style="-webkit-app-region: drag; position: absolute; top: 0; left: 0; width: 100%;">
+    <div class="xp-title-text">AMU Exam Admin Server v1.0</div>
+  </div>
+
+  <div class="xp-window admin-window" id="setup-panel">
+    <div class="logo-container">
+      <img src="assets/AMULogo.png" alt="AMU Logo">
+      <h2 style="margin: 10px 0 0 0; color: #000;">Aligarh Muslim University</h2>
+      <p style="margin: 0; color: #666; font-size: 12px;">Exam Admin Server Launcher</p>
+    </div>
+
+    <div class="xp-group-box">
+      <div class="xp-group-box-title">Network Configuration</div>
+      <div class="xp-group-box-content">
+        <p><strong>Your Local IP:</strong> <span id="ip-display" style="color: blue;">Loading...</span></p>
+        
+        <div style="display: flex; align-items: center; gap: 10px; margin-top: 15px;">
+          <label>Port:</label>
+          <input type="number" id="port-input" class="xp-input" value="3000" style="width: 80px;">
+          <button class="xp-btn" id="btn-start" style="flex: 1; font-weight: bold;">▶ Start Server</button>
+        </div>
+        <p id="error-msg" style="color: red; margin-top: 10px; font-size: 12px;"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="xp-window admin-window hidden" id="dashboard-panel">
+    <div class="logo-container">
+      <img src="assets/AMULogo.png" alt="AMU Logo" style="width: 80px; height: 80px;">
+    </div>
+    
+    <div class="xp-group-box">
+      <div class="xp-group-box-title">Server Status: Running</div>
+      <div class="xp-group-box-content" style="text-align: center;">
+        
+        <div style="background: #e6f2ff; border: 1px solid #b3d4fc; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+          <h4 style="margin: 0 0 5px 0; color: #004085;">Give these details to Students:</h4>
+          <p style="margin: 0; font-size: 16px;">
+            IP Address: <strong id="student-ip" style="background: #fff; padding: 2px 6px; border: 1px solid #ccc; letter-spacing: 1px; color: #d90000;">Loading...</strong>
+            &nbsp; Port: <strong id="student-port" style="background: #fff; padding: 2px 6px; border: 1px solid #ccc; color: #d90000;">...</strong>
+          </p>
+        </div>
+
+        <h3 style="color: green; margin-top: 0;">Web Admin Panel is Live!</h3>
+        <p style="margin: 5px 0;">Open any browser (Tablet/Laptop/Phone) and go to:</p>
+        
+        <div style="background: #fff; border: 1px solid #ccc; padding: 15px; margin: 15px 0;">
+          <a href="#" id="web-url" style="font-size: 16px; font-weight: bold; color: blue; text-decoration: underline; cursor: pointer;">Click here to open Web Admin Panel</a>
+        </div>
+        
+        <div class="admin-credentials" style="text-align: left;">
+          <div><strong>Username:</strong> <span id="admin-id">Loading...</span></div>
+          <div style="display: flex; align-items: center; margin-top: 5px;">
+            <strong>Password:</strong> 
+            <span id="admin-pass" style="margin-left: 5px; font-weight: bold; letter-spacing: 2px;">***</span>
+            <button class="xp-btn" id="btn-show-pass" style="padding: 2px 5px; margin-left: 10px; font-size: 11px;">Show</button>
+            <button class="xp-btn" id="btn-copy-pass" style="padding: 2px 5px; margin-left: 5px; font-size: 11px;">Copy</button>
+          </div>
+          <div style="font-size: 11px; color: #666; margin-top: 5px;">* Use this password in your browser to login.</div>
+        </div>
+
+        <div style="margin-top: 15px; text-align: left;">
+          <label style="font-weight: bold; font-size: 12px;">Server Logs:</label>
+          <div id="server-logs" style="height: 120px; overflow-y: auto; background: #000; color: #0f0; font-family: monospace; font-size: 11px; padding: 5px; border: 2px inset #fff; margin-bottom: 15px;">
+            <div>[System] Server initialized.</div>
+          </div>
+        </div>
+
+        <button class="xp-btn" id="btn-stop" style="width: 100%; color: red; font-weight: bold;">◼ Stop Server</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

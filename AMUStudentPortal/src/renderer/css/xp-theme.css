@@ -1,0 +1,870 @@
+/* ============================================================
+   xp-theme.css — Windows XP / 95 Retro Design System
+   AMU Test Portal
+
+   The iconic 3D border effect is achieved using:
+     border-top + border-left   = highlight (bright)
+     border-bottom + border-right = shadow (dark)
+   This creates the raised/sunken illusion without box-shadow.
+   ============================================================ */
+
+/* ──────────────────────────────────────────────────────────
+   Design Tokens
+────────────────────────────────────────────────────────── */
+:root {
+  /* Core Palette */
+  --clr-desktop:      #008080;   /* Classic Win95 teal desktop */
+  --clr-window-bg:    #ECE9D8;   /* XP window face / silver */
+  --clr-window-bg95:  #C0C0C0;   /* Win95 grey */
+  --clr-face:         #D4D0C8;   /* Button / panel face */
+  /* Clean Minimalist Professional Theme (AMU Blue) */
+  --clr-window-bg: #f8f9fa;       /* Very light gray background */
+  --clr-panel-bg: #ffffff;        /* Pure white panels */
+  
+  --clr-title-bg: #ffffff;        /* White title bar */
+  --clr-title-text: #000000;      /* Dark text for title bar */
+  
+  --clr-primary: #1a4687;         /* AMU Corporate Blue */
+  --clr-primary-light: #2b5fae;
+  --clr-text: #333333;            /* Dark gray text for readability */
+  --clr-text-muted: #666666;
+  
+  /* 3D Borders for buttons (Keeping the classic style) */
+  --border-light: #ffffff;
+  --border-dark: #808080;
+  --border-darker: #404040;
+  
+  /* Status Colors */
+  --clr-success: #2e7d32;
+  --clr-error: #d32f2f;
+  --clr-warning: #ed6c02;
+  
+  --font-main: 'Segoe UI', 'Roboto', 'Inter', Tahoma, sans-serif;
+  --font-mono: 'Consolas', 'Courier New', monospace;
+
+  /* Terminal */
+  --clr-terminal-bg:  #0C0C0C;
+  --clr-terminal-text:#C0C0C0;
+  --clr-terminal-green:#00AA00;
+  --clr-terminal-red:  #CC3333;
+  --clr-terminal-yellow:#CCAA00;
+  --clr-terminal-cyan: #00AAAA;
+  --clr-terminal-cursor:#CCCCCC;
+
+  /* Typography */
+  --font-ui:          'Tahoma', 'MS Sans Serif', 'Arial', sans-serif;
+  --font-mono:        'Consolas', 'Courier New', 'Lucida Console', monospace;
+  --font-size-ui:     11px;
+  --font-size-sm:     10px;
+  --font-size-title:  12px;
+  --font-size-mono:   13px;
+
+  /* Spacing */
+  --sp-1: 2px;
+  --sp-2: 4px;
+  --sp-3: 6px;
+  --sp-4: 8px;
+  --sp-5: 12px;
+  --sp-6: 16px;
+  --sp-7: 24px;
+
+  /* Scrollbar width */
+  --scrollbar-size: 17px;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Base Body — Teal Desktop
+────────────────────────────────────────────────────────── */
+body {
+  font-family: var(--font-ui);
+  font-size: var(--font-size-ui);
+  color: var(--clr-text);
+  background-color: var(--clr-desktop);
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+  overflow: hidden;
+}
+
+/* ──────────────────────────────────────────────────────────
+   3D Border Mixins (utility classes)
+────────────────────────────────────────────────────────── */
+
+/* Raised — like an unpressed button or a panel sticking out */
+.xp-raised {
+  border-style: solid;
+  border-width: 2px;
+  border-color:
+    var(--clr-3d-light)   /* top */
+    var(--clr-3d-shadow)  /* right */
+    var(--clr-3d-shadow)  /* bottom */
+    var(--clr-3d-light);  /* left */
+}
+
+/* Sunken — like a pressed button, input field, or inset panel */
+.xp-sunken {
+  border-style: solid;
+  border-width: 2px;
+  border-color:
+    var(--clr-3d-shadow)  /* top */
+    var(--clr-3d-light)   /* right */
+    var(--clr-3d-light)   /* bottom */
+    var(--clr-3d-shadow); /* left */
+}
+
+/* Double raised — full XP window outer border */
+.xp-window-border {
+  border-style: solid;
+  border-width: 3px;
+  border-color:
+    var(--clr-3d-midlight)   /* top */
+    var(--clr-3d-midshadow)  /* right */
+    var(--clr-3d-midshadow)  /* bottom */
+    var(--clr-3d-midlight);  /* left */
+  outline: 1px solid var(--clr-3d-shadow);
+}
+
+/* Input field — extra deep sunken look */
+.xp-field {
+  border-style: solid;
+  border-width: 2px;
+  border-color:
+    var(--clr-3d-midshadow)  /* top */
+    var(--clr-3d-midlight)   /* right */
+    var(--clr-3d-midlight)   /* bottom */
+    var(--clr-3d-midshadow); /* left */
+  outline: 1px solid var(--clr-3d-shadow);
+  background-color: #FFFFFF;
+  color: var(--clr-text);
+  padding: 2px 4px;
+}
+
+/* ──────────────────────────────────────────────────────────
+   XP Window
+────────────────────────────────────────────────────────── */
+.xp-window {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--clr-window-bg);
+  border-style: solid;
+  border-width: 2px;
+  border-color:
+    #FFFFFF
+    #404040
+    #404040
+    #FFFFFF;
+  outline: 1px solid #808080;
+  position: relative;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Title Bar
+────────────────────────────────────────────────────────── */
+.xp-titlebar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 3px 4px 3px 6px;
+  background: var(--clr-title-bg);
+  min-height: 26px;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.xp-titlebar.inactive {
+  background: #f0f0f0;
+}
+
+.xp-titlebar-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  image-rendering: pixelated;
+}
+
+.xp-titlebar-text {
+  flex: 1;
+  color: var(--clr-title-text);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-title);
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 1px 1px 0px rgba(0,0,0,0.5);
+}
+
+/* Window control buttons (close/min/max) */
+.xp-titlebar-controls {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+
+.xp-ctrl-btn {
+  width: 21px;
+  height: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+  font-family: 'Marlett', var(--font-ui);
+  color: #000000;
+  background: var(--clr-face);
+  border-style: solid;
+  border-width: 2px;
+  border-color:
+    var(--clr-3d-light)
+    var(--clr-3d-shadow)
+    var(--clr-3d-shadow)
+    var(--clr-3d-light);
+  cursor: pointer;
+  line-height: 1;
+  user-select: none;
+}
+
+.xp-ctrl-btn:active {
+  border-color:
+    var(--clr-3d-shadow)
+    var(--clr-3d-light)
+    var(--clr-3d-light)
+    var(--clr-3d-shadow);
+}
+
+.xp-ctrl-btn.close-btn:hover {
+  background: #C0392B;
+  color: white;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Menu Bar
+────────────────────────────────────────────────────────── */
+.xp-menubar {
+  display: flex;
+  align-items: center;
+  background-color: var(--clr-window-bg);
+  padding: 0 2px;
+  border-bottom: 1px solid var(--clr-3d-midshadow);
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.xp-menu-item {
+  padding: 2px 8px;
+  font-size: var(--font-size-ui);
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.xp-menu-item:hover {
+  background-color: var(--clr-select-bg);
+  color: var(--clr-select-text);
+  border-color: var(--clr-3d-midlight) var(--clr-3d-midshadow) var(--clr-3d-midshadow) var(--clr-3d-midlight);
+}
+
+/* ──────────────────────────────────────────────────────────
+   Buttons
+────────────────────────────────────────────────────────── */
+.xp-button {
+  font-family: var(--font-ui);
+  font-size: var(--font-size-ui);
+  color: var(--clr-text);
+  background-color: var(--clr-face);
+  padding: 4px 16px;
+  min-width: 75px;
+  min-height: 23px;
+  border-style: solid;
+  border-width: 2px;
+  border-color:
+    var(--clr-3d-light)
+    var(--clr-3d-shadow)
+    var(--clr-3d-shadow)
+    var(--clr-3d-light);
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+  user-select: none;
+  position: relative;
+}
+
+/* Default button gets a dotted inner focus ring */
+.xp-button.default {
+  outline: 1px solid #000000;
+  outline-offset: -4px;
+}
+
+/* Pressed / Active state — border inverts to simulate depression */
+.xp-button:active,
+.xp-button.pressed {
+  border-color:
+    var(--clr-3d-shadow)
+    var(--clr-3d-light)
+    var(--clr-3d-light)
+    var(--clr-3d-shadow);
+  padding: 5px 15px 3px 17px; /* slight content shift on depress */
+}
+
+.xp-button:disabled,
+.xp-button.disabled {
+  color: var(--clr-text-disabled);
+  cursor: default;
+}
+
+.xp-button:focus {
+  outline: 1px dotted #000000;
+  outline-offset: -4px;
+}
+
+/* Large action buttons (Run, Submit) */
+.xp-button.large {
+  min-width: 100px;
+  min-height: 26px;
+  font-weight: bold;
+}
+
+.xp-button.danger {
+  background-color: #D4C8C8;
+}
+
+.xp-button.danger:hover {
+  background-color: #E8CCCC;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Input & Select
+────────────────────────────────────────────────────────── */
+.xp-input {
+  font-family: var(--font-ui);
+  font-size: var(--font-size-ui);
+  color: var(--clr-text);
+  background-color: #FFFFFF;
+  padding: 2px 4px;
+  height: 21px;
+  border-style: solid;
+  border-width: 2px;
+  border-color:
+    var(--clr-3d-midshadow)
+    var(--clr-3d-midlight)
+    var(--clr-3d-midlight)
+    var(--clr-3d-midshadow);
+  outline: none;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.xp-input:focus {
+  outline: none;
+  border-color:
+    var(--clr-3d-shadow)
+    var(--clr-3d-light)
+    var(--clr-3d-light)
+    var(--clr-3d-shadow);
+}
+
+.xp-input::selection {
+  background: var(--clr-select-bg);
+  color: var(--clr-select-text);
+}
+
+.xp-input[type="password"] {
+  letter-spacing: 1px;
+}
+
+.xp-select {
+  font-family: var(--font-ui);
+  font-size: var(--font-size-ui);
+  color: var(--clr-text);
+  background-color: #FFFFFF;
+  padding: 2px 4px;
+  height: 21px;
+  border-style: solid;
+  border-width: 2px;
+  border-color:
+    var(--clr-3d-midshadow)
+    var(--clr-3d-midlight)
+    var(--clr-3d-midlight)
+    var(--clr-3d-midshadow);
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='17' height='17' viewBox='0 0 17 17'%3E%3Crect width='17' height='17' fill='%23D4D0C8'/%3E%3Crect x='1' y='1' width='15' height='15' fill='%23D4D0C8' stroke='%23FFFFFF' stroke-width='1'/%3E%3Cpolygon points='4,6 13,6 8.5,12' fill='%23000000'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0px center;
+  padding-right: 20px;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Labels
+────────────────────────────────────────────────────────── */
+.xp-label {
+  font-family: var(--font-ui);
+  font-size: var(--font-size-ui);
+  color: var(--clr-text);
+  user-select: none;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Group Box (framed section)
+────────────────────────────────────────────────────────── */
+.xp-groupbox {
+  border: 1px solid var(--clr-3d-midshadow);
+  outline: 1px solid var(--clr-3d-midlight);
+  outline-offset: 1px;
+  padding: var(--sp-5) var(--sp-4) var(--sp-4);
+  position: relative;
+  margin-top: var(--sp-5);
+}
+
+/* ──────────────────────────────────────────────────────────
+   Terminal Panel overrides
+────────────────────────────────────────────────────────── */
+#terminal-output:focus {
+  outline: none;
+}
+
+.terminal-title {
+  position: absolute;
+  top: -8px;
+  left: 8px;
+  background: var(--clr-window-bg);
+  padding: 0 4px;
+  font-size: var(--font-size-ui);
+  font-weight: bold;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Status Bar
+────────────────────────────────────────────────────────── */
+.xp-statusbar {
+  display: flex;
+  align-items: center;
+  height: 22px;
+  background-color: var(--clr-window-bg);
+  border-top: 1px solid var(--clr-3d-midshadow);
+  padding: 0 2px;
+  flex-shrink: 0;
+  gap: 2px;
+}
+
+.xp-statusbar-panel {
+  height: 18px;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  font-size: var(--font-size-sm);
+  border-style: solid;
+  border-width: 1px;
+  border-color:
+    var(--clr-3d-midshadow)
+    var(--clr-3d-midlight)
+    var(--clr-3d-midlight)
+    var(--clr-3d-midshadow);
+  white-space: nowrap;
+}
+
+.xp-statusbar-panel.flex-1 {
+  flex: 1;
+}
+
+.xp-statusbar-panel .conn-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #FF0000;
+  margin-right: 4px;
+  display: inline-block;
+  border: 1px solid #808080;
+}
+
+.xp-statusbar-panel .conn-dot.connected {
+  background: #00AA00;
+}
+
+.xp-statusbar-panel .conn-dot.connecting {
+  background: #FFAA00;
+  animation: blink-dot 0.8s infinite;
+}
+
+@keyframes blink-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+
+/* ──────────────────────────────────────────────────────────
+   Dialog / Modal
+────────────────────────────────────────────────────────── */
+.xp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.xp-dialog {
+  background-color: var(--clr-window-bg);
+  border-style: solid;
+  border-width: 2px;
+  border-color:
+    #FFFFFF
+    #404040
+    #404040
+    #FFFFFF;
+  outline: 1px solid #808080;
+  min-width: 300px;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.4);
+}
+
+.xp-dialog-body {
+  padding: var(--sp-5) var(--sp-6);
+  display: flex;
+  gap: var(--sp-5);
+  align-items: flex-start;
+}
+
+.xp-dialog-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.xp-dialog-message {
+  font-size: var(--font-size-ui);
+  line-height: 1.5;
+  flex: 1;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.xp-dialog-footer {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-6) var(--sp-5);
+  border-top: 1px solid var(--clr-3d-midshadow);
+}
+
+/* ──────────────────────────────────────────────────────────
+   Tabs
+────────────────────────────────────────────────────────── */
+.xp-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 4px 4px 0;
+  background-color: var(--clr-window-bg);
+  border-bottom: 2px solid var(--clr-3d-midshadow);
+  flex-shrink: 0;
+}
+
+.xp-tab {
+  padding: 3px 10px 4px;
+  font-size: var(--font-size-ui);
+  background-color: var(--clr-face-dark);
+  border-style: solid;
+  border-width: 1px 1px 0 1px;
+  border-color: var(--clr-3d-midlight) var(--clr-3d-midshadow) transparent var(--clr-3d-midlight);
+  cursor: pointer;
+  position: relative;
+  bottom: -2px;
+  user-select: none;
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.xp-tab.active {
+  background-color: var(--clr-window-bg);
+  border-color: var(--clr-3d-midlight) var(--clr-3d-midshadow) var(--clr-window-bg) var(--clr-3d-midlight);
+  font-weight: bold;
+  z-index: 1;
+  padding-bottom: 5px;
+}
+
+.xp-tab.solved::after {
+  content: ' ✓';
+  color: var(--clr-success);
+  font-size: 9px;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Progress Bar
+────────────────────────────────────────────────────────── */
+.xp-progress {
+  height: 14px;
+  background-color: var(--clr-window-bg);
+  border-style: solid;
+  border-width: 2px;
+  border-color:
+    var(--clr-3d-midshadow)
+    var(--clr-3d-midlight)
+    var(--clr-3d-midlight)
+    var(--clr-3d-midshadow);
+  overflow: hidden;
+  position: relative;
+}
+
+.xp-progress-fill {
+  height: 100%;
+  background: repeating-linear-gradient(
+    to right,
+    #316AC5 0px,
+    #316AC5 8px,
+    #4A88E5 8px,
+    #4A88E5 10px
+  );
+  transition: width 1s linear;
+}
+
+.xp-progress-fill.warning {
+  background: repeating-linear-gradient(
+    to right,
+    #CC6600 0px,
+    #CC6600 8px,
+    #E08020 8px,
+    #E08020 10px
+  );
+}
+
+.xp-progress-fill.danger {
+  background: repeating-linear-gradient(
+    to right,
+    #CC0000 0px,
+    #CC0000 8px,
+    #E02020 8px,
+    #E02020 10px
+  );
+  animation: progress-blink 0.5s infinite;
+}
+
+@keyframes progress-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+
+/* ──────────────────────────────────────────────────────────
+   Scrollbars (WebKit)
+────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--clr-face);
+  border: 1px solid var(--clr-3d-midshadow);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--clr-face);
+  border-style: solid;
+  border-width: 2px;
+  border-color:
+    var(--clr-3d-light)
+    var(--clr-3d-shadow)
+    var(--clr-3d-shadow)
+    var(--clr-3d-light);
+}
+
+::-webkit-scrollbar-thumb:active {
+  border-color:
+    var(--clr-3d-shadow)
+    var(--clr-3d-light)
+    var(--clr-3d-light)
+    var(--clr-3d-shadow);
+}
+
+::-webkit-scrollbar-button {
+  display: block;
+  background-color: var(--clr-face);
+  border-style: solid;
+  border-width: 2px;
+  border-color:
+    var(--clr-3d-light)
+    var(--clr-3d-shadow)
+    var(--clr-3d-shadow)
+    var(--clr-3d-light);
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: var(--clr-face);
+}
+
+/* ──────────────────────────────────────────────────────────
+   Tooltip
+────────────────────────────────────────────────────────── */
+.xp-tooltip {
+  position: absolute;
+  background: #FFFFE1;
+  border: 1px solid #000000;
+  padding: 2px 6px;
+  font-size: var(--font-size-sm);
+  color: #000000;
+  pointer-events: none;
+  z-index: 999;
+  white-space: nowrap;
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+}
+
+/* ──────────────────────────────────────────────────────────
+   Lock Overlay (FORCE_LOCK)
+────────────────────────────────────────────────────────── */
+.xp-lock-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000080;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  color: #FFFFFF;
+  font-family: var(--font-ui);
+}
+
+.xp-lock-overlay .lock-icon {
+  font-size: 64px;
+  margin-bottom: 24px;
+}
+
+.xp-lock-overlay .lock-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+}
+
+.xp-lock-overlay .lock-message {
+  font-size: 14px;
+  opacity: 0.8;
+  max-width: 400px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* ──────────────────────────────────────────────────────────
+   Pause Banner
+────────────────────────────────────────────────────────── */
+.xp-pause-banner {
+  background: #FFFF00;
+  border-top: 2px solid #808000;
+  border-bottom: 2px solid #808000;
+  padding: 6px 12px;
+  font-weight: bold;
+  font-size: var(--font-size-ui);
+  text-align: center;
+  color: #000000;
+  animation: banner-pulse 1.5s infinite;
+}
+
+@keyframes banner-pulse {
+  0%, 100% { background: #FFFF00; }
+  50%       { background: #FFD700; }
+}
+
+/* ──────────────────────────────────────────────────────────
+   Utility classes
+────────────────────────────────────────────────────────── */
+.hidden { display: none !important; }
+.invisible { visibility: hidden; }
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.flex-1 { flex: 1; }
+.items-center { align-items: center; }
+.gap-2 { gap: var(--sp-2); }
+.gap-4 { gap: var(--sp-4); }
+.gap-5 { gap: var(--sp-5); }
+.p-4 { padding: var(--sp-4); }
+.p-5 { padding: var(--sp-5); }
+.text-center { text-align: center; }
+.text-bold { font-weight: bold; }
+.text-error { color: var(--clr-error); }
+.text-success { color: var(--clr-success); }
+.overflow-auto { overflow: auto; }
+.overflow-hidden { overflow: hidden; }
+
+/* ──────────────────────────────────────────────────────────
+   Connecting Screen Animation
+────────────────────────────────────────────────────────── */
+.connecting-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--clr-desktop);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+}
+
+.connecting-box {
+  background: var(--clr-window-bg);
+  border-style: solid;
+  border-width: 2px;
+  border-color: #FFFFFF #404040 #404040 #FFFFFF;
+  outline: 1px solid #808080;
+  padding: 24px 32px;
+  text-align: center;
+  min-width: 280px;
+}
+
+.connecting-box .dots {
+  display: inline-block;
+  animation: dots 1.4s infinite;
+}
+
+@keyframes dots {
+  0%   { content: '.'; }
+  33%  { content: '..'; }
+  66%  { content: '...'; }
+  100% { content: '.'; }
+}
+
+.spinner-xp {
+  width: 32px;
+  height: 32px;
+  border: 4px solid var(--clr-3d-midshadow);
+  border-top-color: var(--clr-title-mid);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 12px auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ──────────────────────────────────────────────────────────
+   Divider / Grip Handle
+────────────────────────────────────────────────────────── */
+.xp-divider-v {
+  width: 4px;
+  background-color: var(--clr-window-bg);
+  border-left: 1px solid var(--clr-3d-midshadow);
+  border-right: 1px solid var(--clr-3d-midlight);
+  flex-shrink: 0;
+  cursor: col-resize;
+}
+
+.xp-divider-h {
+  height: 4px;
+  background-color: var(--clr-window-bg);
+  border-top: 1px solid var(--clr-3d-midshadow);
+  border-bottom: 1px solid var(--clr-3d-midlight);
+  flex-shrink: 0;
+  cursor: row-resize;
+}

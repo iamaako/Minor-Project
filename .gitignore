@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Production Builds
+dist/
+build/
+*.exe
+
+# Database and Temp files
+temp/
+*.sqlite
+*.db
+
+# Temporary root scripts (Icon generation)
+convert_ico.py
+generate_icons.js
+package-lock.json
+package.json
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
