@@ -6,6 +6,7 @@
   "scripts": {
     "start": "electron .",
     "build": "electron-builder --win",
+    "build:linux": "electron-builder --linux",
     "build:secure": "node scripts/secure-build.js && electron-builder --win"
   },
   "author": "Aarif Khan - AMU Interdisciplinary Centre for Artificial Intelligence",
@@ -43,8 +44,22 @@
       "node_modules/**/*"
     ],
     "win": {
-      "target": "dir",
+      "target": [
+        "portable",
+        "dir"
+      ],
       "icon": "build/icons/win/icon.ico"
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "AppImage"
+      ],
+      "category": "Education",
+      "icon": "app_icon.png"
+    },
+    "deb": {
+      "priority": "optional"
     }
   }
 }

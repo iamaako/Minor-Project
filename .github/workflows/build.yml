@@ -48,11 +48,15 @@ jobs:
         run: |
           cd AMUStudentPortal
           npm install
+          cd ../AMUAdminServer
+          npm install
 
       - name: Build Windows Executables
         if: matrix.platform == 'windows'
         run: |
           cd AMUStudentPortal
+          npm run build
+          cd ../AMUAdminServer
           npm run build
 
       - name: Build Linux Packages (deb & AppImage)
@@ -60,12 +64,14 @@ jobs:
         run: |
           cd AMUStudentPortal
           npm run build:linux
+          cd ../AMUAdminServer
+          npm run build:linux
 
       - name: Publish to GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ inputs.tag_name || github.ref_name }}
-          name: "AMU Exam Portal ${{ inputs.tag_name || github.ref_name }}"
+          name: "AMU Examination Portal & Admin Server ${{ inputs.tag_name || github.ref_name }}"
           draft: false
           prerelease: false
           files: |
@@ -73,5 +79,9 @@ jobs:
             AMUStudentPortal/dist/*.AppImage
             AMUStudentPortal/dist/*.exe
             AMUStudentPortal/dist/*.zip
+            AMUAdminServer/dist/*.deb
+            AMUAdminServer/dist/*.AppImage
+            AMUAdminServer/dist/*.exe
+            AMUAdminServer/dist/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
