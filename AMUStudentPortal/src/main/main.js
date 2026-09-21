@@ -785,7 +785,9 @@ ipcMain.handle('manual-license-browse', async () => {
 });
 
 function startUSBDetector() {
-  const detectorPath = path.join(__dirname, '../../DetectUSB.exe');
+  const detectorPath = app.isPackaged
+    ? path.join(process.resourcesPath, 'DetectUSB.exe')
+    : path.join(__dirname, '../../DetectUSB.exe');
   if (fs.existsSync(detectorPath)) {
     usbDetectorProcess = spawn(detectorPath, [], { detached: true });
     

@@ -4,6 +4,7 @@ node_modules/
 # Production Builds
 dist/
 build/
+.build_src/
 *.exe
 
 # Database and Temp files
