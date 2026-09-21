@@ -6,6 +6,9 @@ dist/
 build/
 .build_src/
 *.exe
+!AMUStudentPortal/BlockKeys.exe
+!AMUStudentPortal/DetectUSB.exe
+!AMUStudentPortal/portable-tools/**/*.exe
 
 # Database and Temp files
 temp/
