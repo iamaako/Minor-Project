@@ -9,7 +9,11 @@
     "build:linux": "electron-builder --linux",
     "build:secure": "node scripts/secure-build.js && electron-builder --win"
   },
-  "author": "Aarif Khan - AMU Interdisciplinary Centre for Artificial Intelligence",
+  "author": {
+    "name": "Aarif Khan - AMU Interdisciplinary Centre for Artificial Intelligence",
+    "email": "iamaakoji@gmail.com"
+  },
+  "homepage": "https://github.com/iamaako/Minor-Project",
   "dependencies": {
     "adm-zip": "^0.5.18",
     "csv-parse": "^7.0.0",
@@ -55,6 +59,7 @@
         "deb",
         "AppImage"
       ],
+      "maintainer": "iamaakoji@gmail.com",
       "category": "Education",
       "icon": "app_icon.png"
     },
