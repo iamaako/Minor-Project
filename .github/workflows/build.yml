@@ -1,0 +1,77 @@
+name: Build Multi-Platform Binaries (Windows & Linux)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release Tag Version (e.g. v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build on ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            platform: windows
+          - os: ubuntu-latest
+            platform: linux
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: 'AMUStudentPortal/package-lock.json'
+
+      - name: Install Linux System Dependencies
+        if: matrix.platform == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libarchive-tools dpkg fakeroot
+
+      - name: Install Node Dependencies
+        run: |
+          cd AMUStudentPortal
+          npm install
+
+      - name: Build Windows Executables
+        if: matrix.platform == 'windows'
+        run: |
+          cd AMUStudentPortal
+          npm run build
+
+      - name: Build Linux Packages (deb & AppImage)
+        if: matrix.platform == 'linux'
+        run: |
+          cd AMUStudentPortal
+          npm run build:linux
+
+      - name: Publish to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag_name || github.ref_name }}
+          name: "AMU Exam Portal ${{ inputs.tag_name || github.ref_name }}"
+          draft: false
+          prerelease: false
+          files: |
+            AMUStudentPortal/dist/*.deb
+            AMUStudentPortal/dist/*.AppImage
+            AMUStudentPortal/dist/*.exe
+            AMUStudentPortal/dist/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

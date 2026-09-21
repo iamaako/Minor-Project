@@ -1,0 +1,83 @@
+{
+  "name": "amu-test-portal",
+  "version": "1.0.0",
+  "description": "Secure kiosk-mode exam application for AMU computer labs",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "mock": "electron . --dev --mock --disable-gpu --user-data-dir=temp/user-data-mock",
+    "build": "electron-builder --win",
+    "build:linux": "electron-builder --linux",
+    "build:secure": "node scripts/secure-build.js && electron-builder --win"
+  },
+  "author": "Aarif Khan - AMU Interdisciplinary Centre for Artificial Intelligence",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "adm-zip": "^0.5.18",
+    "archiver": "^8.0.0",
+    "form-data": "^4.0.6",
+    "monaco-editor": "^0.52.2",
+    "socket.io-client": "^4.8.0",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "electron": "^35.0.0",
+    "electron-builder": "^24.13.3",
+    "fs-extra": "^11.3.6",
+    "javascript-obfuscator": "^5.4.3"
+  },
+  "build": {
+    "appId": "com.amu.examportal",
+    "productName": "AMU Exam Portal",
+    "asar": true,
+    "files": [
+      "src/**/*",
+      "package.json",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": [
+        "portable",
+        "dir"
+      ],
+      "icon": "build/icons/win/icon.ico",
+      "extraResources": [
+        {
+          "from": "portable-tools/python-embed/",
+          "to": "python-embed/",
+          "filter": [
+            "**/*"
+          ]
+        },
+        {
+          "from": "portable-tools/mingw/",
+          "to": "mingw/",
+          "filter": [
+            "**/*"
+          ]
+        },
+        {
+          "from": "BlockKeys.exe",
+          "to": "BlockKeys.exe"
+        },
+        {
+          "from": "DetectUSB.exe",
+          "to": "DetectUSB.exe"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "AppImage"
+      ],
+      "category": "Education",
+      "icon": "app_icon.png"
+    },
+    "deb": {
+      "priority": "optional"
+    }
+  }
+}

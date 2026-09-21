@@ -1,0 +1,50 @@
+{
+  "name": "amu-admin-server",
+  "version": "1.0.0",
+  "description": "AMU Examination Portal - Admin Server",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win",
+    "build:secure": "node scripts/secure-build.js && electron-builder --win"
+  },
+  "author": "Aarif Khan - AMU Interdisciplinary Centre for Artificial Intelligence",
+  "dependencies": {
+    "adm-zip": "^0.5.18",
+    "csv-parse": "^7.0.0",
+    "express": "^4.21.2",
+    "express-session": "^1.19.0",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.2.0",
+    "socket.io": "^4.8.1",
+    "sql.js": "^1.14.1"
+  },
+  "devDependencies": {
+    "electron": "^34.0.0",
+    "electron-builder": "^24.13.3",
+    "fs-extra": "^11.3.6",
+    "javascript-obfuscator": "^5.4.3"
+  },
+  "build": {
+    "appId": "com.amu.adminserver",
+    "productName": "AMU Admin Server",
+    "asar": true,
+    "files": [
+      "app.js",
+      "db.js",
+      "main.js",
+      "preload.js",
+      "server.js",
+      "index.html",
+      "public/**/*",
+      "css/**/*",
+      "assets/**/*",
+      "package.json",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": "dir",
+      "icon": "build/icons/win/icon.ico"
+    }
+  }
+}

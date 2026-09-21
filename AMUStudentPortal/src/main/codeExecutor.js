@@ -18,13 +18,21 @@ const {
 
 const tempDirPath = path.join(app.getPath('userData'), TEMP_DIR);
 
+const isWin = process.platform === 'win32';
+
 const resourcesPath = app.isPackaged 
   ? process.resourcesPath 
   : path.join(__dirname, '..', '..', 'portable-tools');
 
-const PYTHON_EXE = path.join(resourcesPath, 'python-embed', 'python.exe');
-const GCC_EXE = path.join(resourcesPath, 'mingw', 'bin', 'gcc.exe');
-const GPP_EXE = path.join(resourcesPath, 'mingw', 'bin', 'g++.exe');
+const PYTHON_EXE = isWin
+  ? path.join(resourcesPath, 'python-embed', 'python.exe')
+  : 'python3';
+const GCC_EXE = isWin
+  ? path.join(resourcesPath, 'mingw', 'bin', 'gcc.exe')
+  : 'gcc';
+const GPP_EXE = isWin
+  ? path.join(resourcesPath, 'mingw', 'bin', 'g++.exe')
+  : 'g++';
 
 const PYTHON_BLOCKED = [
   /import\s+os\b/,
@@ -96,7 +104,8 @@ async function startInteractiveProcess(code, language, onStdout, onStderr, onExi
   // Instead of UUID, we use a fixed filename in the workspace
   const sourceFileName = language === 'python' ? 'main.py' : `main${ext}`;
   const sourceFile = path.join(workspacePath, sourceFileName);
-  const outputFile = path.join(workspacePath, 'main.exe');
+  const outputFileName = isWin ? 'main.exe' : 'main.out';
+  const outputFile = path.join(workspacePath, outputFileName);
 
   const filesToClean = []; // We don't clean source files anymore so they persist
   let command = '';
@@ -112,10 +121,14 @@ async function startInteractiveProcess(code, language, onStdout, onStderr, onExi
       filesToClean.push(outputFile);
       const compiler = language === 'c' ? GCC_EXE : GPP_EXE;
       
+      const compileArgs = isWin
+        ? [sourceFile, '-o', outputFile, '-lm', '-static']
+        : [sourceFile, '-o', outputFile, '-lm'];
+
       // Compile synchronously or use another promise so we don't block
       const compileResult = await new Promise((resolve) => {
         let stderr = '';
-        const compilerProc = spawn(compiler, [sourceFile, '-o', outputFile, '-lm', '-static'], { windowsHide: true });
+        const compilerProc = spawn(compiler, compileArgs, { windowsHide: true });
         compilerProc.stderr.on('data', d => stderr += d.toString());
         compilerProc.on('close', code => resolve({ code, stderr }));
       });
@@ -126,6 +139,13 @@ async function startInteractiveProcess(code, language, onStdout, onStderr, onExi
         cleanupFiles(filesToClean);
         return;
       }
+
+      if (!isWin) {
+        try {
+          fs.chmodSync(outputFile, 0o755);
+        } catch (e) {}
+      }
+
       command = outputFile;
       args = [];
     }
@@ -160,7 +180,11 @@ function _runStreamProcess(command, args, cwdPath, onStdout, onStderr, onExit) {
     if (!finished) {
       timedOut = true;
       try {
-        spawn('taskkill', ['/pid', String(child.pid), '/f', '/t'], { windowsHide: true });
+        if (isWin) {
+          spawn('taskkill', ['/pid', String(child.pid), '/f', '/t'], { windowsHide: true });
+        } else {
+          child.kill('SIGKILL');
+        }
       } catch (e) {
         child.kill('SIGKILL');
       }
@@ -242,8 +266,11 @@ function writeToProcess(data) {
 function killInteractiveProcess() {
   if (activeProcess) {
     try {
-      // Kill the entire process tree on Windows
-      spawn('taskkill', ['/pid', String(activeProcess.pid), '/f', '/t'], { windowsHide: true });
+      if (isWin) {
+        spawn('taskkill', ['/pid', String(activeProcess.pid), '/f', '/t'], { windowsHide: true });
+      } else {
+        activeProcess.kill('SIGKILL');
+      }
     } catch (e) {
       activeProcess.kill('SIGKILL');
     }
@@ -310,7 +337,7 @@ function clearWorkspace() {
   try {
     const files = fs.readdirSync(ws);
     for (const file of files) {
-      if (file !== 'main.exe') { // don't necessarily need to delete exe, but could
+      if (file !== 'main.exe' && file !== 'main.out') {
         fs.unlinkSync(path.join(ws, file));
       }
     }

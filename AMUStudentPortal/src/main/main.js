@@ -39,14 +39,29 @@ let usbDetectorProcess = null;
 let screenStreamInterval = null;
 let isLicenseValid = false;
 
-const LICENSE_DIR = 'C:\\ProgramData\\AMUExamPortal';
+const LICENSE_DIR = process.platform === 'win32'
+  ? 'C:\\ProgramData\\AMUExamPortal'
+  : path.join(app.getPath('userData'), 'AMUExamPortal');
 const LICENSE_FILE = path.join(LICENSE_DIR, 'sys_lock.dat');
 const MASTER_SECRET = 'AMU_AI_CENTER_AARIF_SECURE_2026';
 
 function getMachineUUID() {
   try {
-    const output = execSync('powershell.exe -Command "Get-CimInstance -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID"').toString().trim();
-    return output;
+    if (process.platform === 'win32') {
+      const output = execSync('powershell.exe -Command "Get-CimInstance -Class Win32_ComputerSystemProduct | Select-Object -ExpandProperty UUID"').toString().trim();
+      return output.split(/\r?\n/).pop().trim();
+    } else {
+      if (fs.existsSync('/sys/class/dmi/id/product_uuid')) {
+        return fs.readFileSync('/sys/class/dmi/id/product_uuid', 'utf8').trim();
+      }
+      if (fs.existsSync('/etc/machine-id')) {
+        return fs.readFileSync('/etc/machine-id', 'utf8').trim();
+      }
+      if (fs.existsSync('/var/lib/dbus/machine-id')) {
+        return fs.readFileSync('/var/lib/dbus/machine-id', 'utf8').trim();
+      }
+      return 'LINUX_NODE_' + require('os').hostname();
+    }
   } catch (err) {
     return 'UNKNOWN_UUID';
   }
@@ -118,6 +133,19 @@ function verifyAakoLicense(filePath) {
   }
 }
 
+function setPortalAlwaysOnTop(enable) {
+  if (!mainWindow) return;
+  if (enable) {
+    if (process.platform === 'win32' || process.platform === 'darwin') {
+      mainWindow.setAlwaysOnTop(true, 'screen-saver');
+    } else {
+      mainWindow.setAlwaysOnTop(true);
+    }
+  } else {
+    mainWindow.setAlwaysOnTop(false);
+  }
+}
+
 // ═══════════════════════════════════════════════════════════
 //  1.  Window Creation
 // ═══════════════════════════════════════════════════════════
@@ -162,8 +190,8 @@ function createMainWindow() {
   }
 
   if (!isDevMode && isLicenseValid) {
-    // Extreme top-level to hide Windows Start Menu
-    mainWindow.setAlwaysOnTop(true, 'screen-saver');
+    // Extreme top-level to hide Start Menu / panels
+    setPortalAlwaysOnTop(true);
     // Hook into blur to aggressively steal back focus
     setInterval(() => {
       if (mainWindow && !mainWindow.isFocused()) {
@@ -674,14 +702,16 @@ app.whenReady().then(async () => {
   clientIP = getClientIP();
   console.log(`[Main] Client IP: ${clientIP}`);
 
-  if (!isDevMode) {
+  if (!isDevMode && process.platform === 'win32') {
     const { spawn } = require('child_process');
     const blockKeysPath = app.isPackaged 
       ? path.join(process.resourcesPath, 'BlockKeys.exe')
       : path.join(__dirname, '../../BlockKeys.exe');
       
-    blockKeysProcess = spawn(blockKeysPath);
-    blockKeysProcess.on('error', (err) => console.log('BlockKeys error:', err));
+    if (fs.existsSync(blockKeysPath)) {
+      blockKeysProcess = spawn(blockKeysPath);
+      blockKeysProcess.on('error', (err) => console.log('BlockKeys error:', err));
+    }
   }
 
   applyCSP();
@@ -689,15 +719,20 @@ app.whenReady().then(async () => {
   registerIpcHandlers();
   registerKeyboardLocks();
   startUsbDetection();
+  startUSBDetector();
 
   // Show window when ready
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
   });
+
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
+  });
 });
 
 function startUsbDetection() {
-  if (isDevMode) return;
+  if (isDevMode || process.platform !== 'win32') return;
   const { spawn } = require('child_process');
   const path = require('path');
   
@@ -705,6 +740,8 @@ function startUsbDetection() {
     ? path.join(process.resourcesPath, 'DetectUSB.exe')
     : path.join(__dirname, '..', '..', 'DetectUSB.exe');
   
+  if (!fs.existsSync(exePath)) return;
+
   usbDetectorProcess = spawn(exePath);
   
   usbDetectorProcess.stdout.on('data', (data) => {
@@ -725,17 +762,13 @@ function startUsbDetection() {
   });
 }
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
-});
-
 // ═══════════════════════════════════════════════════════════
 //  LICENSE AND SETUP LOGIC
 // ═══════════════════════════════════════════════════════════
 
 ipcMain.handle('manual-license-browse', async () => {
   if (!isDevMode) {
-    mainWindow.setAlwaysOnTop(false);
+    setPortalAlwaysOnTop(false);
   }
 
   // Create a dummy transparent window to host the dialog so it doesn't freeze under kiosk mode
@@ -757,7 +790,7 @@ ipcMain.handle('manual-license-browse', async () => {
   dummyWin.close();
 
   if (!isDevMode) {
-    mainWindow.setAlwaysOnTop(true, 'screen-saver');
+    setPortalAlwaysOnTop(true);
   }
 
   if (canceled || filePaths.length === 0) return false;
@@ -773,7 +806,7 @@ ipcMain.handle('manual-license-browse', async () => {
     setTimeout(() => {
       mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
       if (!isDevMode) {
-        mainWindow.setAlwaysOnTop(true, 'screen-saver');
+        setPortalAlwaysOnTop(true);
       }
     }, 1000);
     
@@ -784,62 +817,112 @@ ipcMain.handle('manual-license-browse', async () => {
   }
 });
 
-function startUSBDetector() {
-  const detectorPath = app.isPackaged
-    ? path.join(process.resourcesPath, 'DetectUSB.exe')
-    : path.join(__dirname, '../../DetectUSB.exe');
-  if (fs.existsSync(detectorPath)) {
-    usbDetectorProcess = spawn(detectorPath, [], { detached: true });
-    
-    usbDetectorProcess.stdout.on('data', (data) => {
-      const output = data.toString().trim();
-      if (output.includes('USB_INSERTED')) {
-        console.log('[AntiCheat] USB Insertion Detected via WMI Event');
-        
-        // If in setup mode, scan for amutestlicense.aako
-        if (!isLicenseValid && mainWindow) {
-          mainWindow.webContents.send('usb-inserted');
-          setTimeout(() => {
-            mainWindow.webContents.send('license-processing');
-            let found = false;
-            // Scan D: to Z:
-            for (let i = 68; i <= 90; i++) {
-              const drive = String.fromCharCode(i) + ':\\';
-              const licensePath = path.join(drive, 'amutestlicense.aako');
-              if (fs.existsSync(licensePath)) {
-                found = true;
-                const valid = verifyAakoLicense(licensePath);
-                if (valid) {
-                  mainWindow.webContents.send('license-success');
-                  isLicenseValid = true;
-                  
-                  // Redirect instantly
-                  mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
-                  if (!isDevMode) {
-                    mainWindow.setAlwaysOnTop(true, 'screen-saver');
-                  }
-                  break;
-                } else {
-                  mainWindow.webContents.send('license-error', 'Token found on USB, but it is invalid or corrupted.');
-                  break;
+function scanForLicenseFile() {
+  if (process.platform === 'win32') {
+    for (let i = 68; i <= 90; i++) {
+      const drive = String.fromCharCode(i) + ':\\';
+      const licensePath = path.join(drive, 'amutestlicense.aako');
+      if (fs.existsSync(licensePath)) {
+        return licensePath;
+      }
+    }
+  } else {
+    const searchBases = ['/media', '/run/media', '/mnt'];
+    for (const base of searchBases) {
+      if (fs.existsSync(base)) {
+        try {
+          const items = fs.readdirSync(base);
+          for (const item of items) {
+            const fullPath = path.join(base, item);
+            try {
+              if (fs.statSync(fullPath).isDirectory()) {
+                const directLic = path.join(fullPath, 'amutestlicense.aako');
+                if (fs.existsSync(directLic)) return directLic;
+                
+                const subItems = fs.readdirSync(fullPath);
+                for (const sub of subItems) {
+                  const subLic = path.join(fullPath, sub, 'amutestlicense.aako');
+                  if (fs.existsSync(subLic)) return subLic;
                 }
               }
-            }
-            if (!found) {
-              mainWindow.webContents.send('license-error', 'No amutestlicense.aako found on the inserted USB.');
-            }
-          }, 300); // 300ms delay so the UI can briefly show "USB Inserted"
-        }
+            } catch (e) {}
+          }
+        } catch (e) {}
       }
-    });
+    }
+  }
+  return null;
+}
 
-    usbDetectorProcess.on('error', (err) => {
-      console.error('[AntiCheat] Failed to start USB Detector:', err);
-    });
+let linuxUsbScanInterval = null;
+
+function handleUsbLicenseCheck() {
+  if (isLicenseValid || !mainWindow) return;
+  mainWindow.webContents.send('usb-inserted');
+  setTimeout(() => {
+    mainWindow.webContents.send('license-processing');
+    const licensePath = scanForLicenseFile();
+    if (licensePath) {
+      const valid = verifyAakoLicense(licensePath);
+      if (valid) {
+        mainWindow.webContents.send('license-success');
+        isLicenseValid = true;
+        if (linuxUsbScanInterval) {
+          clearInterval(linuxUsbScanInterval);
+          linuxUsbScanInterval = null;
+        }
+        mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+        if (!isDevMode) {
+          setPortalAlwaysOnTop(true);
+        }
+      } else {
+        mainWindow.webContents.send('license-error', 'Token found on USB, but it is invalid or corrupted.');
+      }
+    } else {
+      mainWindow.webContents.send('license-error', 'No amutestlicense.aako found on the inserted USB.');
+    }
+  }, 300);
+}
+
+function startUSBDetector() {
+  if (process.platform === 'win32') {
+    const detectorPath = app.isPackaged
+      ? path.join(process.resourcesPath, 'DetectUSB.exe')
+      : path.join(__dirname, '../../DetectUSB.exe');
+    if (fs.existsSync(detectorPath)) {
+      usbDetectorProcess = spawn(detectorPath, [], { detached: true });
+      
+      usbDetectorProcess.stdout.on('data', (data) => {
+        const output = data.toString().trim();
+        if (output.includes('USB_INSERTED')) {
+          console.log('[AntiCheat] USB Insertion Detected via WMI Event');
+          handleUsbLicenseCheck();
+        }
+      });
+
+      usbDetectorProcess.on('error', (err) => {
+        console.error('[AntiCheat] Failed to start USB Detector:', err);
+      });
+    }
+  } else {
+    // Linux background polling during setup mode
+    if (!isLicenseValid) {
+      linuxUsbScanInterval = setInterval(() => {
+        if (isLicenseValid) {
+          if (linuxUsbScanInterval) clearInterval(linuxUsbScanInterval);
+          return;
+        }
+        const lic = scanForLicenseFile();
+        if (lic) {
+          handleUsbLicenseCheck();
+        }
+      }, 1500);
+    }
   }
 }
 
 app.on('window-all-closed', () => {
+  if (linuxUsbScanInterval) clearInterval(linuxUsbScanInterval);
   if (usbPollingInterval) clearInterval(usbPollingInterval);
   if (socketClient) socketClient.disconnect();
   globalShortcut.unregisterAll();
@@ -847,16 +930,6 @@ app.on('window-all-closed', () => {
   if (usbDetectorProcess) usbDetectorProcess.kill();
   if (screenStreamInterval) clearInterval(screenStreamInterval);
   app.quit();
-});
-
-app.whenReady().then(() => {
-  registerKeyboardLocks();
-  startUSBDetector();
-  createMainWindow();
-  
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
-  });
 });
 
 // Prevent creating additional windows (security)

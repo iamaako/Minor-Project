@@ -15,8 +15,8 @@ temp/
 # Temporary root scripts (Icon generation)
 convert_ico.py
 generate_icons.js
-package-lock.json
-package.json
+/package-lock.json
+/package.json
 
 # IDE and OS files
 .vscode/
