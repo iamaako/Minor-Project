@@ -61,7 +61,10 @@
       ],
       "maintainer": "iamaakoji@gmail.com",
       "category": "Education",
-      "icon": "app_icon.png"
+      "icon": "app_icon.png",
+      "executableArgs": [
+        "--no-sandbox"
+      ]
     },
     "deb": {
       "priority": "optional"

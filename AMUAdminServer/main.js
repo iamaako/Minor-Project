@@ -1,4 +1,7 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+if (process.platform === 'linux') {
+  app.commandLine.appendSwitch('no-sandbox');
+}
 const path = require('path');
 const crypto = require('crypto');
 const fs = require('fs');

@@ -10,6 +10,10 @@ const {
   shell,
   desktopCapturer,
 } = require('electron');
+
+if (process.platform === 'linux') {
+  app.commandLine.appendSwitch('no-sandbox');
+}
 const path = require('path');
 const http = require('http');
 const fs = require('fs');
