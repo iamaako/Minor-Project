@@ -2,58 +2,722 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>AMU Web Admin Login</title>
-  <link rel="stylesheet" href="/css/xp-theme.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMU Web Admin Login | Examination Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      background-color: var(--clr-bg);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      background: #064e3b url('/assets/loginbackground.png') no-repeat center center;
+      background-size: cover;
+      background-attachment: fixed;
+      color: #1e293b;
+      position: relative;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Container */
+    .page-layout {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 32px 56px 36px 56px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Top Navigation / Header */
+    .top-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .amu-brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+    }
+
+    .brand-logo-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 4px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.25s ease;
+    }
+
+    .brand-logo-circle:hover {
+      transform: scale(1.04);
+    }
+
+    .brand-logo-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .brand-text h1 {
+      font-size: 21px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.2px;
+      line-height: 1.2;
+    }
+
+    .portal-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #065f46;
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+
+    .portal-tag .green-bar {
+      width: 14px;
+      height: 3.5px;
+      background: #059669;
+      border-radius: 2px;
+    }
+
+    /* Main Content Area */
+    .main-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex: 1;
+      padding: 20px 0 16px 0;
+      gap: 32px;
+    }
+
+    /* Left Hero Section (Positioned nicely at bottom) */
+    .hero-section {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding-bottom: 24px;
+      max-width: 480px;
+    }
+
+    .hero-accent-line {
+      width: 36px;
+      height: 4px;
+      background: #34d399;
+      border-radius: 2px;
+      margin-bottom: 14px;
+      box-shadow: 0 0 12px rgba(52, 211, 153, 0.4);
+    }
+
+    .hero-title {
+      font-size: 50px;
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -1.2px;
+      margin-bottom: 12px;
+    }
+
+    .hero-title .title-amu {
+      color: #ffffff;
+      display: block;
+    }
+
+    .hero-title .title-portal {
+      color: #a7f3d0;
+      display: block;
+      text-shadow: 0 2px 20px rgba(167, 243, 208, 0.25);
+    }
+
+    .hero-sub {
+      font-size: 15.5px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+      letter-spacing: 0.3px;
+      margin-bottom: 14px;
+    }
+
+    .hero-desc {
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: rgba(255, 255, 255, 0.78);
+      max-width: 410px;
+    }
+
+    /* Right Login Card (shifted right) */
+    .card-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-left: auto;
+      margin-bottom: 30px;
+      width: 100%;
+      max-width: 450px;
+    }
+
+    .login-card {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: 32px;
+      padding: 42px 38px 38px 38px;
+      box-shadow: 
+        0 24px 60px -12px rgba(6, 78, 59, 0.18),
+        0 8px 24px -4px rgba(0, 0, 0, 0.06),
+        inset 0 1px 1px rgba(255, 255, 255, 0.9);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+
+    .card-crest-container {
       display: flex;
       justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
+      margin-bottom: 14px;
     }
-    .login-box { width: 400px; }
+
+    .card-crest {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      background: #ffffff;
+      padding: 6px;
+      box-shadow: 
+        0 6px 20px rgba(5, 150, 105, 0.16),
+        0 0 0 1px rgba(5, 150, 105, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease;
+    }
+
+    .card-crest:hover {
+      transform: rotate(5deg) scale(1.03);
+    }
+
+    .card-crest img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .card-university-title {
+      font-size: 21px;
+      font-weight: 800;
+      color: #0f172a;
+      text-align: center;
+      letter-spacing: -0.3px;
+      margin-bottom: 4px;
+    }
+
+    .card-panel-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .card-divider-pill {
+      width: 32px;
+      height: 3px;
+      background: #059669;
+      border-radius: 2px;
+      margin: 16px auto;
+    }
+
+    .card-auth-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #1e293b;
+      text-align: center;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+
+    .card-auth-subtitle {
+      font-size: 13px;
+      color: #64748b;
+      text-align: center;
+      line-height: 1.5;
+      margin: 0 auto 24px auto;
+      max-width: 320px;
+    }
+
+    /* Input Field Container */
+    .input-box {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .input-box:focus-within {
+      border-color: #059669;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.12);
+    }
+
+    .input-icon-lock {
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: color 0.2s;
+    }
+
+    .input-box:focus-within .input-icon-lock {
+      color: #059669;
+    }
+
+    .input-inner {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .input-inner label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #64748b;
+      letter-spacing: 0.3px;
+      margin-bottom: 2px;
+      pointer-events: none;
+    }
+
+    .input-inner input {
+      border: none;
+      background: transparent;
+      font-size: 15px;
+      font-weight: 600;
+      color: #0f172a;
+      outline: none;
+      width: 100%;
+      font-family: inherit;
+      padding: 0;
+    }
+
+    .input-inner input::placeholder {
+      color: #cbd5e1;
+      font-weight: 400;
+      font-size: 14px;
+    }
+
+    .toggle-pass-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border-radius: 6px;
+      transition: color 0.2s, background-color 0.2s;
+    }
+
+    .toggle-pass-btn:hover {
+      color: #059669;
+      background-color: #f1f5f9;
+    }
+
+    /* Error / Alert Message */
+    .status-msg {
+      font-size: 12.5px;
+      font-weight: 600;
+      min-height: 20px;
+      margin: 8px 4px;
+      text-align: center;
+      transition: all 0.2s ease;
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+
+    .status-msg.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .status-msg.error {
+      color: #dc2626;
+    }
+
+    .status-msg.success {
+      color: #059669;
+    }
+
+    .status-msg.info {
+      color: #475569;
+    }
+
+    /* Submit Button */
+    .btn-login {
+      width: 100%;
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 22px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      letter-spacing: 0.2px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 8px 22px -4px rgba(5, 150, 105, 0.42);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .btn-login:hover:not(:disabled) {
+      background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+      transform: translateY(-1.5px);
+      box-shadow: 0 12px 28px -4px rgba(5, 150, 105, 0.52);
+    }
+
+    .btn-login:active:not(:disabled) {
+      transform: translateY(0);
+      box-shadow: 0 4px 12px -2px rgba(5, 150, 105, 0.35);
+    }
+
+    .btn-login:disabled {
+      opacity: 0.75;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-login svg {
+      transition: transform 0.2s ease;
+    }
+
+    .btn-login:hover:not(:disabled) .icon-arrow {
+      transform: translateX(3px);
+    }
+
+    /* Bottom Decorative Dots Matrix */
+    .dot-matrix {
+      position: absolute;
+      bottom: 24px;
+      right: 28px;
+      display: grid;
+      grid-template-columns: repeat(6, 6px);
+      grid-gap: 12px;
+      z-index: 1;
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .dot-matrix span {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background-color: #059669;
+    }
+
+    /* Shake animation on wrong password */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    .shake {
+      animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 960px) {
+      .page-layout {
+        padding: 24px;
+      }
+
+      .main-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 32px;
+      }
+
+      .hero-section {
+        display: none;
+      }
+
+      .card-wrapper {
+        margin-left: 0;
+        margin-bottom: 0;
+        justify-content: center;
+        max-width: 440px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-layout {
+        padding: 16px;
+      }
+
+      .top-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+      }
+
+      .portal-tag {
+        align-self: flex-start;
+      }
+
+      .login-card {
+        padding: 30px 20px 26px 20px;
+        border-radius: 24px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="xp-window login-box">
-    <div class="xp-title-bar">
-      <div class="xp-title-text">AMU Web Admin Panel</div>
-    </div>
-    
-    <div style="text-align: center; margin: 20px 0;">
-      <img src="/assets/AMULogo.png" alt="AMU Logo" style="width: 80px; height: 80px; background: white; border-radius: 50%; padding: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
-      <h3 style="margin: 10px 0 0 0;">Authentication Required</h3>
-      <p style="margin: 5px 0; color: #666; font-size: 12px;">Please enter the password shown on the Server window.</p>
-    </div>
 
-    <div class="xp-group-box" style="margin: 15px;">
-      <div class="xp-group-box-title">Security Check</div>
-      <div class="xp-group-box-content">
-        <label style="display: block; margin-bottom: 5px;">Admin Password:</label>
-        <input type="password" id="passInput" class="xp-input" style="width: 100%; box-sizing: border-box;" autocomplete="off">
-        <p id="errorMsg" style="color: red; margin: 5px 0; font-size: 12px; height: 14px;"></p>
-        <button class="xp-btn" id="btnLogin" style="width: 100%; font-weight: bold; margin-top: 10px;">Login to Dashboard</button>
+  <!-- Decorative Dot Matrix in corner -->
+  <div class="dot-matrix" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="page-layout">
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="amu-brand">
+        <div class="brand-logo-circle">
+          <img src="/assets/AMULogo.png" alt="AMU Crest Logo">
+        </div>
+        <div class="brand-text">
+          <h1>Aligarh Muslim University</h1>
+        </div>
       </div>
-    </div>
+
+      <div class="portal-tag">
+        <span class="green-bar"></span>
+        <span>Examination Portal</span>
+      </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="main-content">
+      <!-- Left Hero Banner (Positioned further down towards bottom) -->
+      <section class="hero-section">
+        <div class="hero-accent-line"></div>
+        <div class="hero-title">
+          <span class="title-amu">AMU</span>
+          <span class="title-portal">Test Portal</span>
+        </div>
+        <div class="hero-sub">Secure &bull; Reliable &bull; Efficient</div>
+        <p class="hero-desc">
+          A dedicated platform for conducting examinations, evaluations and academic assessments at Aligarh Muslim University.
+        </p>
+      </section>
+
+      <!-- Center-Right Login Card (Shifted right) -->
+      <section class="card-wrapper">
+        <div class="login-card" id="loginCard">
+          
+          <div class="card-crest-container">
+            <div class="card-crest">
+              <img src="/assets/AMULogo.png" alt="Aligarh Muslim University">
+            </div>
+          </div>
+
+          <h2 class="card-university-title">Aligarh Muslim University</h2>
+          <div class="card-panel-tag">Web Admin Panel</div>
+
+          <div class="card-divider-pill"></div>
+
+          <h3 class="card-auth-title">Authentication Required</h3>
+          <p class="card-auth-subtitle">
+            Please enter the password shown on the server window to access the admin dashboard.
+          </p>
+
+          <form id="loginForm" onsubmit="return false;">
+            <!-- Password Input Container -->
+            <div class="input-box" id="inputContainer">
+              <span class="input-icon-lock" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </span>
+
+              <div class="input-inner">
+                <label for="passInput">Admin Password</label>
+                <input 
+                  type="password" 
+                  id="passInput" 
+                  placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" 
+                  autocomplete="current-password" 
+                  required
+                >
+              </div>
+
+              <button type="button" class="toggle-pass-btn" id="togglePassBtn" title="Toggle password visibility" aria-label="Toggle password visibility">
+                <!-- Eye-slash icon (hidden state) -->
+                <svg id="eyeOffIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+                <!-- Eye icon (shown state) -->
+                <svg id="eyeOnIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Status message container -->
+            <div id="statusMsg" class="status-msg" role="alert"></div>
+
+            <!-- Login Action Button -->
+            <button type="submit" class="btn-login" id="btnLogin">
+              <span id="btnIconLogin" style="display: inline-flex; align-items: center;">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                  <polyline points="10 17 15 12 10 7"></polyline>
+                  <line x1="15" y1="12" x2="3" y2="12"></line>
+                </svg>
+              </span>
+              <span id="btnText">Login to Dashboard</span>
+              <span id="btnIconArrow" class="icon-arrow" style="display: inline-flex; align-items: center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </span>
+            </button>
+          </form>
+
+        </div>
+      </section>
+    </main>
   </div>
 
   <script>
     const btnLogin = document.getElementById('btnLogin');
+    const btnText = document.getElementById('btnText');
+    const btnIconLogin = document.getElementById('btnIconLogin');
+    const btnIconArrow = document.getElementById('btnIconArrow');
     const passInput = document.getElementById('passInput');
-    const errorMsg = document.getElementById('errorMsg');
+    const statusMsg = document.getElementById('statusMsg');
+    const loginCard = document.getElementById('loginCard');
+    const inputContainer = document.getElementById('inputContainer');
+    const togglePassBtn = document.getElementById('togglePassBtn');
+    const eyeOffIcon = document.getElementById('eyeOffIcon');
+    const eyeOnIcon = document.getElementById('eyeOnIcon');
+    const loginForm = document.getElementById('loginForm');
 
-    btnLogin.addEventListener('click', async () => {
+    // Focus input on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      passInput.focus();
+    });
+
+    // Toggle password visibility
+    togglePassBtn.addEventListener('click', () => {
+      if (passInput.type === 'password') {
+        passInput.type = 'text';
+        eyeOffIcon.style.display = 'none';
+        eyeOnIcon.style.display = 'block';
+      } else {
+        passInput.type = 'password';
+        eyeOffIcon.style.display = 'block';
+        eyeOnIcon.style.display = 'none';
+      }
+      passInput.focus();
+    });
+
+    function setStatus(text, type = 'error') {
+      statusMsg.textContent = text;
+      statusMsg.className = `status-msg visible ${type}`;
+    }
+
+    function clearStatus() {
+      statusMsg.textContent = '';
+      statusMsg.className = 'status-msg';
+    }
+
+    function setLoading(isLoading) {
+      if (isLoading) {
+        btnLogin.disabled = true;
+        btnIconLogin.style.display = 'none';
+        btnIconArrow.style.display = 'none';
+        btnText.innerHTML = '<span class="spinner"></span> Authenticating...';
+      } else {
+        btnLogin.disabled = false;
+        btnIconLogin.style.display = 'inline-flex';
+        btnIconArrow.style.display = 'inline-flex';
+        btnText.textContent = 'Login to Dashboard';
+      }
+    }
+
+    async function handleLogin() {
       const password = passInput.value.trim();
       if (!password) {
-        errorMsg.textContent = 'Please enter the password.';
+        setStatus('Please enter the administrator password.', 'error');
+        inputContainer.classList.add('shake');
+        setTimeout(() => inputContainer.classList.remove('shake'), 450);
+        passInput.focus();
         return;
       }
-      
-      btnLogin.disabled = true;
-      errorMsg.textContent = 'Authenticating...';
-      errorMsg.style.color = '#333';
+
+      setLoading(true);
+      setStatus('Validating credentials with server...', 'info');
 
       try {
         const res = await fetch('/api/admin/login', {
@@ -62,26 +726,35 @@
           body: JSON.stringify({ password })
         });
         const data = await res.json();
-        
+
         if (data.success) {
           localStorage.setItem('adminToken', data.adminToken);
-          errorMsg.textContent = 'Success! Redirecting...';
-          errorMsg.style.color = 'green';
-          window.location.href = '/admin/dashboard';
+          setStatus('Authentication successful! Redirecting...', 'success');
+          setTimeout(() => {
+            window.location.href = '/admin/dashboard';
+          }, 600);
         } else {
-          errorMsg.textContent = data.message || 'Invalid password.';
-          errorMsg.style.color = 'red';
-          btnLogin.disabled = false;
+          setLoading(false);
+          setStatus(data.message || 'Invalid password. Please check and try again.', 'error');
+          inputContainer.classList.add('shake');
+          setTimeout(() => inputContainer.classList.remove('shake'), 450);
+          passInput.select();
         }
       } catch (err) {
-        errorMsg.textContent = 'Server error. Try again.';
-        errorMsg.style.color = 'red';
-        btnLogin.disabled = false;
+        setLoading(false);
+        setStatus('Unable to connect to the server. Please try again.', 'error');
       }
+    }
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleLogin();
     });
 
-    passInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') btnLogin.click();
+    passInput.addEventListener('input', () => {
+      if (statusMsg.classList.contains('error')) {
+        clearStatus();
+      }
     });
   </script>
 </body>
