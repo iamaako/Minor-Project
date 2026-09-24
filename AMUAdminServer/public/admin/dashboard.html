@@ -1,506 +1,1533 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="emerald">
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AMU Web Admin Dashboard</title>
-  <link rel="stylesheet" href="/css/xp-theme.css">
+  <title>AMU Web Admin Dashboard | Examination Control</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary: #059669;
+      --primary-hover: #047857;
+      --primary-light: #ecfdf5;
+      --primary-border: #a7f3d0;
+      --primary-glow: rgba(5, 150, 105, 0.22);
+      --bg-page: #f8fafc;
+      --bg-sidebar: #ffffff;
+      --bg-card: #ffffff;
+      --bg-input: #f8fafc;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --table-header: #f1f5f9;
+      --table-row-hover: #f8fafc;
+      --radius-xl: 18px;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
+      --shadow-lg: 0 12px 32px rgba(0,0,0,0.1);
+      --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-theme="sapphire"] {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+      --primary-border: #bfdbfe;
+      --primary-glow: rgba(37, 99, 235, 0.22);
+    }
+
+    [data-theme="amethyst"] {
+      --primary: #7c3aed;
+      --primary-hover: #6d28d9;
+      --primary-light: #f5f3ff;
+      --primary-border: #ddd6fe;
+      --primary-glow: rgba(124, 58, 237, 0.22);
+    }
+
+    [data-theme="sunset"] {
+      --primary: #ea580c;
+      --primary-hover: #c2410c;
+      --primary-light: #fff7ed;
+      --primary-border: #fed7aa;
+      --primary-glow: rgba(234, 88, 12, 0.22);
+    }
+
+    [data-theme="ocean"] {
+      --primary: #0891b2;
+      --primary-hover: #0e7490;
+      --primary-light: #ecfeff;
+      --primary-border: #a5f3fc;
+      --primary-glow: rgba(8, 145, 178, 0.22);
+    }
+
+    [data-theme="midnight"] {
+      --primary: #10b981;
+      --primary-hover: #059669;
+      --primary-light: rgba(16, 185, 129, 0.15);
+      --primary-border: rgba(16, 185, 129, 0.3);
+      --primary-glow: rgba(16, 185, 129, 0.35);
+      --bg-page: #0b1120;
+      --bg-sidebar: #0f172a;
+      --bg-card: #1e293b;
+      --bg-input: #0f172a;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+      --table-header: #141e33;
+      --table-row-hover: #243247;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+      --shadow-lg: 0 12px 32px rgba(0,0,0,0.6);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* Layout */
+    .app-container {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 270px;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      padding: 24px 18px;
+      gap: 20px;
+      flex-shrink: 0;
+      transition: transform 0.3s ease, background-color 0.25s ease, border-color 0.25s ease;
+      z-index: 100;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 4px 8px 18px 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .brand-crest {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #ffffff;
+      padding: 3px;
+      box-shadow: 0 4px 12px var(--primary-glow), inset 0 0 0 1px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand-crest img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .brand-details h2 {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .brand-details .role-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 3px;
+    }
+
+    .role-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 6px var(--primary);
+    }
+
+    .nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      text-align: left;
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    .nav-btn:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      transform: translateX(3px);
+    }
+
+    .nav-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 6px 18px var(--primary-glow);
+    }
+
+    .nav-btn svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      stroke-width: 2.2;
+    }
+
+    .sidebar-footer {
+      border-top: 1px solid var(--border-color);
+      padding-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn-logout {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 11px;
+      border-radius: var(--radius-md);
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: #dc2626;
+      font-weight: 700;
+      font-size: 13.5px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    .btn-logout:hover {
+      background: #dc2626;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(220, 38, 38, 0.3);
+    }
+
+    /* Main Content Area */
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    /* Top App Header */
+    .app-header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .hamburger-btn {
+      display: none;
+      background: transparent;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      color: var(--text-main);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Theme Customizer Dropdown / Popover */
+    .theme-selector {
+      position: relative;
+    }
+
+    .theme-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      font-family: inherit;
+      transition: var(--transition);
+    }
+
+    .theme-btn:hover {
+      border-color: var(--primary);
+    }
+
+    .theme-palette-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+
+    .theme-menu {
+      display: none;
+      position: absolute;
+      top: 115%;
+      right: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      box-shadow: var(--shadow-lg);
+      width: 220px;
+      z-index: 200;
+      animation: fadeIn 0.18s ease;
+    }
+
+    .theme-menu.show {
+      display: block;
+    }
+
+    .theme-menu-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+      padding-left: 4px;
+    }
+
+    .theme-swatch-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .theme-swatch {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      background: transparent;
+      cursor: pointer;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-main);
+      width: 100%;
+      text-align: left;
+      transition: var(--transition);
+    }
+
+    .theme-swatch:hover {
+      background: var(--table-row-hover);
+    }
+
+    .theme-swatch.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary-border);
+    }
+
+    .swatch-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .live-status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #059669;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 999px;
+      padding: 5px 12px;
+    }
+
+    .live-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 7px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* Content Body & Tabs */
+    .content-body {
+      padding: 24px 28px;
+      flex: 1;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Modern Card Container */
+    .dash-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .dash-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .dash-card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dash-card-title .card-pill {
+      width: 4px;
+      height: 18px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    /* Form Controls & Inputs */
+    .input-group-row {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .dash-input, select.dash-input, textarea.dash-input {
+      background: var(--bg-input);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text-main);
+      outline: none;
+      transition: var(--transition);
+      box-sizing: border-box;
+    }
+
+    .dash-input:focus {
+      border-color: var(--primary);
+      background: var(--bg-card);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .form-field label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* Buttons */
+    .dash-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9.5px 16px;
+      border-radius: var(--radius-md);
+      font-size: 13.5px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-main);
+      transition: var(--transition);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .dash-btn:hover {
+      background: var(--table-row-hover);
+      border-color: var(--text-muted);
+    }
+
+    .dash-btn-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+
+    .dash-btn-primary:hover {
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+      box-shadow: 0 6px 16px var(--primary-glow);
+      transform: translateY(-1px);
+    }
+
+    .dash-btn-danger {
+      background: rgba(239, 68, 68, 0.08);
+      border-color: rgba(239, 68, 68, 0.25);
+      color: #dc2626;
+    }
+
+    .dash-btn-danger:hover {
+      background: #dc2626;
+      color: #ffffff;
+      border-color: #dc2626;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+    }
+
+    .dash-btn-purple {
+      background: rgba(147, 51, 234, 0.1);
+      border-color: rgba(147, 51, 234, 0.25);
+      color: #9333ea;
+    }
+
+    .dash-btn-purple:hover {
+      background: #9333ea;
+      color: #ffffff;
+    }
+
+    .dash-btn-sm {
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: var(--radius-sm);
+    }
+
+    /* Controls Bar Container */
+    .controls-panel {
+      background: var(--primary-light);
+      border: 1px solid var(--primary-border);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    /* Tables */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+    }
+
+    .dash-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 13.5px;
+      text-align: left;
+    }
+
+    .dash-table th {
+      background: var(--table-header);
+      color: var(--text-muted);
+      font-weight: 700;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      letter-spacing: 0.3px;
+      font-size: 12.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .dash-table td {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-main);
+      vertical-align: middle;
+    }
+
+    .dash-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .dash-table tbody tr {
+      transition: background-color 0.15s ease;
+    }
+
+    .dash-table tbody tr:hover {
+      background: var(--table-row-hover);
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .badge-status.active {
+      background: rgba(16, 185, 129, 0.12);
+      color: #059669;
+    }
+
+    .badge-status.waiting {
+      background: rgba(245, 158, 11, 0.12);
+      color: #d97706;
+    }
+
+    .badge-status.submitted {
+      background: rgba(124, 58, 237, 0.12);
+      color: #7c3aed;
+    }
+
+    .badge-status.locked {
+      background: rgba(239, 68, 68, 0.12);
+      color: #dc2626;
+    }
+
+    /* Logs Terminal Box */
+    .terminal-container {
+      height: 440px;
+      overflow-y: auto;
+      background: #090d16;
+      color: #4ade80;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      border: 1px solid #1e293b;
+      line-height: 1.6;
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .terminal-container div {
+      margin-bottom: 4px;
+      word-break: break-all;
+    }
+
+    /* Modals & Overlays */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 600px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalPop {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--table-header);
+    }
+
+    .modal-header h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      font-size: 18px;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+    }
+
+    .modal-close-btn:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: #dc2626;
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      max-height: 75vh;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      background: var(--table-header);
+    }
+
+    /* Sidebar Mobile Backdrop */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 95;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar {
+        position: fixed;
+        top: 0; bottom: 0; left: 0;
+        transform: translateX(-100%);
+        box-shadow: var(--shadow-lg);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar-backdrop.open {
+        display: block;
+      }
+      .hamburger-btn {
+        display: block;
+      }
+      .content-body {
+        padding: 18px 16px;
+      }
+      .app-header {
+        padding: 14px 18px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .input-group-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .controls-panel {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .dash-btn {
+        width: 100%;
+      }
+    }
+
     @keyframes blink {
       0% { opacity: 1; }
       50% { opacity: 0.3; }
       100% { opacity: 1; }
     }
-    
-    /* XP Custom Alert Overlay */
-    #xp-alert-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .xp-alert-box {
-      width: 350px;
-      background: #ece9d8;
-      border: 2px solid #0054e3;
-      border-radius: 5px;
-      box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-      font-family: 'Tahoma', sans-serif;
-    }
-    
-    .xp-alert-title {
-      background: linear-gradient(to right, #0058e6, #3a93ff);
-      color: white;
-      padding: 5px 10px;
-      font-weight: bold;
-      font-size: 13px;
-      border-top-left-radius: 3px;
-      border-top-right-radius: 3px;
-      display: flex;
-      justify-content: space-between;
-    }
-    
-    .xp-alert-content {
-      padding: 20px;
-      font-size: 13px;
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
-    
-    .xp-alert-icon {
-      font-size: 32px;
-      color: #d32f2f;
-    }
-    
-    .xp-alert-footer {
-      padding: 10px;
-      text-align: center;
-      border-top: 1px solid #ccc;
-    }
-    
-    body {
-      background-color: var(--clr-bg);
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      height: 100vh;
-      box-sizing: border-box;
-      gap: 20px;
-    }
-    .sidebar {
-      width: 250px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .main-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-    .tab-content {
-      display: none;
-      height: 100%;
-      overflow-y: auto;
-    }
-    .tab-content.active {
-      display: block;
-    }
-    .xp-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      background: #fff;
-    }
-    .xp-table th, .xp-table td {
-      border: 1px solid #ccc;
-      padding: 5px;
-      text-align: left;
-    }
-    .xp-table th {
-      background: #ece9d8;
-    }
-    .form-group {
-      margin-bottom: 10px;
-    }
-    .form-group label {
-      display: inline-block;
-      width: 120px;
-      font-weight: bold;
-    }
-    .form-group input, .form-group textarea {
-      width: 300px;
-    }
   </style>
 </head>
 <body>
 
-  <!-- SIDEBAR -->
-  <div class="xp-window sidebar">
-    <div class="xp-title-bar">
-      <div class="xp-title-text">Menu</div>
-    </div>
-    <div style="padding: 10px; text-align: center; flex: 1; display: flex; flex-direction: column;">
-      <img src="/assets/AMULogo.png" alt="AMU Logo" style="width: 80px; height: 80px; margin-bottom: 10px; align-self: center; background: white; border-radius: 50%; padding: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
-      <h4 style="margin: 0 0 15px 0;">AMU Admin</h4>
-      <button class="xp-btn" style="width: 100%; margin-bottom: 5px;" onclick="showTab('tab-monitor')">Live Monitor</button>
-      <button class="xp-btn" style="width: 100%; margin-bottom: 5px;" onclick="showTab('tab-students')">Students</button>
-      <button class="xp-btn" style="width: 100%; margin-bottom: 5px;" onclick="showTab('tab-questions')">Questions</button>
-      <button class="xp-btn" style="width: 100%; margin-bottom: 5px;" onclick="showTab('tab-logs')">System Logs</button>
-      <button class="xp-btn" style="width: 100%; margin-bottom: 5px;" onclick="showTab('tab-db')">Database Manager</button>
-      
-      <div style="flex: 1;"></div>
-      <button class="xp-btn" style="width: 100%; color: red; font-weight: bold;" onclick="logout()">Logout</button>
-    </div>
-  </div>
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
 
-  <!-- MAIN CONTENT -->
-  <div class="xp-window main-content">
-    <div class="xp-title-bar">
-      <div class="xp-title-text" id="main-title">Live Monitor</div>
-    </div>
-    
-    <div style="padding: 15px; flex: 1; overflow-y: hidden; display: flex; flex-direction: column;">
-      
-      <!-- TAB: LIVE MONITOR -->
-      <div id="tab-monitor" class="tab-content active">
-        
-        <div class="xp-group-box" style="margin-bottom: 15px;">
-          <div class="xp-group-box-title">Global Announcement</div>
-          <div class="xp-group-box-content" style="display: flex; gap: 10px;">
-            <input type="text" id="announcement-text" class="xp-input" placeholder="Type a message to all students..." style="flex: 1;">
-            <button class="xp-btn" onclick="sendAnnouncement()">📢 Send Announcement</button>
-          </div>
+  <div class="app-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-section">
+        <div class="brand-crest">
+          <img src="/assets/AMULogo.png" alt="AMU Logo">
         </div>
-
-        <div class="xp-group-box" style="margin-bottom: 15px;">
-          <div class="xp-group-box-title">Global Exam Settings</div>
-          <div class="xp-group-box-content" style="display: flex; flex-direction: column; gap: 10px;">
-            <div style="display: flex; gap: 10px; align-items: center;">
-              <label for="global-title-input" style="font-weight: bold; width: 160px;">Exam Title:</label>
-              <input type="text" id="global-title-input" class="xp-input" style="flex: 1;" value="End Semester Examination 2026-27">
-              <button class="xp-btn" onclick="setGlobalTitle()">📝 Save Title</button>
-            </div>
-            
-            <div style="display: flex; gap: 10px; align-items: center;">
-              <label for="global-duration-input" style="font-weight: bold; width: 160px;">Exam Duration (mins):</label>
-              <input type="number" id="global-duration-input" class="xp-input" style="width: 80px;" min="1" value="90">
-              <button class="xp-btn" onclick="setGlobalDuration()">⏱️ Save Duration</button>
-            </div>
-
-            <div style="display: flex; gap: 10px; align-items: center; background: #eee; padding: 10px; border: 1px solid #ccc;">
-              <label style="font-weight: bold; width: 140px;">Exam State Controls:</label>
-              <span id="exam-state-display" style="font-weight:bold; color:red;">WAITING</span>
-              <div style="width: 2px; height: 20px; background: #ccc; margin: 0 10px;"></div>
-              <input type="datetime-local" id="schedule-time-input" class="xp-input">
-              <button class="xp-btn" onclick="scheduleExam()">📅 Schedule Start</button>
-              <button class="xp-btn" id="btn-start-exam" style="color: green; font-weight: bold;" onclick="startExamNow()">▶️ Start Now</button>
-              <button class="xp-btn" id="btn-stop-exam" style="color: purple; font-weight: bold; display: none;" onclick="forceSubmitAll()">⏹️ Stop & Submit All</button>
-              <button class="xp-btn" style="color: red;" onclick="resetExamState()">⏹️ Reset to Waiting</button>
-            </div>
-            <span id="settings-msg" style="color: green; font-weight: bold;"></span>
-          </div>
-        </div>
-
-        <div class="xp-group-box">
-          <div class="xp-group-box-title">Connected Students</div>
-          <div class="xp-group-box-content">
-            <button class="xp-btn" onclick="fetchLiveStudents()" style="margin-bottom: 10px;">Refresh List</button>
-            <table class="xp-table">
-              <thead>
-                <tr>
-                  <th>Roll Number</th>
-                  <th>IP Address</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="monitor-tbody">
-                <tr><td colspan="4" style="text-align:center;">Loading connected students...</td></tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="brand-details">
+          <h2>AMU Admin</h2>
+          <span class="role-badge">Online Portal</span>
         </div>
       </div>
 
-      <!-- TAB: STUDENTS -->
-      <div id="tab-students" class="tab-content">
-        
-        <!-- BULK CSV UPLOAD -->
-        <div class="xp-group-box" style="margin-bottom: 15px; background: #e6f2ff;">
-          <div class="xp-group-box-title">Bulk Student Upload (CSV)</div>
-          <div class="xp-group-box-content">
-            <p style="margin-top: 0;">Format: <code>roll_number,name,password</code></p>
-            <div style="display: flex; gap: 10px; align-items: center;">
-              <button class="xp-btn" onclick="downloadSampleCSV()">⬇️ Download Sample CSV</button>
-              <input type="file" id="csv-file" accept=".csv" class="xp-input">
-              <button class="xp-btn" onclick="uploadCSV()" style="font-weight: bold; color: blue;">⬆️ Upload CSV</button>
-              <span id="csv_msg" style="margin-left: 10px; font-weight: bold;"></span>
+      <nav class="nav-list">
+        <button class="nav-btn active" id="nav-monitor" onclick="showTab('tab-monitor')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          Live Monitor
+        </button>
+
+        <button class="nav-btn" id="nav-students" onclick="showTab('tab-students')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          Students
+        </button>
+
+        <button class="nav-btn" id="nav-questions" onclick="showTab('tab-questions')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Questions
+        </button>
+
+        <button class="nav-btn" id="nav-logs" onclick="showTab('tab-logs')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+          System Logs
+        </button>
+
+        <button class="nav-btn" id="nav-db" onclick="showTab('tab-db')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+          Database Manager
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn-logout" onclick="logout()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          Logout
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+      
+      <!-- TOP HEADER -->
+      <header class="app-header">
+        <div class="header-left">
+          <button class="hamburger-btn" onclick="toggleSidebar()" aria-label="Toggle Navigation">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <h1 class="page-title" id="main-title">Live Monitor</h1>
+        </div>
+
+        <div class="header-right">
+          <div class="live-status-pill">
+            <span class="live-pulse"></span>
+            <span>Server Active</span>
+          </div>
+
+          <!-- Theme / Colour Customizer -->
+          <div class="theme-selector">
+            <button class="theme-btn" id="themePickerBtn" onclick="toggleThemeMenu()">
+              <span class="theme-palette-dot" id="activeThemeDot"></span>
+              <span id="activeThemeLabel">AMU Emerald</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+
+            <div class="theme-menu" id="themeMenu">
+              <div class="theme-menu-title">Select Color Theme</div>
+              <div class="theme-swatch-list">
+                <button class="theme-swatch active" onclick="setAppTheme('emerald', 'AMU Emerald')">
+                  <span class="swatch-color" style="background: #059669;"></span>
+                  <span>AMU Emerald</span>
+                </button>
+                <button class="theme-swatch" onclick="setAppTheme('sapphire', 'Sapphire Blue')">
+                  <span class="swatch-color" style="background: #2563eb;"></span>
+                  <span>Sapphire Blue</span>
+                </button>
+                <button class="theme-swatch" onclick="setAppTheme('amethyst', 'Amethyst Violet')">
+                  <span class="swatch-color" style="background: #7c3aed;"></span>
+                  <span>Amethyst Violet</span>
+                </button>
+                <button class="theme-swatch" onclick="setAppTheme('ocean', 'Ocean Cyan')">
+                  <span class="swatch-color" style="background: #0891b2;"></span>
+                  <span>Ocean Cyan</span>
+                </button>
+                <button class="theme-swatch" onclick="setAppTheme('sunset', 'Sunset Amber')">
+                  <span class="swatch-color" style="background: #ea580c;"></span>
+                  <span>Sunset Amber</span>
+                </button>
+                <button class="theme-swatch" onclick="setAppTheme('midnight', 'Midnight Dark')">
+                  <span class="swatch-color" style="background: #0f172a; border: 1px solid #10b981;"></span>
+                  <span>Midnight Dark</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
+      </header>
 
-        <div class="xp-group-box">
-          <div class="xp-group-box-title">Add New Student (Manual)</div>
-          <div class="xp-group-box-content">
-            <form id="form-student" onsubmit="addStudent(event)">
-              <div class="form-group">
-                <label>Roll Number (ID):</label>
-                <input type="text" id="s_roll" class="xp-input" required>
+      <!-- CONTENT BODY -->
+      <main class="content-body">
+        
+        <!-- ================= TAB: LIVE MONITOR ================= -->
+        <section id="tab-monitor" class="tab-content active">
+          
+          <!-- Announcement Card -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-title">
+                <span class="card-pill"></span>
+                <span>Global Announcement</span>
               </div>
-              <div class="form-group">
-                <label>Full Name:</label>
-                <input type="text" id="s_name" class="xp-input" required>
-              </div>
-              <div class="form-group">
-                <label>Login Password:</label>
-                <input type="text" id="s_pass" class="xp-input" required>
-              </div>
-              <button type="submit" class="xp-btn" style="font-weight: bold;">+ Add Student</button>
-              <span id="s_msg" style="margin-left: 10px; color: green; font-weight: bold;"></span>
-            </form>
+            </div>
+            <div class="input-group-row">
+              <input type="text" id="announcement-text" class="dash-input" placeholder="Type a message to broadcast to all students..." style="flex: 1; min-width: 260px;">
+              <button class="dash-btn dash-btn-primary" onclick="sendAnnouncement()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                Send Announcement
+              </button>
+            </div>
           </div>
-        </div>
 
-        <div class="xp-group-box" style="margin-top: 15px;">
-          <div class="xp-group-box-title">Registered Students</div>
-          <div class="xp-group-box-content">
-            <button class="xp-btn" onclick="fetchStudents()" style="margin-bottom: 10px;">Refresh List</button>
-            <div style="max-height: 200px; overflow-y: auto;">
-              <table class="xp-table">
+          <!-- Exam Settings Card -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-title">
+                <span class="card-pill"></span>
+                <span>Global Exam Configuration</span>
+              </div>
+              <span id="settings-msg" style="color: var(--primary); font-weight: 700; font-size: 13px;"></span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div class="input-group-row">
+                <label for="global-title-input" style="font-weight: 600; width: 170px; font-size: 13.5px; color: var(--text-muted);">Exam Title:</label>
+                <input type="text" id="global-title-input" class="dash-input" style="flex: 1; min-width: 250px;" value="End Semester Examination 2026-27">
+                <button class="dash-btn" onclick="setGlobalTitle()">📝 Save Title</button>
+              </div>
+
+              <div class="input-group-row">
+                <label for="global-duration-input" style="font-weight: 600; width: 170px; font-size: 13.5px; color: var(--text-muted);">Duration (minutes):</label>
+                <input type="number" id="global-duration-input" class="dash-input" style="width: 100px;" min="1" value="90">
+                <button class="dash-btn" onclick="setGlobalDuration()">⏱️ Save Duration</button>
+              </div>
+
+              <div class="controls-panel">
+                <span style="font-weight: 700; font-size: 13.5px; color: var(--text-main);">Exam State:</span>
+                <span id="exam-state-display" class="badge-status waiting">WAITING</span>
+                
+                <div style="width: 1px; height: 24px; background: var(--primary-border); margin: 0 4px;"></div>
+                
+                <input type="datetime-local" id="schedule-time-input" class="dash-input">
+                <button class="dash-btn" onclick="scheduleExam()">📅 Schedule Start</button>
+                <button class="dash-btn dash-btn-primary" id="btn-start-exam" onclick="startExamNow()">▶️ Start Now</button>
+                <button class="dash-btn dash-btn-purple" id="btn-stop-exam" style="display: none;" onclick="forceSubmitAll()">⏹️ Stop & Submit All</button>
+                <button class="dash-btn dash-btn-danger" onclick="resetExamState()">⏹️ Reset to Waiting</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Connected Students Card -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-title">
+                <span class="card-pill"></span>
+                <span>Live Connected Students</span>
+              </div>
+              <button class="dash-btn dash-btn-sm" onclick="fetchLiveStudents()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                Refresh List
+              </button>
+            </div>
+
+            <div class="table-container">
+              <table class="dash-table">
                 <thead>
-                  <tr><th>Roll Number</th><th>Name</th><th>Bound IP</th><th>Locked</th><th>Submitted</th><th>Assigned Qs</th><th>Actions</th></tr>
+                  <tr>
+                    <th>Roll Number & Name</th>
+                    <th>IP Address</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
                 </thead>
-                <tbody id="students-tbody">
-                  <tr><td colspan="6">Loading...</td></tr>
+                <tbody id="monitor-tbody">
+                  <tr><td colspan="4" style="text-align:center; padding: 24px; color: var(--text-muted);">Loading connected students...</td></tr>
                 </tbody>
               </table>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- TAB: QUESTIONS -->
-      <div id="tab-questions" class="tab-content">
-        <div class="xp-group-box">
-          <div class="xp-group-box-title">Add Detailed Question (LeetCode Style)</div>
-          <div class="xp-group-box-content">
+        </section>
+
+        <!-- ================= TAB: STUDENTS ================= -->
+        <section id="tab-students" class="tab-content">
+          
+          <!-- Bulk CSV Upload -->
+          <div class="dash-card" style="background: var(--primary-light); border-color: var(--primary-border);">
+            <div class="dash-card-header" style="border-color: var(--primary-border);">
+              <div class="dash-card-title">
+                <span class="card-pill"></span>
+                <span>Bulk Student Upload (CSV)</span>
+              </div>
+              <span id="csv_msg" style="font-weight: 700; font-size: 13px;"></span>
+            </div>
+            
+            <p style="margin-bottom: 14px; font-size: 13px; color: var(--text-muted);">
+              File structure must have header: <code>roll_number,name,password</code>
+            </p>
+
+            <div class="input-group-row">
+              <button class="dash-btn" onclick="downloadSampleCSV()">⬇️ Download Sample CSV</button>
+              <input type="file" id="csv-file" accept=".csv" class="dash-input" style="background: var(--bg-card);">
+              <button class="dash-btn dash-btn-primary" onclick="uploadCSV()">⬆️ Upload CSV</button>
+            </div>
+          </div>
+
+          <!-- Add Manual Student Form -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-title">
+                <span class="card-pill"></span>
+                <span>Register Single Student</span>
+              </div>
+              <span id="s_msg" style="color: var(--primary); font-weight: 700; font-size: 13px;"></span>
+            </div>
+
+            <form id="form-student" onsubmit="addStudent(event)">
+              <div class="input-group-row" style="margin-bottom: 14px;">
+                <div class="form-field" style="flex: 1; min-width: 180px;">
+                  <label for="s_roll">Roll Number (ID):</label>
+                  <input type="text" id="s_roll" class="dash-input" placeholder="e.g. 21COB101" required>
+                </div>
+                <div class="form-field" style="flex: 1.5; min-width: 220px;">
+                  <label for="s_name">Full Name:</label>
+                  <input type="text" id="s_name" class="dash-input" placeholder="e.g. John Doe" required>
+                </div>
+                <div class="form-field" style="flex: 1; min-width: 180px;">
+                  <label for="s_pass">Login Password:</label>
+                  <input type="text" id="s_pass" class="dash-input" placeholder="Password" required>
+                </div>
+              </div>
+              <button type="submit" class="dash-btn dash-btn-primary">+ Register Student</button>
+            </form>
+          </div>
+
+          <!-- Registered Students List -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-title">
+                <span class="card-pill"></span>
+                <span>Registered Students Directory</span>
+              </div>
+              <button class="dash-btn dash-btn-sm" onclick="fetchStudents()">Refresh List</button>
+            </div>
+
+            <div class="table-container" style="max-height: 480px; overflow-y: auto;">
+              <table class="dash-table">
+                <thead>
+                  <tr>
+                    <th>Roll Number</th>
+                    <th>Name</th>
+                    <th>Bound IP</th>
+                    <th>Locked</th>
+                    <th>Submitted</th>
+                    <th>Assigned Qs</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="students-tbody">
+                  <tr><td colspan="7" style="text-align:center; padding: 24px;">Loading students...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ================= TAB: QUESTIONS ================= -->
+        <section id="tab-questions" class="tab-content">
+          
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-title">
+                <span class="card-pill"></span>
+                <span>Add / Edit Problem (LeetCode Style)</span>
+              </div>
+              <span id="q_msg" style="font-weight: 700; font-size: 13px;"></span>
+            </div>
+
             <form id="form-question" onsubmit="addQuestion(event)">
               
-              <div style="display: flex; gap: 15px;">
-                <div class="form-group" style="flex: 1;">
-                  <label>Question ID:</label>
-                  <input type="text" id="q_id" class="xp-input" placeholder="e.g. Q1" required>
+              <div class="input-group-row" style="margin-bottom: 14px;">
+                <div class="form-field" style="flex: 1; min-width: 140px;">
+                  <label for="q_id">Question ID:</label>
+                  <input type="text" id="q_id" class="dash-input" placeholder="e.g. Q1" required>
                 </div>
-                <div class="form-group" style="flex: 2;">
-                  <label>Title:</label>
-                  <input type="text" id="q_title" class="xp-input" placeholder="e.g. Two Sum" required>
+                <div class="form-field" style="flex: 2; min-width: 240px;">
+                  <label for="q_title">Title:</label>
+                  <input type="text" id="q_title" class="dash-input" placeholder="e.g. Two Sum" required>
                 </div>
-                <div class="form-group" style="flex: 1;">
-                  <label>Difficulty:</label>
-                  <select id="q_diff" class="xp-input">
+                <div class="form-field" style="flex: 1; min-width: 140px;">
+                  <label for="q_diff">Difficulty:</label>
+                  <select id="q_diff" class="dash-input">
                     <option value="Easy">Easy</option>
                     <option value="Medium">Medium</option>
                     <option value="Hard">Hard</option>
                   </select>
                 </div>
-                <div class="form-group" style="display: none;">
-                  <label>Time Limit (mins):</label>
-                  <input type="number" id="q_time" class="xp-input" value="0" required>
+                <input type="number" id="q_time" value="0" style="display: none;">
+              </div>
+
+              <div class="form-field">
+                <label for="q_desc">Problem Statement (Description):</label>
+                <textarea id="q_desc" class="dash-input" rows="4" placeholder="Write comprehensive problem description..." required></textarea>
+              </div>
+
+              <div class="input-group-row" style="margin-bottom: 14px;">
+                <div class="form-field" style="flex: 1; min-width: 250px;">
+                  <label for="q_const">Constraints:</label>
+                  <textarea id="q_const" class="dash-input" rows="3" placeholder="e.g. 1 <= nums.length <= 10^4"></textarea>
+                </div>
+                <div class="form-field" style="flex: 1; min-width: 250px;">
+                  <label for="q_expl">Explanation:</label>
+                  <textarea id="q_expl" class="dash-input" rows="3" placeholder="Explain the sample test case logic..."></textarea>
                 </div>
               </div>
 
-              <div class="form-group">
-                <label>Problem Statement (Description):</label>
-                <textarea id="q_desc" class="xp-input" rows="4" placeholder="Write the full problem description..." required></textarea>
-              </div>
-
-              <div style="display: flex; gap: 15px;">
-                <div class="form-group" style="flex: 1;">
-                  <label>Constraints:</label>
-                  <textarea id="q_const" class="xp-input" rows="3" placeholder="e.g. 1 <= nums.length <= 10^4"></textarea>
+              <div class="input-group-row" style="margin-bottom: 14px;">
+                <div class="form-field" style="flex: 1; min-width: 250px;">
+                  <label for="q_s_in">Sample Input:</label>
+                  <textarea id="q_s_in" class="dash-input" rows="2" placeholder="e.g. nums = [2,7,11,15], target = 9"></textarea>
                 </div>
-                <div class="form-group" style="flex: 1;">
-                  <label>Explanation:</label>
-                  <textarea id="q_expl" class="xp-input" rows="3" placeholder="Explain the sample test case..."></textarea>
+                <div class="form-field" style="flex: 1; min-width: 250px;">
+                  <label for="q_s_out">Sample Output:</label>
+                  <textarea id="q_s_out" class="dash-input" rows="2" placeholder="e.g. [0,1]"></textarea>
                 </div>
               </div>
 
-              <div style="display: flex; gap: 15px;">
-                <div class="form-group" style="flex: 1;">
-                  <label>Sample Input:</label>
-                  <textarea id="q_s_in" class="xp-input" rows="2" placeholder="e.g. nums = [2,7,11,15], target = 9"></textarea>
-                </div>
-                <div class="form-group" style="flex: 1;">
-                  <label>Sample Output:</label>
-                  <textarea id="q_s_out" class="xp-input" rows="2" placeholder="e.g. [0,1]"></textarea>
-                </div>
+              <div class="form-field">
+                <label for="q_tests">Hidden Test Cases (JSON Array):</label>
+                <textarea id="q_tests" class="dash-input" rows="3" style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px;" placeholder='[{"input": "2\n1 2\n3", "expected": "0 1"}]'></textarea>
               </div>
 
-              <div class="form-group">
-                <label>Hidden Test Cases (JSON Array):</label>
-                <textarea id="q_tests" class="xp-input" rows="2" placeholder='[{"input": "2\n1 2\n3", "expected": "0 1"}]'></textarea>
+              <div class="input-group-row" style="margin-top: 18px;">
+                <button type="submit" class="dash-btn dash-btn-primary">+ Publish Question</button>
+                <button type="button" class="dash-btn" onclick="previewQuestion()">👁️ Preview Student View</button>
+                <button type="button" id="btn_cancel_edit" class="dash-btn dash-btn-danger" style="display:none;" onclick="cancelEdit()">Cancel Edit</button>
               </div>
-
-              <div style="display: flex; gap: 10px; margin-top:10px;">
-                <button type="submit" class="xp-btn" style="font-weight: bold; width: 200px;">+ Publish Question</button>
-                <button type="button" class="xp-btn" style="width: 150px;" onclick="previewQuestion()">Preview</button>
-                <button type="button" id="btn_cancel_edit" class="xp-btn" style="width: 150px; display:none;" onclick="cancelEdit()">Cancel Edit</button>
-              </div>
-              <span id="q_msg" style="display:block; margin-top:10px; color: green; font-weight: bold;"></span>
             </form>
           </div>
-        </div>
 
-        <div class="xp-group-box" style="margin-top: 15px;">
-          <div class="xp-group-box-title">Question Bank</div>
-          <div class="xp-group-box-content">
-            <button class="xp-btn" onclick="fetchQuestions()" style="margin-bottom: 10px;">Refresh List</button>
-            <div style="max-height: 200px; overflow-y: auto;">
-              <table class="xp-table">
+          <!-- Question Bank Table -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-title">
+                <span class="card-pill"></span>
+                <span>Question Bank</span>
+              </div>
+              <button class="dash-btn dash-btn-sm" onclick="fetchQuestions()">Refresh List</button>
+            </div>
+
+            <div class="table-container" style="max-height: 400px; overflow-y: auto;">
+              <table class="dash-table">
                 <thead>
-                  <tr><th>ID</th><th>Title</th><th>Actions</th></tr>
+                  <tr>
+                    <th style="width: 120px;">ID</th>
+                    <th>Title</th>
+                    <th style="width: 200px;">Actions</th>
+                  </tr>
                 </thead>
                 <tbody id="questions-tbody">
-                  <tr><td colspan="3">Loading...</td></tr>
+                  <tr><td colspan="3" style="text-align:center; padding: 24px;">Loading questions...</td></tr>
                 </tbody>
               </table>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- TAB: LOGS -->
-      <div id="tab-logs" class="tab-content">
-        <div class="xp-group-box">
-          <div class="xp-group-box-title">Persistent System Logs</div>
-          <div class="xp-group-box-content">
-            <button class="xp-btn" onclick="fetchLogs()" style="margin-bottom: 10px;">Refresh Logs</button>
-            <div id="logs-container" style="height: 400px; overflow-y: auto; background: #000; color: #0f0; font-family: monospace; font-size: 12px; padding: 10px; border: 2px inset #fff;">
-              Loading logs...
+        </section>
+
+        <!-- ================= TAB: LOGS ================= -->
+        <section id="tab-logs" class="tab-content">
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-title">
+                <span class="card-pill"></span>
+                <span>Persistent System Terminal Logs</span>
+              </div>
+              <button class="dash-btn dash-btn-sm" onclick="fetchLogs()">Refresh Logs</button>
+            </div>
+
+            <div id="logs-container" class="terminal-container">
+              Loading system logs...
             </div>
           </div>
-        </div>
-      </div>
+        </section>
 
-      <!-- TAB: DATABASE MANAGER -->
-      <div id="tab-db" class="tab-content">
-        <div class="xp-group-box">
-          <div class="xp-group-box-title">Database Management</div>
-          <div class="xp-group-box-content">
-            
-            <div style="margin-bottom: 20px;">
-              <h4 style="margin: 0 0 5px 0;">Download Backup</h4>
-              <p style="margin: 0 0 10px 0; font-size: 12px;">Download the entire SQLite database file containing all logs, students, and questions.</p>
-              <a href="/api/admin/database/download" class="xp-btn" style="text-decoration: none; display: inline-block; padding: 4px 10px; color: black;">💾 Download database.sqlite</a>
+        <!-- ================= TAB: DATABASE MANAGER ================= -->
+        <section id="tab-db" class="tab-content">
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-title">
+                <span class="card-pill"></span>
+                <span>Database Administration & Backups</span>
+              </div>
             </div>
-            
-            <hr>
 
-            <div style="margin-top: 20px;">
-              <h4 style="margin: 0 0 5px 0; color: red;">Danger Zone: Clear Data</h4>
-              <p style="margin: 0 0 10px 0; font-size: 12px;">Warning: This action cannot be undone. Always download a backup first.</p>
-              <div style="display: flex; gap: 10px;">
-                <select id="db-table-select" class="xp-input" style="width: 200px;">
+            <div style="margin-bottom: 28px;">
+              <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">Download Complete Backup</h4>
+              <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+                Export the active SQLite database file containing all persistent student records, test submissions, and activity logs.
+              </p>
+              <a href="/api/admin/database/download" class="dash-btn dash-btn-primary">
+                💾 Download database.sqlite
+              </a>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin-bottom: 24px;">
+
+            <div style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: var(--radius-lg); padding: 20px;">
+              <h4 style="font-size: 15px; font-weight: 700; color: #dc2626; margin-bottom: 6px;">Danger Zone: Purge Records</h4>
+              <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">
+                Warning: Permanent deletion cannot be rolled back. Ensure you have downloaded a database backup before performing any table wipe.
+              </p>
+              <div class="input-group-row">
+                <select id="db-table-select" class="dash-input" style="width: 220px; background: var(--bg-card);">
                   <option value="logs">Clear All Logs</option>
                   <option value="students">Clear All Students</option>
                   <option value="questions">Clear All Questions</option>
                   <option value="submissions">Clear All Submissions</option>
                 </select>
-                <button class="xp-btn" style="color: red; font-weight: bold;" onclick="clearDatabaseTable()">⚠️ Clear Table</button>
+                <button class="dash-btn dash-btn-danger" onclick="clearDatabaseTable()">⚠️ Clear Table</button>
               </div>
             </div>
 
           </div>
-        </div>
-      </div>
+        </section>
 
+      </main>
     </div>
   </div>
 
-  <!-- Preview Modal -->
-  <div id="preview-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
-    <div style="width:80%; max-width:800px; height:80%; background:#fff; border: 2px solid #0055ea; display:flex; flex-direction:column; box-shadow: 2px 2px 10px rgba(0,0,0,0.5);">
-      <div style="background: linear-gradient(to right, #0058e6, #3a93ff); color: white; padding: 5px 10px; display:flex; justify-content:space-between; align-items:center; font-weight:bold;">
-        <span>Question Preview (Student View)</span>
-        <button type="button" onclick="document.getElementById('preview-modal').style.display='none'" style="background:#ff5555; color:white; border:1px solid white; cursor:pointer; font-weight:bold; padding:2px 8px;">X</button>
+  <!-- ================= MODALS ================= -->
+
+  <!-- Question Preview Modal (Student View) -->
+  <div id="preview-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 800px; height: 85vh;">
+      <div class="modal-header">
+        <h3>Question Preview (Student IDE View)</h3>
+        <button type="button" class="modal-close-btn" onclick="document.getElementById('preview-modal').style.display='none'">✕</button>
       </div>
-      <div id="preview-content" style="flex:1; overflow-y:auto; padding:20px; background:var(--clr-window-bg, #ece9d8); font-family: Tahoma, Geneva, Verdana, sans-serif; font-size:12px; line-height: 1.6; color:#000;">
+      <div id="preview-content" class="modal-body" style="background: var(--bg-page);">
         <style>
-          .question-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #ACA899; }
-          .question-title { font-size: 13px; font-weight: bold; color: #000; flex: 1; }
-          .difficulty-badge { font-size: 9px; padding: 1px 6px; border: 1px solid; text-transform: uppercase; letter-spacing: 0.5px; font-weight: bold; }
-          .difficulty-badge.easy { color: #006600; border-color: #006600; background: #E0FFE0; }
-          .difficulty-badge.medium { color: #CC6600; border-color: #CC6600; background: #FFF4E0; }
-          .difficulty-badge.hard { color: #CC0000; border-color: #CC0000; background: #FFE0E0; }
-          .question-description { font-size: 11px; line-height: 1.7; color: #000; margin-bottom: 12px; white-space: pre-wrap; word-break: break-word; }
-          .question-section-title { font-weight: bold; color: #000; margin-bottom: 4px; margin-top: 10px; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; border-bottom: 1px solid #ACA899; padding-bottom: 2px; }
-          .question-constraints { font-size: 11px; line-height: 1.8; color: #000; font-family: monospace; white-space: pre-wrap; background: #ece9d8; padding: 6px 8px; border: 1px solid #ACA899; margin-bottom: 10px; }
-          .question-io-block { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
-          .io-row { display: flex; gap: 8px; }
-          .io-label { font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; color: #808080; width: 60px; flex-shrink: 0; padding-top: 4px; }
-          .io-value { font-family: monospace; font-size: 11px; background: #FFFFFF; padding: 4px 8px; border: 1px solid #ACA899; flex: 1; white-space: pre-wrap; word-break: break-all; }
-          .question-explanation { font-size: 11px; line-height: 1.6; color: #444444; font-style: italic; padding: 6px 8px; border-left: 3px solid #0a246a; background: #F0F4FF; }
+          .question-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
+          .question-title { font-size: 18px; font-weight: 800; color: var(--text-main); flex: 1; }
+          .difficulty-badge { font-size: 11px; padding: 3px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; }
+          .difficulty-badge.easy { color: #059669; background: rgba(5, 150, 105, 0.12); }
+          .difficulty-badge.medium { color: #d97706; background: rgba(217, 119, 6, 0.12); }
+          .difficulty-badge.hard { color: #dc2626; background: rgba(220, 38, 38, 0.12); }
+          .question-description { font-size: 14px; line-height: 1.65; color: var(--text-main); margin-bottom: 16px; white-space: pre-wrap; word-break: break-word; }
+          .question-section-title { font-weight: 700; color: var(--text-muted); margin-bottom: 6px; margin-top: 14px; text-transform: uppercase; font-size: 11px; letter-spacing: 0.8px; }
+          .question-constraints { font-size: 13px; line-height: 1.6; color: var(--text-main); font-family: 'JetBrains Mono', monospace; white-space: pre-wrap; background: var(--bg-card); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 14px; }
+          .question-io-block { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+          .io-row { display: flex; gap: 10px; align-items: flex-start; }
+          .io-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); width: 70px; flex-shrink: 0; padding-top: 6px; }
+          .io-value { font-family: 'JetBrains Mono', monospace; font-size: 13px; background: var(--bg-card); padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; flex: 1; white-space: pre-wrap; word-break: break-all; color: var(--text-main); }
+          .question-explanation { font-size: 13px; line-height: 1.6; color: var(--text-main); padding: 10px 14px; border-left: 3px solid var(--primary); background: var(--primary-light); border-radius: 0 8px 8px 0; }
         </style>
         <div id="preview-render-area"></div>
       </div>
+      <div class="modal-footer">
+        <button class="dash-btn" onclick="document.getElementById('preview-modal').style.display='none'">Close Preview</button>
+      </div>
     </div>
   </div>
 
-  <!-- ASSIGN QUESTIONS MODAL -->
-  <div id="assignModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:1000;">
-    <div class="xp-window" style="width: 400px;">
-      <div class="xp-title-bar">
-        <div class="xp-title-text">Assign Questions</div>
-        <button onclick="closeAssignModal()" style="float: right; margin-right: 2px;">X</button>
+  <!-- Assign Questions Modal -->
+  <div id="assignModal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3>Assign Problems</h3>
+        <button class="modal-close-btn" onclick="closeAssignModal()">✕</button>
       </div>
-      <div style="padding: 15px;">
-        <p>Assigning to: <strong id="assign-student-name"></strong></p>
+      <div class="modal-body">
+        <p style="margin-bottom: 14px; font-size: 13.5px;">Assigning to: <strong id="assign-student-name" style="color: var(--primary);"></strong></p>
         <input type="hidden" id="assign-student-roll">
-        <div id="assign-checkboxes" style="max-height: 200px; overflow-y: auto; border: 1px inset #ccc; padding: 10px; background: #fff; margin-bottom: 15px;">
-          <!-- Checkboxes injected here -->
+        <div id="assign-checkboxes" style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px; background: var(--bg-input);">
+          <!-- Checkboxes injected dynamically -->
         </div>
-            <button class="xp-btn" onclick="saveAssignedQuestions()" style="font-weight: bold; width: 100%;">Save Assignments</button>
+      </div>
+      <div class="modal-footer">
+        <button class="dash-btn" onclick="closeAssignModal()">Cancel</button>
+        <button class="dash-btn dash-btn-primary" onclick="saveAssignedQuestions()">Save Assignments</button>
       </div>
     </div>
   </div>
 
-    <!-- XP Custom Alert Overlay -->
-    <div id="xp-alert-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:99999; justify-content:center; align-items:center;">
-      <div class="xp-alert-box" style="background:#f0f0f0; border:1px solid #000; width:350px; box-shadow:5px 5px 15px rgba(0,0,0,0.3);">
-        <div class="xp-alert-title" style="background:#0058e6; color:white; padding:4px 10px; font-weight:bold; display:flex; justify-content:space-between;">
-          <span>⚠ Security Alert</span>
-          <span style="cursor:pointer; font-family:monospace; background:#e81123; padding:0 5px; border-radius:2px;" onclick="closeXPAlert()">X</span>
-        </div>
-        <div class="xp-alert-content" style="padding:20px; display:flex; gap:15px;">
-          <div class="xp-alert-icon" style="font-size:40px;">🚫</div>
-          <div style="font-size:12px;">
-            <strong>USB Device Detected!</strong><br><br>
-            Name: <span id="xp-alert-name"></span><br>
-            Enrollment: <span id="xp-alert-roll"></span><br>
-            IP: <span id="xp-alert-ip"></span><br>
-            <br>
-            <span style="color:red;">The student's exam has been locked.</span>
-          </div>
-        </div>
-        <div class="xp-alert-footer" style="padding:10px; text-align:right; border-top:1px solid #ccc;">
-          <button class="xp-btn" onclick="closeXPAlert()" style="padding: 4px 15px; font-weight: bold;">OK</button>
+  <!-- Security Alert Modal (USB / Breach) -->
+  <div id="xp-alert-overlay" class="modal-overlay">
+    <div class="modal-card" style="max-width: 420px; border-color: rgba(220, 38, 38, 0.4);">
+      <div class="modal-header" style="background: rgba(220, 38, 38, 0.08); border-color: rgba(220, 38, 38, 0.2);">
+        <h3 style="color: #dc2626; display: flex; align-items: center; gap: 8px;">
+          <span>🚨</span>
+          <span>Security Alert Triggered</span>
+        </h3>
+        <button class="modal-close-btn" onclick="closeXPAlert()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 14.5px; font-weight: 700; color: #dc2626; margin-bottom: 10px;">USB Hardware Device Detected!</p>
+        <div style="font-size: 13px; line-height: 1.8; color: var(--text-main);">
+          <strong>Name:</strong> <span id="xp-alert-name"></span><br>
+          <strong>Enrollment:</strong> <span id="xp-alert-roll"></span><br>
+          <strong>IP Address:</strong> <span id="xp-alert-ip"></span><br>
+          <span style="display: block; margin-top: 8px; color: #dc2626; font-weight: 600;">The candidate's workstation has been automatically locked.</span>
         </div>
       </div>
-    </div>
-
-    <!-- Live Screen Stream Modal -->
-    <div id="stream-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:99998; justify-content:center; align-items:center;">
-      <div class="xp-alert-box" style="background:#ece9d8; border:2px solid #0054e3; width:80%; max-width:900px; box-shadow:5px 5px 15px rgba(0,0,0,0.5);">
-        <div class="xp-alert-title" style="background:linear-gradient(to right, #0058e6, #3a93ff); color:white; padding:5px 10px; font-weight:bold; display:flex; justify-content:space-between; cursor:move;">
-          <span>Live Monitor: <span id="stream-student-name"></span></span>
-          <span style="cursor:pointer; font-family:monospace; background:#e81123; padding:0 5px; border-radius:2px;" onclick="stopStream()">X</span>
-        </div>
-        <div class="xp-alert-content" style="padding:10px; text-align:center; background:#000;">
-          <img id="stream-feed" src="" alt="Waiting for stream..." style="max-width:100%; max-height:70vh; display:block; margin:0 auto; color:#0f0; font-family:monospace;">
-        </div>
-        <div class="xp-alert-footer" style="padding:5px 10px; text-align:left; background:#ece9d8; display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:11px; color:#555;">FPS: <span id="stream-fps">0</span> | Press X or Esc to close and stop stream.</span>
-          <button class="xp-btn" onclick="stopStream()" style="padding:2px 10px; font-weight:bold;">Close</button>
-        </div>
+      <div class="modal-footer">
+        <button class="dash-btn dash-btn-danger" onclick="closeXPAlert()">Acknowledge</button>
       </div>
     </div>
+  </div>
 
+  <!-- Live Screen Stream Modal -->
+  <div id="stream-modal-overlay" class="modal-overlay">
+    <div class="modal-card" style="max-width: 950px; background: #000; border-color: #334155;">
+      <div class="modal-header" style="background: #0f172a; border-color: #334155; color: #fff;">
+        <h3 style="color: #fff; display: flex; align-items: center; gap: 10px;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; animation: blink 1s infinite;"></span>
+          <span>Live Monitor: <span id="stream-student-name" style="color: #38bdf8;"></span></span>
+        </h3>
+        <button class="modal-close-btn" style="color: #fff;" onclick="stopStream()">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 10px; background: #000; text-align: center;">
+        <img id="stream-feed" src="" alt="Awaiting video stream frames..." style="max-width: 100%; max-height: 70vh; display: block; margin: 0 auto; border-radius: 6px;">
+      </div>
+      <div class="modal-footer" style="background: #0f172a; border-color: #334155; justify-content: space-between; align-items: center;">
+        <span style="font-size: 12px; color: #94a3b8; font-family: 'JetBrains Mono', monospace;">FPS: <strong id="stream-fps" style="color: #4ade80;">0</strong> | Press Esc or ✕ to exit stream</span>
+        <button class="dash-btn dash-btn-sm" style="color: #fff; border-color: #475569; background: #1e293b;" onclick="stopStream()">End Stream</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Workspace Viewer Modal -->
+  <div id="workspace-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 900px; height: 85vh;">
+      <div class="modal-header">
+        <h3 id="workspace-modal-title">Student Workspace Inspector</h3>
+        <button class="modal-close-btn" onclick="document.getElementById('workspace-modal').style.display='none'">✕</button>
+      </div>
+      <div style="display: flex; flex: 1; min-height: 0; background: var(--bg-page);">
+        <div style="width: 240px; border-right: 1px solid var(--border-color); background: var(--bg-card); padding: 12px; overflow-y: auto;" id="workspace-file-list">
+          <!-- Files list -->
+        </div>
+        <div style="flex: 1; padding: 16px; background: #090d16; overflow-y: auto;">
+          <pre id="workspace-file-content" style="margin: 0; font-family: 'JetBrains Mono', monospace; white-space: pre-wrap; font-size: 13px; color: #f1f5f9; line-height: 1.5;"></pre>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="dash-btn" onclick="document.getElementById('workspace-modal').style.display='none'">Close Inspector</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT ================= -->
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    function closeXPAlert() {
-      document.getElementById('xp-alert-overlay').style.display = 'none';
-      isAlertVisible = false;
+    // --- Responsive Sidebar Toggle ---
+    function toggleSidebar() {
+      const sb = document.getElementById('sidebar');
+      const bd = document.getElementById('sidebarBackdrop');
+      sb.classList.toggle('open');
+      bd.classList.toggle('open');
     }
 
+    // --- Color Theme Switcher Logic ---
+    function toggleThemeMenu() {
+      const menu = document.getElementById('themeMenu');
+      menu.classList.toggle('show');
+    }
+
+    // Close theme menu if clicked outside
+    document.addEventListener('click', (e) => {
+      const picker = document.querySelector('.theme-selector');
+      if (picker && !picker.contains(e.target)) {
+        document.getElementById('themeMenu').classList.remove('show');
+      }
+    });
+
+    const themesMeta = {
+      emerald: { label: 'AMU Emerald', color: '#059669' },
+      sapphire: { label: 'Sapphire Blue', color: '#2563eb' },
+      amethyst: { label: 'Amethyst Violet', color: '#7c3aed' },
+      ocean: { label: 'Ocean Cyan', color: '#0891b2' },
+      sunset: { label: 'Sunset Amber', color: '#ea580c' },
+      midnight: { label: 'Midnight Dark', color: '#0f172a' }
+    };
+
+    function setAppTheme(themeName, label) {
+      document.documentElement.setAttribute('data-theme', themeName);
+      localStorage.setItem('amu_admin_theme', themeName);
+      
+      const meta = themesMeta[themeName] || themesMeta.emerald;
+      document.getElementById('activeThemeLabel').textContent = meta.label;
+      document.getElementById('activeThemeDot').style.background = meta.color;
+      
+      document.querySelectorAll('.theme-swatch').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('onclick').includes(themeName));
+      });
+
+      document.getElementById('themeMenu').classList.remove('show');
+    }
+
+    // Initialize saved theme
+    const savedTheme = localStorage.getItem('amu_admin_theme') || 'emerald';
+    setAppTheme(savedTheme, themesMeta[savedTheme] ? themesMeta[savedTheme].label : 'AMU Emerald');
+
+    // --- Tab Navigation ---
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      const activeTab = document.getElementById(tabId);
+      if (activeTab) activeTab.classList.add('active');
+      
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      const navBtnMap = {
+        'tab-monitor': 'nav-monitor',
+        'tab-students': 'nav-students',
+        'tab-questions': 'nav-questions',
+        'tab-logs': 'nav-logs',
+        'tab-db': 'nav-db'
+      };
+      if (navBtnMap[tabId]) {
+        document.getElementById(navBtnMap[tabId]).classList.add('active');
+      }
+
+      const titles = {
+        'tab-monitor': 'Live Monitor',
+        'tab-students': 'Students Management',
+        'tab-questions': 'Question Bank',
+        'tab-logs': 'System Logs',
+        'tab-db': 'Database Manager'
+      };
+      document.getElementById('main-title').textContent = titles[tabId];
+      
+      // Close mobile drawer if open
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebarBackdrop').classList.remove('open');
+
+      if (tabId === 'tab-monitor') {
+        fetchLiveStudents();
+        fetchGlobalSettings();
+      } else if (tabId === 'tab-students') {
+        fetchStudents();
+      } else if (tabId === 'tab-questions') {
+        fetchQuestions();
+      } else if (tabId === 'tab-logs') {
+        fetchLogs();
+      }
+    }
+
+    // --- Stream & Alert Variables ---
     let isAlertVisible = false;
     let activeStreamSid = null;
     let frameCount = 0;
     let fpsInterval = null;
+
+    function closeXPAlert() {
+      document.getElementById('xp-alert-overlay').style.display = 'none';
+      isAlertVisible = false;
+    }
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && document.getElementById('stream-modal-overlay').style.display === 'flex') {
@@ -533,32 +1560,7 @@
       if (fpsInterval) clearInterval(fpsInterval);
     }
 
-    // Tab Navigation
-    function showTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      
-      const titles = {
-        'tab-monitor': 'Live Monitor',
-        'tab-students': 'Students Management',
-        'tab-questions': 'Question Bank',
-        'tab-logs': 'System Logs',
-        'tab-db': 'Database Manager'
-      };
-      document.getElementById('main-title').textContent = titles[tabId];
-      
-      if (tabId === 'tab-monitor') {
-        fetchLiveStudents();
-        fetchGlobalSettings();
-      } else if (tabId === 'tab-students') {
-        fetchStudents();
-      } else if (tabId === 'tab-questions') {
-        fetchQuestions();
-      } else if (tabId === 'tab-logs') {
-        fetchLogs();
-      }
-    }
-
+    // --- Global Exam Settings ---
     async function fetchGlobalSettings() {
       try {
         const token = localStorage.getItem('adminToken');
@@ -572,13 +1574,13 @@
           
           const stateDisplay = document.getElementById('exam-state-display');
           stateDisplay.textContent = data.globalExamStatus;
-          stateDisplay.style.color = data.globalExamStatus === 'STARTED' ? 'green' : 'red';
+          stateDisplay.className = `badge-status ${data.globalExamStatus === 'STARTED' ? 'active' : 'waiting'}`;
           
           if (data.globalExamStatus === 'STARTED') {
             document.getElementById('btn-start-exam').style.display = 'none';
-            document.getElementById('btn-stop-exam').style.display = 'inline-block';
+            document.getElementById('btn-stop-exam').style.display = 'inline-flex';
           } else {
-            document.getElementById('btn-start-exam').style.display = 'inline-block';
+            document.getElementById('btn-start-exam').style.display = 'inline-flex';
             document.getElementById('btn-stop-exam').style.display = 'none';
           }
           
@@ -646,7 +1648,7 @@
 
     function scheduleExam() {
       const dt = document.getElementById('schedule-time-input').value;
-      if (!dt) return alert("Please select a time first.");
+      if (!dt) return alert("Please select a date and time first.");
       const ms = new Date(dt).getTime();
       sendExamStateAction('schedule', ms);
     }
@@ -661,7 +1663,7 @@
       if(confirm('Are you sure you want to FORCE SUBMIT and END the exam for ALL connected students? This will zip their workspaces and upload them.')) {
         const adminToken = localStorage.getItem('adminToken');
         socket.emit('admin_action', { type: 'submit_all', adminToken });
-        sendExamStateAction('reset'); // optionally reset state back to waiting
+        sendExamStateAction('reset');
       }
     }
     
@@ -679,7 +1681,7 @@
       }
     }
 
-    // --- Live Monitor & Socket ---
+    // --- Sockets ---
     const socket = io();
     
     socket.on('connect', () => {
@@ -696,7 +1698,6 @@
     });
 
     socket.on('student_alert', (data) => {
-      // Show only one alert at a time. If it's visible, don't overlap with another popup.
       if (!isAlertVisible && data && data.name) {
         document.getElementById('xp-alert-name').textContent = data.name;
         document.getElementById('xp-alert-roll').textContent = data.roll;
@@ -713,13 +1714,6 @@
       }
     });
 
-    // Reset visibility flag when alert is closed
-    const originalClose = closeXPAlert;
-    closeXPAlert = function() {
-      originalClose();
-      isAlertVisible = false;
-    };
-
     function fetchLiveStudents() {
       if (socket) {
         socket.emit('request_clients_update');
@@ -729,37 +1723,39 @@
     function renderMonitor(clients) {
       const tbody = document.getElementById('monitor-tbody');
       if (!clients || Object.keys(clients).length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No students connected</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 24px; color: var(--text-muted);">No students currently connected.</td></tr>';
         return;
       }
       
       tbody.innerHTML = '';
       Object.values(clients).forEach(c => {
-        if (!c.rollNumber) return; // Only show logged in students
+        if (!c.rollNumber) return;
         
         const displayName = c.name ? `${c.name} (${c.rollNumber})` : c.rollNumber;
-        const statusColor = c.status === 'SUBMITTED' ? 'purple' : 'green';
+        const statusBadgeClass = c.status === 'SUBMITTED' ? 'badge-status submitted' : 'badge-status active';
         
         tbody.innerHTML += `
           <tr>
             <td>
               <strong>${displayName}</strong>
-              ${c.usbAlert ? '<span style="color:white; background:red; padding:2px 5px; border-radius:3px; font-size:10px; margin-left:5px; animation: blink 1s infinite;">⚠ USB DETECTED</span>' : ''}
+              ${c.usbAlert ? '<span style="color:#ffffff; background:#dc2626; padding:3px 7px; border-radius:999px; font-size:10.5px; font-weight:700; margin-left:8px; animation: blink 1s infinite;">⚠ USB DETECTED</span>' : ''}
             </td>
-            <td>${c.ip}</td>
-            <td style="color: ${statusColor}; font-weight: bold;">${c.status}</td>
+            <td><code style="font-family:'JetBrains Mono', monospace; font-size:12.5px;">${c.ip}</code></td>
+            <td><span class="${statusBadgeClass}">${c.status}</span></td>
             <td>
-              <button class="xp-btn" style="font-size:10px; padding:2px; font-weight:bold; color:#0054e3;" onclick="startStream('${c.id}', '${c.name || 'Student'}')">👁 View Screen</button>
-              <button class="xp-btn" style="font-size:10px; padding:2px;" onclick="sendWarning('${c.id}', '${c.rollNumber}')">Warn</button>
-              ${c.is_locked ? 
-                `<button class="xp-btn" style="font-size:10px; padding:2px; color:blue;" onclick="toggleLock('${c.id}', '${c.rollNumber}', false)">Unlock</button>` :
-                `<button class="xp-btn" style="font-size:10px; padding:2px; color:red;" onclick="toggleLock('${c.id}', '${c.rollNumber}', true)">Lock</button>`
-              }
-              <button class="xp-btn" style="font-size:10px; padding:2px;" onclick="unbindDevice('${c.rollNumber}')">Unbind</button>
-              <button class="xp-btn" style="font-size:10px; padding:2px; color:purple;" onclick="toggleSubmit('${c.id}', '${c.rollNumber}', true)">Submit</button>
-              <button class="xp-btn" style="font-size:10px; padding:2px; color:darkorange;" onclick="toggleSubmit('${c.id}', '${c.rollNumber}', false)">Unsubmit</button>
-              <button class="xp-btn" style="font-size:10px; padding:2px; color:darkred; font-weight:bold;" onclick="emergencyKill('${c.id}', '${c.rollNumber}')">Kill App</button>
-              ${c.status === 'SUBMITTED' ? `<button class="xp-btn" style="font-size:10px; padding:2px; color:green; font-weight:bold;" onclick="viewWorkspace('${c.rollNumber}')">View Code</button>` : ''}
+              <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <button class="dash-btn dash-btn-sm" style="color:var(--primary); font-weight:700;" onclick="startStream('${c.id}', '${c.name || 'Student'}')">👁 View Screen</button>
+                <button class="dash-btn dash-btn-sm" onclick="sendWarning('${c.id}', '${c.rollNumber}')">Warn</button>
+                ${c.is_locked ? 
+                  `<button class="dash-btn dash-btn-sm" style="color:#2563eb;" onclick="toggleLock('${c.id}', '${c.rollNumber}', false)">Unlock</button>` :
+                  `<button class="dash-btn dash-btn-sm dash-btn-danger" onclick="toggleLock('${c.id}', '${c.rollNumber}', true)">Lock</button>`
+                }
+                <button class="dash-btn dash-btn-sm" onclick="unbindDevice('${c.rollNumber}')">Unbind</button>
+                <button class="dash-btn dash-btn-sm dash-btn-purple" onclick="toggleSubmit('${c.id}', '${c.rollNumber}', true)">Submit</button>
+                <button class="dash-btn dash-btn-sm" style="color:#d97706;" onclick="toggleSubmit('${c.id}', '${c.rollNumber}', false)">Unsubmit</button>
+                <button class="dash-btn dash-btn-sm dash-btn-danger" style="font-weight:700;" onclick="emergencyKill('${c.id}', '${c.rollNumber}')">Kill App</button>
+                ${c.status === 'SUBMITTED' ? `<button class="dash-btn dash-btn-sm dash-btn-primary" onclick="viewWorkspace('${c.rollNumber}')">View Code</button>` : ''}
+              </div>
             </td>
           </tr>
         `;
@@ -777,7 +1773,7 @@
       const adminToken = localStorage.getItem('adminToken');
       if(confirm(`Are you sure you want to ${action} student ${roll}?`)) {
         socket.emit('admin_action', { type: action, targetSocketId: socketId, targetRoll: roll, adminToken });
-        setTimeout(fetchStudents, 500); // refresh students tab
+        setTimeout(fetchStudents, 500);
       }
     }
 
@@ -800,7 +1796,7 @@
 
     function emergencyKill(socketId, roll) {
       const adminToken = localStorage.getItem('adminToken');
-      if(confirm(`EMERGENCY: Are you sure you want to forcibly KILL the app for ${roll}? This will close their app immediately without submitting.`)) {
+      if(confirm(`EMERGENCY: Are you sure you want to forcibly KILL the app for ${roll}? This will terminate their exam app immediately.`)) {
         socket.emit('admin_action', { type: 'emergency_kill', targetSocketId: socketId, targetRoll: roll, adminToken });
       }
     }
@@ -812,45 +1808,45 @@
       if (msg) {
         socket.emit('admin_action', { type: 'announcement', message: msg, adminToken });
         input.value = '';
-        alert('Announcement broadcasted to all students!');
+        alert('Announcement broadcasted to all active candidates!');
       }
     }
 
-    // --- Students ---
+    // --- Students Management ---
     async function fetchStudents() {
       const tbody = document.getElementById('students-tbody');
-      tbody.innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 24px;">Loading students...</td></tr>';
       try {
         const res = await fetch('/api/admin/students');
         const data = await res.json();
         if (data.success) {
-          tbody.innerHTML = data.students.length === 0 ? '<tr><td colspan="6">No students found.</td></tr>' : '';
+          tbody.innerHTML = data.students.length === 0 ? '<tr><td colspan="7" style="text-align:center; padding: 24px; color: var(--text-muted);">No students registered yet.</td></tr>' : '';
           data.students.forEach(s => {
-            const lockedText = s.is_locked ? '<span style="color:red; font-weight:bold;">Yes</span>' : 'No';
-            const submittedText = s.has_submitted ? '<span style="color:purple; font-weight:bold;">Yes</span>' : 'No';
+            const lockedText = s.is_locked ? '<span class="badge-status locked">Yes</span>' : '<span style="color:var(--text-muted);">No</span>';
+            const submittedText = s.has_submitted ? '<span class="badge-status submitted">Yes</span>' : '<span style="color:var(--text-muted);">No</span>';
             
             let assignedArr = [];
             try { assignedArr = JSON.parse(s.assigned_questions || '[]'); } catch(e) {}
             const assignedText = assignedArr.length > 0 ? assignedArr.join(', ') : 'None (0)';
             const escapedAssigned = (s.assigned_questions || '[]').replace(/"/g, '&quot;');
             
-            const trStyle = s.has_submitted ? 'background-color: #f0f0f0; color: #666;' : '';
-            
-            tbody.innerHTML += `<tr style="${trStyle}">
-              <td>${s.roll_number}</td>
+            tbody.innerHTML += `<tr>
+              <td><strong>${s.roll_number}</strong></td>
               <td>${s.name}</td>
-              <td>${s.bound_ip || 'None'}</td>
+              <td><code>${s.bound_ip || 'None'}</code></td>
               <td>${lockedText}</td>
               <td>${submittedText}</td>
               <td>${assignedText}</td>
               <td>
-                <button class="xp-btn" style="font-size:10px; padding:2px;" onclick="openAssignModal('${s.roll_number}', '${s.name}', '${escapedAssigned}')">Assign Qs</button>
-                <button class="xp-btn" style="font-size:10px; padding:2px;" onclick="unbindDevice('${s.roll_number}')">Unbind</button>
+                <div style="display:flex; gap:6px;">
+                  <button class="dash-btn dash-btn-sm" onclick="openAssignModal('${s.roll_number}', '${s.name}', '${escapedAssigned}')">Assign Qs</button>
+                  <button class="dash-btn dash-btn-sm dash-btn-danger" onclick="unbindDevice('${s.roll_number}')">Unbind</button>
+                </div>
               </td>
             </tr>`;
           });
         }
-      } catch (err) { tbody.innerHTML = '<tr><td colspan="6" style="color:red;">Error fetching students</td></tr>'; }
+      } catch (err) { tbody.innerHTML = '<tr><td colspan="7" style="color:#dc2626; text-align:center;">Error fetching students</td></tr>'; }
     }
 
     function downloadSampleCSV() {
@@ -869,7 +1865,7 @@
       const msg = document.getElementById('csv_msg');
       if (!fileInput.files.length) {
         msg.textContent = "Please select a file first.";
-        msg.style.color = 'red';
+        msg.style.color = '#dc2626';
         return;
       }
       
@@ -877,23 +1873,23 @@
       formData.append('file', fileInput.files[0]);
 
       msg.textContent = "Uploading...";
-      msg.style.color = 'blue';
+      msg.style.color = 'var(--primary)';
 
       try {
         const res = await fetch('/api/admin/students/csv', { method: 'POST', body: formData });
         const data = await res.json();
         if (data.success) {
           msg.textContent = `Success! Added ${data.count} students.`;
-          msg.style.color = 'green';
+          msg.style.color = 'var(--primary)';
           fileInput.value = '';
           fetchStudents();
         } else {
           msg.textContent = data.error;
-          msg.style.color = 'red';
+          msg.style.color = '#dc2626';
         }
       } catch (e) {
         msg.textContent = "Upload failed.";
-        msg.style.color = 'red';
+        msg.style.color = '#dc2626';
       }
       setTimeout(() => msg.textContent = '', 5000);
     }
@@ -914,16 +1910,16 @@
         });
         const data = await res.json();
         if (data.success) {
-          msg.style.color = 'green';
+          msg.style.color = 'var(--primary)';
           msg.textContent = 'Student Added Successfully!';
           document.getElementById('form-student').reset();
           fetchStudents();
         } else {
-          msg.style.color = 'red';
+          msg.style.color = '#dc2626';
           msg.textContent = data.error;
         }
       } catch (err) {
-        msg.style.color = 'red';
+        msg.style.color = '#dc2626';
         msg.textContent = 'Network Error';
       }
       setTimeout(() => msg.textContent = '', 3000);
@@ -937,7 +1933,7 @@
       document.getElementById('assign-student-roll').value = roll_number;
       
       const container = document.getElementById('assign-checkboxes');
-      container.innerHTML = 'Loading questions...';
+      container.innerHTML = '<p style="color:var(--text-muted);">Loading questions...</p>';
       document.getElementById('assignModal').style.display = 'flex';
       
       let assignedArr = [];
@@ -950,21 +1946,21 @@
           allQuestionsList = data.questions;
           container.innerHTML = '';
           if(allQuestionsList.length === 0) {
-            container.innerHTML = 'No questions in the Question Bank.';
+            container.innerHTML = '<p style="color:var(--text-muted);">No questions found in Question Bank.</p>';
             return;
           }
           allQuestionsList.forEach(q => {
             const checked = assignedArr.includes(q.id) ? 'checked' : '';
             container.innerHTML += `
-              <div style="margin-bottom: 5px;">
+              <div style="margin-bottom: 8px; display:flex; align-items:center; gap:8px;">
                 <input type="checkbox" id="chk_${q.id}" class="assign-chk" value="${q.id}" ${checked}>
-                <label for="chk_${q.id}" style="cursor:pointer; font-weight:normal; width:auto;">${q.id} - ${q.title}</label>
+                <label for="chk_${q.id}" style="cursor:pointer; font-weight:500; font-size:13.5px; color:var(--text-main);">${q.id} - ${q.title}</label>
               </div>
             `;
           });
         }
       } catch(e) {
-        container.innerHTML = 'Error loading questions.';
+        container.innerHTML = '<p style="color:#dc2626;">Error loading questions.</p>';
       }
     }
 
@@ -999,30 +1995,31 @@
       }
     }
 
-    // --- Questions ---
+    // --- Questions CRUD ---
     async function fetchQuestions() {
       const tbody = document.getElementById('questions-tbody');
-      tbody.innerHTML = '<tr><td colspan="3">Loading...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 24px;">Loading questions...</td></tr>';
       try {
         const res = await fetch('/api/admin/questions');
         const data = await res.json();
         if (data.success) {
-          tbody.innerHTML = data.questions.length === 0 ? '<tr><td colspan="3">No questions found.</td></tr>' : '';
+          tbody.innerHTML = data.questions.length === 0 ? '<tr><td colspan="3" style="text-align:center; padding: 24px; color: var(--text-muted);">No questions available.</td></tr>' : '';
           window.cachedQuestions = data.questions;
           data.questions.forEach((q, i) => {
             tbody.innerHTML += `<tr>
-              <td>${q.id}</td>
+              <td><strong>${q.id}</strong></td>
               <td>${q.title}</td>
-              <!-- <td>${q.time_limit} mins</td> -->
               <td>
-                <button class="xp-btn" style="padding:2px 5px; font-size:11px;" onclick="loadQuestionForEdit(${i})">Edit</button>
-                <button class="xp-btn" style="padding:2px 5px; font-size:11px;" onclick="previewExistingQuestion(${i})">Preview</button>
-                <button class="xp-btn" style="padding:2px 5px; font-size:11px; color:red;" onclick="deleteQuestion('${q.id}')">Delete</button>
+                <div style="display:flex; gap:6px;">
+                  <button class="dash-btn dash-btn-sm" onclick="loadQuestionForEdit(${i})">Edit</button>
+                  <button class="dash-btn dash-btn-sm" onclick="previewExistingQuestion(${i})">Preview</button>
+                  <button class="dash-btn dash-btn-sm dash-btn-danger" onclick="deleteQuestion('${q.id}')">Delete</button>
+                </div>
               </td>
             </tr>`;
           });
         }
-      } catch (err) { tbody.innerHTML = '<tr><td colspan="3" style="color:red;">Error fetching questions</td></tr>'; }
+      } catch (err) { tbody.innerHTML = '<tr><td colspan="3" style="color:#dc2626; text-align:center;">Error fetching questions</td></tr>'; }
     }
 
     async function addQuestion(e) {
@@ -1048,16 +2045,16 @@
         });
         const data = await res.json();
         if (data.success) {
-          msg.style.color = 'green';
+          msg.style.color = 'var(--primary)';
           msg.textContent = 'Question Saved Successfully!';
           cancelEdit();
           fetchQuestions();
         } else {
-          msg.style.color = 'red';
+          msg.style.color = '#dc2626';
           msg.textContent = data.error;
         }
       } catch (err) {
-        msg.style.color = 'red';
+        msg.style.color = '#dc2626';
         msg.textContent = 'Network Error';
       }
       setTimeout(() => msg.textContent = '', 3000);
@@ -1086,13 +2083,12 @@
       document.getElementById('q_s_out').value = q.sampleOutput || '';
       document.getElementById('q_expl').value = q.explanation || '';
       document.getElementById('q_tests').value = q.testCases || '[]';
-      document.getElementById('q_msg').style.color = 'blue';
+      document.getElementById('q_msg').style.color = 'var(--primary)';
       document.getElementById('q_msg').textContent = 'Loaded for editing. Click Publish to save.';
-      document.getElementById('btn_cancel_edit').style.display = 'inline-block';
+      document.getElementById('btn_cancel_edit').style.display = 'inline-flex';
       setTimeout(() => document.getElementById('q_msg').textContent = '', 3000);
       
-      // scroll to top
-      document.querySelector('.window-content').scrollTop = 0;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function cancelEdit() {
@@ -1145,17 +2141,17 @@
         ` : ''}
 
         ${parsedTestCases.length > 0 ? `
-          <div class="question-section-title">Test Cases (${parsedTestCases.length} total)</div>
+          <div class="question-section-title">Hidden Test Cases (${parsedTestCases.length} total)</div>
           ${parsedTestCases.map((tc, ti) => `
             <div style="margin-bottom:8px;">
-              <div style="font-size:10px;color:#808080;margin-bottom:2px;">Case ${ti + 1}:</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px;">Case ${ti + 1}:</div>
               <div class="io-row">
                 <span class="io-label">Input:</span>
-                <pre class="io-value" style="font-size:10px;">${_esc(tc.input)}</pre>
+                <pre class="io-value" style="font-size:11px;">${_esc(tc.input)}</pre>
               </div>
-              <div class="io-row">
+              <div class="io-row" style="margin-top:4px;">
                 <span class="io-label">Expected:</span>
-                <pre class="io-value" style="font-size:10px;">${_esc(tc.expected)}</pre>
+                <pre class="io-value" style="font-size:11px;">${_esc(tc.expected)}</pre>
               </div>
             </div>
           `).join('')}
@@ -1186,6 +2182,7 @@
       document.getElementById('preview-modal').style.display = 'flex';
     }
 
+    // --- System Logs ---
     async function fetchLogs() {
       const container = document.getElementById('logs-container');
       try {
@@ -1195,13 +2192,14 @@
           container.innerHTML = '';
           data.logs.slice().reverse().forEach(log => {
             const d = new Date(log.timestamp);
-            container.innerHTML += `<div>[${d.toLocaleString()}] ${log.message}</div>`;
+            container.innerHTML += `<div>[${d.toLocaleTimeString()}] ${log.message}</div>`;
           });
           container.scrollTop = container.scrollHeight;
         }
       } catch (err) { container.innerHTML = 'Error fetching logs.'; }
     }
 
+    // --- Database Admin ---
     async function clearDatabaseTable() {
       const table = document.getElementById('db-table-select').value;
       if(confirm(`DANGER: Are you sure you want to PERMANENTLY CLEAR all data in the '${table}' table? This cannot be undone.`)) {
@@ -1225,30 +2223,13 @@
         }
       }
     }
-  </script>
-  <div id="workspace-modal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:80%; height:80%; background:var(--clr-bg); border:2px solid black; box-shadow:5px 5px 15px rgba(0,0,0,0.5); z-index:1000; flex-direction:column;">
-    <div class="xp-title-bar" style="cursor:move;">
-      <div class="xp-title-text" id="workspace-modal-title">Workspace Viewer</div>
-      <div class="xp-titlebar-controls">
-        <div class="xp-ctrl-btn close-btn" onclick="document.getElementById('workspace-modal').style.display='none'">✕</div>
-      </div>
-    </div>
-    <div style="display:flex; flex:1; overflow:hidden;">
-      <div style="width:200px; border-right:1px solid #ccc; background:#ece9d8; padding:10px; overflow-y:auto;" id="workspace-file-list">
-        <!-- File list -->
-      </div>
-      <div style="flex:1; padding:10px; background:white; overflow-y:auto;">
-        <pre id="workspace-file-content" style="margin:0; font-family:monospace; white-space:pre-wrap; font-size:14px;"></pre>
-      </div>
-    </div>
-  </div>
 
-  <script>
+    // --- Workspace Viewer ---
     async function viewWorkspace(rollNumber) {
-      document.getElementById('workspace-modal-title').innerText = `Workspace: ${rollNumber}`;
-      document.getElementById('workspace-file-content').innerText = 'Select a file to view content...';
+      document.getElementById('workspace-modal-title').innerText = `Workspace Code: ${rollNumber}`;
+      document.getElementById('workspace-file-content').innerText = 'Select a file on the left to preview code...';
       const fileListDiv = document.getElementById('workspace-file-list');
-      fileListDiv.innerHTML = 'Loading files...';
+      fileListDiv.innerHTML = '<p style="color:var(--text-muted); font-size:13px;">Loading submission files...</p>';
       
       const adminToken = localStorage.getItem('adminToken');
       document.getElementById('workspace-modal').style.display = 'flex';
@@ -1260,31 +2241,32 @@
         const data = await res.json();
         if (data.success) {
           if (data.files.length === 0) {
-            fileListDiv.innerHTML = 'No files found.';
+            fileListDiv.innerHTML = '<p style="color:var(--text-muted); font-size:13px;">No code files found.</p>';
             return;
           }
           fileListDiv.innerHTML = '';
           data.files.forEach(f => {
             const btn = document.createElement('button');
-            btn.className = 'xp-btn';
+            btn.className = 'dash-btn dash-btn-sm';
             btn.style.display = 'block';
             btn.style.width = '100%';
-            btn.style.marginBottom = '5px';
+            btn.style.marginBottom = '6px';
+            btn.style.textAlign = 'left';
             btn.innerText = f;
             btn.onclick = () => viewWorkspaceFile(rollNumber, f);
             fileListDiv.appendChild(btn);
           });
         } else {
-          fileListDiv.innerHTML = 'Error: ' + data.error;
+          fileListDiv.innerHTML = '<p style="color:#dc2626; font-size:13px;">Error: ' + data.error + '</p>';
         }
       } catch (e) {
-        fileListDiv.innerHTML = 'Network error.';
+        fileListDiv.innerHTML = '<p style="color:#dc2626; font-size:13px;">Network error.</p>';
       }
     }
 
     async function viewWorkspaceFile(rollNumber, filename) {
       const contentDiv = document.getElementById('workspace-file-content');
-      contentDiv.innerText = 'Loading...';
+      contentDiv.innerText = 'Loading file content...';
       const adminToken = localStorage.getItem('adminToken');
       try {
         const res = await fetch(`/api/admin/submissions/${rollNumber}/${filename}`, {
@@ -1300,6 +2282,10 @@
         contentDiv.innerText = 'Network error.';
       }
     }
+
+    // Initial load
+    fetchGlobalSettings();
+    fetchLiveStudents();
   </script>
 </body>
 </html>
