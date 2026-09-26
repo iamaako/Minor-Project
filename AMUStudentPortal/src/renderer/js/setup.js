@@ -1,11 +1,32 @@
 const btnBrowse = document.getElementById('btnBrowse');
 const statusPanel = document.getElementById('statusPanel');
 const statusMsg = document.getElementById('statusMsg');
+const inputSystemNumber = document.getElementById('inputSystemNumber');
+
+// Pre-fill system number from existing config or hostname
+if (window.examAPI && window.examAPI.getSystemNumber) {
+    window.examAPI.getSystemNumber().then(num => {
+        if (inputSystemNumber && num) {
+            inputSystemNumber.value = num;
+        }
+    }).catch(() => {});
+}
+
+async function persistCurrentSystemNumber() {
+    if (inputSystemNumber && window.examAPI && window.examAPI.saveSystemNumber) {
+        const val = inputSystemNumber.value.trim();
+        if (val) {
+            await window.examAPI.saveSystemNumber(val);
+        }
+    }
+}
 
 btnBrowse.addEventListener('click', async () => {
     try {
         resetStatus();
-        const success = await window.examAPI.manualLicenseBrowse();
+        await persistCurrentSystemNumber();
+        const sysVal = inputSystemNumber ? inputSystemNumber.value.trim() : '';
+        const success = await window.examAPI.manualLicenseBrowse(sysVal);
         if (success) {
             handleSuccess();
         } else {
@@ -16,12 +37,14 @@ btnBrowse.addEventListener('click', async () => {
     }
 });
 
-window.examAPI.onUsbInserted(() => {
+window.examAPI.onUsbInserted(async () => {
+    await persistCurrentSystemNumber();
     statusMsg.textContent = 'USB Inserted! Scanning for License Token...';
     statusMsg.className = '';
 });
 
-window.examAPI.onLicenseProcessing(() => {
+window.examAPI.onLicenseProcessing(async () => {
+    await persistCurrentSystemNumber();
     statusMsg.textContent = 'Token Detected. Activating Setup...';
     statusMsg.className = '';
 });

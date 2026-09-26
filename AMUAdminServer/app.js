@@ -30,16 +30,20 @@ const studentPort = document.getElementById('student-port');
 
 let currentPassword = '';
 
+const MAX_LOG_LINES = 30; // Strictly limit items to prevent UI hang & memory leaks
+
 function addLog(msg) {
   if (serverLogs) {
     const d = new Date();
     const timeStr = d.toLocaleTimeString([], { hour12: false });
     const div = document.createElement('div');
+    div.style.marginBottom = '3px';
+    div.style.wordBreak = 'break-all';
     div.textContent = `[${timeStr}] ${msg}`;
     serverLogs.appendChild(div);
     
-    // Prevent UI hang by keeping only the last 200 log messages
-    while (serverLogs.childNodes.length > 200) {
+    // Retain only latest MAX_LOG_LINES
+    while (serverLogs.childNodes.length > MAX_LOG_LINES) {
       serverLogs.removeChild(serverLogs.firstChild);
     }
     
@@ -57,6 +61,38 @@ async function init() {
     adminId.textContent = creds.id;
     currentPassword = creds.password;
   }
+}
+
+// Copy IP Logic (with Checkmark Tick & Auto-Revert)
+const btnCopyIp = document.getElementById('btn-copy-ip');
+if (btnCopyIp) {
+  const originalSvg = btnCopyIp.innerHTML;
+  let copyIpTimeout = null;
+
+  btnCopyIp.addEventListener('click', () => {
+    const ip = ipDisplay ? ipDisplay.textContent : '';
+    if (ip && ip !== 'Loading...') {
+      navigator.clipboard.writeText(ip);
+
+      if (copyIpTimeout) clearTimeout(copyIpTimeout);
+
+      // Show animated right tick (Checkmark)
+      btnCopyIp.innerHTML = `
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="animation: checkmarkPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      `;
+      btnCopyIp.classList.add('copied');
+      btnCopyIp.setAttribute('title', 'Copied to clipboard!');
+
+      // Revert back to copy icon after 2 seconds
+      copyIpTimeout = setTimeout(() => {
+        btnCopyIp.innerHTML = originalSvg;
+        btnCopyIp.classList.remove('copied');
+        btnCopyIp.setAttribute('title', 'Copy Local IP');
+      }, 2000);
+    }
+  });
 }
 
 // Password UI Logic
@@ -77,11 +113,22 @@ btnShowPass.addEventListener('click', () => {
   }
 });
 
+let passCopyTimeout = null;
 btnCopyPass.addEventListener('click', () => {
   navigator.clipboard.writeText(currentPassword);
-  const oldText = btnCopyPass.textContent;
-  btnCopyPass.textContent = 'Copied!';
-  setTimeout(() => { btnCopyPass.textContent = oldText; }, 1500);
+  if (passCopyTimeout) clearTimeout(passCopyTimeout);
+
+  btnCopyPass.innerHTML = `✓ Copied!`;
+  btnCopyPass.style.color = '#059669';
+  btnCopyPass.style.borderColor = '#a7f3d0';
+  btnCopyPass.style.background = '#ecfdf5';
+
+  passCopyTimeout = setTimeout(() => {
+    btnCopyPass.innerHTML = 'Copy';
+    btnCopyPass.style.color = '';
+    btnCopyPass.style.borderColor = '';
+    btnCopyPass.style.background = '';
+  }, 2000);
 });
 
 // URL click logic

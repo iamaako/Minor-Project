@@ -20,18 +20,37 @@ const Login = (() => {
   const loginSpinner  = document.getElementById('login-spinner');
   const capsWarn      = document.getElementById('capslock-warn');
   const clientIpEl    = document.getElementById('login-client-ip');
+  const systemNumEl   = document.getElementById('login-system-number');
+  const headerSysEl   = document.getElementById('header-system-number');
 
   let onSuccessCallback = null;
+
+  function _updateSystemNumberUI(num) {
+    if (systemNumEl) systemNumEl.textContent = num || '—';
+    if (headerSysEl) headerSysEl.textContent = num || 'SYS-??';
+  }
 
   // ── Public: Initialize ────────────────────────────────
 
   async function init(onSuccess) {
     onSuccessCallback = onSuccess;
 
-    // Populate seat IP
-    if (window.examAPI && clientIpEl) {
-      const ip = await window.examAPI.getClientIP();
-      clientIpEl.textContent = ip || '—';
+    // Populate seat IP & System Number
+    if (window.examAPI) {
+      if (clientIpEl) {
+        const ip = await window.examAPI.getClientIP();
+        clientIpEl.textContent = ip || '—';
+      }
+      if (window.examAPI.getSystemNumber) {
+        const sysNum = await window.examAPI.getSystemNumber();
+        _updateSystemNumberUI(sysNum);
+      }
+      if (window.examAPI.onSystemNumberUpdated) {
+        window.examAPI.onSystemNumberUpdated((newNum) => {
+          console.log('[Login] System number updated to:', newNum);
+          _updateSystemNumberUI(newNum);
+        });
+      }
     }
 
     // Enter key submits form

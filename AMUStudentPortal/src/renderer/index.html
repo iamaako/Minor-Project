@@ -96,8 +96,10 @@
         <span class="conn-dot connecting" id="login-conn-dot"></span>
         <span class="server-label">Server:</span>
         <span class="server-ip" id="login-server-url">192.168.1.50:3000</span>
-        <span style="margin-left:auto; color:#808080; font-size:10px;">
-          Seat IP: <span id="login-client-ip">—</span>
+        <span style="margin-left:auto; color:#444; font-size:11px; display:inline-flex; align-items:center; gap:6px;">
+          <span>System: <strong id="login-system-number" style="color:#0055ea; font-family:monospace; font-size:12px;">—</strong></span>
+          <span style="color:#aaa;">|</span>
+          <span>IP: <span id="login-client-ip" style="font-family:monospace;">—</span></span>
         </span>
       </div>
 
@@ -231,6 +233,12 @@
         <div style="display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.2); padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.15);">
           <span style="font-size: 14px;">⏱️</span>
           <span id="timer-display" style="font-family: var(--font-mono); font-size: 16px; font-weight: bold; color: #FFF; min-width: 50px;">90:00</span>
+        </div>
+
+        <!-- System Number Badge -->
+        <div style="display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.08); padding: 3px 10px; border: 1px solid rgba(0,0,0,0.15); border-radius: 4px;">
+          <span style="font-size: 14px;">🖥️</span>
+          <span id="header-system-number" style="color: var(--clr-primary); font-weight: bold; font-family: var(--font-mono); font-size: 12px;">SYS-??</span>
         </div>
 
         <!-- Student Profile Section -->

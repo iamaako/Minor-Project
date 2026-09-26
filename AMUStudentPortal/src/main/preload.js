@@ -37,6 +37,8 @@ contextBridge.exposeInMainWorld('examAPI', {
   connectToServer: (ip, port) => ipcRenderer.invoke('connect-server', { ip, port }),
 
   getClientIP: () => ipcRenderer.invoke('get-client-ip'),
+  getSystemNumber: () => ipcRenderer.invoke('get-system-number'),
+  saveSystemNumber: (num) => ipcRenderer.invoke('save-system-number', num),
 
   // ── Code Submission ──
   submitCode: (questionId, code, language) =>
@@ -50,11 +52,12 @@ contextBridge.exposeInMainWorld('examAPI', {
   clearWorkspace: () => ipcRenderer.invoke('clear-workspace'),
 
   // ── Setup & License ──
-  manualLicenseBrowse: () => ipcRenderer.invoke('manual-license-browse'),
+  manualLicenseBrowse: (sysNum) => ipcRenderer.invoke('manual-license-browse', sysNum),
   onUsbInserted: (callback) => ipcRenderer.on('usb-inserted', () => callback()),
   onLicenseProcessing: (callback) => ipcRenderer.on('license-processing', () => callback()),
   onLicenseSuccess: (callback) => ipcRenderer.on('license-success', () => callback()),
   onLicenseError: (callback) => ipcRenderer.on('license-error', (_event, msg) => callback(msg)),
+  onSystemNumberUpdated: (callback) => ipcRenderer.on('system-number-updated', (_event, num) => callback(num)),
 
   finalSubmitAll: (codeBuffers, rollNumber) =>
     ipcRenderer.invoke('final-submit-all', { codeBuffers, rollNumber }),

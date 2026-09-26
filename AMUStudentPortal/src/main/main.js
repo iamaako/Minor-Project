@@ -47,7 +47,42 @@ const LICENSE_DIR = process.platform === 'win32'
   ? 'C:\\ProgramData\\AMUExamPortal'
   : path.join(app.getPath('userData'), 'AMUExamPortal');
 const LICENSE_FILE = path.join(LICENSE_DIR, 'sys_lock.dat');
+const SYSTEM_INFO_FILE = path.join(LICENSE_DIR, 'system_info.json');
 const MASTER_SECRET = 'AMU_AI_CENTER_AARIF_SECURE_2026';
+
+function getSystemNumber() {
+  try {
+    if (fs.existsSync(SYSTEM_INFO_FILE)) {
+      const content = fs.readFileSync(SYSTEM_INFO_FILE, 'utf8');
+      const data = JSON.parse(content);
+      if (data && data.systemNumber && data.systemNumber.trim()) {
+        return data.systemNumber.trim();
+      }
+    }
+  } catch (err) {
+    console.error('[Main] Error reading system_info.json:', err);
+  }
+  return require('os').hostname();
+}
+
+function saveSystemNumber(newNumber) {
+  try {
+    if (!fs.existsSync(LICENSE_DIR)) {
+      fs.mkdirSync(LICENSE_DIR, { recursive: true });
+    }
+    const sysNum = (newNumber && newNumber.trim()) ? newNumber.trim() : require('os').hostname();
+    const data = {
+      systemNumber: sysNum,
+      updatedAt: Date.now()
+    };
+    fs.writeFileSync(SYSTEM_INFO_FILE, JSON.stringify(data, null, 2), 'utf8');
+    console.log(`[Main] Saved system number: ${sysNum}`);
+    return true;
+  } catch (err) {
+    console.error('[Main] Failed to save system_info.json:', err);
+    return false;
+  }
+}
 
 function getMachineUUID() {
   try {
@@ -349,8 +384,22 @@ function initSocketConnection(serverUrl) {
       console.log('[Socket] Connected to server');
       if (mainWindow) {
         mainWindow.webContents.send('connection-status', { connected: true, mock: false });
-        // Send client IP for seat identification
-        socketClient.emit('client-identify', { ip: clientIP });
+        // Send client IP, systemNumber, and hostname for seat/terminal identification
+        socketClient.emit('client-identify', {
+          ip: clientIP,
+          systemNumber: getSystemNumber(),
+          hostname: require('os').hostname()
+        });
+      }
+    });
+
+    socketClient.on('set_system_number', (data) => {
+      if (data && data.systemNumber) {
+        console.log(`[Socket] Received new system number from admin: ${data.systemNumber}`);
+        saveSystemNumber(data.systemNumber);
+        if (mainWindow) {
+          mainWindow.webContents.send('system-number-updated', data.systemNumber);
+        }
       }
     });
 
@@ -498,7 +547,7 @@ function registerIpcHandlers() {
     }
 
     return new Promise((resolve) => {
-      socketClient.emit('auth', { rollNumber, password: examPassword, clientIP }, (result) => {
+      socketClient.emit('auth', { rollNumber, password: examPassword, clientIP, systemNumber: getSystemNumber() }, (result) => {
         if (result.success) {
           setWorkspaceRollNumber(rollNumber);
         }
@@ -509,8 +558,10 @@ function registerIpcHandlers() {
     });
   });
 
-  // ── Client IP ──
+  // ── Client IP & System Number ──
   ipcMain.handle('get-client-ip', () => clientIP);
+  ipcMain.handle('get-system-number', () => getSystemNumber());
+  ipcMain.handle('save-system-number', (_event, newNumber) => saveSystemNumber(newNumber));
 
   // ── Code Submission ──
   ipcMain.handle('submit-code', async (_event, { questionId, code, language }) => {
@@ -770,7 +821,7 @@ function startUsbDetection() {
 //  LICENSE AND SETUP LOGIC
 // ═══════════════════════════════════════════════════════════
 
-ipcMain.handle('manual-license-browse', async () => {
+ipcMain.handle('manual-license-browse', async (_event, customSystemNumber) => {
   if (!isDevMode) {
     setPortalAlwaysOnTop(false);
   }
@@ -803,6 +854,11 @@ ipcMain.handle('manual-license-browse', async () => {
   const valid = verifyAakoLicense(filePaths[0]);
   
   if (valid) {
+    if (customSystemNumber && customSystemNumber.trim()) {
+      saveSystemNumber(customSystemNumber.trim());
+    } else if (!fs.existsSync(SYSTEM_INFO_FILE)) {
+      saveSystemNumber(require('os').hostname());
+    }
     mainWindow.webContents.send('license-success');
     isLicenseValid = true;
     
@@ -869,6 +925,9 @@ function handleUsbLicenseCheck() {
     if (licensePath) {
       const valid = verifyAakoLicense(licensePath);
       if (valid) {
+        if (!fs.existsSync(SYSTEM_INFO_FILE)) {
+          saveSystemNumber(require('os').hostname());
+        }
         mainWindow.webContents.send('license-success');
         isLicenseValid = true;
         if (linuxUsbScanInterval) {

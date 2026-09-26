@@ -407,11 +407,25 @@ function startServer(port = 3000, mainWindow) {
       connectedClients[socket.id] = {
         id: socket.id,
         ip: clientIp,
+        systemNumber: 'SYS-??',
+        hostname: 'Unknown',
         rollNumber: null,
-        status: 'CONNECTED'
+        name: null,
+        status: 'CONNECTED',
+        connectedAt: Date.now()
       };
       
       broadcastClientsUpdate();
+
+      socket.on('client-identify', (data) => {
+        if (connectedClients[socket.id]) {
+          if (data && data.systemNumber) connectedClients[socket.id].systemNumber = data.systemNumber;
+          if (data && data.hostname) connectedClients[socket.id].hostname = data.hostname;
+          if (data && data.ip) connectedClients[socket.id].ip = data.ip;
+          logEvent(`Client Identified: Socket ${socket.id} (System: ${connectedClients[socket.id].systemNumber}, IP: ${connectedClients[socket.id].ip})`);
+          broadcastClientsUpdate();
+        }
+      });
 
       socket.on('disconnect', () => {
         logEvent(`Socket disconnected: ${socket.id}`);
@@ -471,6 +485,9 @@ function startServer(port = 3000, mainWindow) {
           connectedClients[socket.id].name = student.name;
           connectedClients[socket.id].status = 'AUTHENTICATED';
           connectedClients[socket.id].is_locked = student.is_locked;
+          if (data && data.systemNumber) {
+            connectedClients[socket.id].systemNumber = data.systemNumber;
+          }
           
           // Load questions and send them to the newly connected student
           const allQuestions = await getQuestions();
@@ -616,6 +633,16 @@ function startServer(port = 3000, mainWindow) {
         else if (actionData.type === 'emergency_kill') {
            logEvent(`Emergency kill sent to student ${actionData.targetRoll}`);
            io.to(actionData.targetSocketId).emit('emergency_kill');
+        }
+        else if (actionData.type === 'update_system_number') {
+           const targetSid = actionData.targetSocketId;
+           const newSysNum = (actionData.targetSystemNumber || '').trim();
+           if (targetSid && newSysNum && connectedClients[targetSid]) {
+              connectedClients[targetSid].systemNumber = newSysNum;
+              io.to(targetSid).emit('set_system_number', { systemNumber: newSysNum });
+              logEvent(`Admin updated System Number for socket ${targetSid} (IP: ${connectedClients[targetSid].ip}) to: ${newSysNum}`);
+              broadcastClientsUpdate();
+           }
         }
 
         if (callback) callback({ success: true });
