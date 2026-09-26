@@ -443,6 +443,11 @@ function startServer(port = 3000, mainWindow) {
             const decoded = jwt.verify(data.adminToken, JWT_SECRET);
             if (decoded.role === 'admin') {
               socket.join('admin');
+              socket.isAdminSocket = true;
+              if (connectedClients[socket.id]) {
+                delete connectedClients[socket.id];
+                broadcastClientsUpdate();
+              }
               logEvent(`Admin dashboard connected (Socket: ${socket.id})`);
             }
           }
@@ -712,7 +717,8 @@ function getConnectedClients() {
 
 function broadcastClientsUpdate() {
   if (mainWindowRef) {
-    mainWindowRef.webContents.send('clients-update', getConnectedClients());
+    const loggedInStudents = Object.values(connectedClients).filter(c => c && c.rollNumber);
+    mainWindowRef.webContents.send('clients-update', loggedInStudents);
   }
   if (io) {
     io.to('admin').emit('clients_update', connectedClients);

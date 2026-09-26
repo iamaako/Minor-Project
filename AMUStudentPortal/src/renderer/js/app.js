@@ -88,6 +88,19 @@ function boot() {
     SocketBridge.init();
   });
 
+  const ipInput = document.getElementById('input-server-ip');
+  const portInput = document.getElementById('input-server-port');
+  const handleSetupEnter = (e) => {
+    if (e.key === 'Enter') btnConnect.click();
+  };
+  if (ipInput) {
+    ipInput.addEventListener('keydown', handleSetupEnter);
+    setTimeout(() => ipInput.focus(), 150);
+  }
+  if (portInput) {
+    portInput.addEventListener('keydown', handleSetupEnter);
+  }
+
   // ── Listen for all preload events ──
 
   // Connection status → transition from connecting to login

@@ -3,6 +3,7 @@
    ============================================================ */
 
 /* ── Full-screen desktop backdrop ── */
+#setup-screen,
 #login-screen {
   position: fixed;
   inset: 0;
@@ -13,15 +14,21 @@
   z-index: 100;
 }
 
+#setup-screen.hidden,
+#login-screen.hidden {
+  display: none !important;
+}
+
 /* ── Outer dialog window ── */
 .login-window {
-  width: 360px;
+  width: 440px;
+  max-width: 95vw;
   background-color: var(--clr-window-bg);
   border-style: solid;
   border-width: 2px;
   border-color: #FFFFFF #404040 #404040 #FFFFFF;
   outline: 1px solid #808080;
-  box-shadow: 4px 4px 12px rgba(0,0,0,0.5);
+  box-shadow: 4px 4px 16px rgba(0,0,0,0.5);
   display: flex;
   flex-direction: column;
   animation: login-appear 0.15s ease-out;
