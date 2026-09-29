@@ -34,6 +34,7 @@ const isMockMode = process.argv.includes('--mock');
 let mainWindow = null;
 let socketClient = null;       // Socket.io client (loaded dynamically)
 let clientIP    = '127.0.0.1';
+let currentServerUrl = '';
 let focusViolations = 0;
 let allowExit = false;
 let previousUsbCount = 0;
@@ -350,6 +351,7 @@ ipcMain.handle('connect-server', async (event, { ip, port }) => {
 });
 
 function initSocketConnection(serverUrl) {
+  currentServerUrl = serverUrl;
   if (isDevMode && isMockMode) {
     console.log('[Socket] Mock mode - simulating server connection to ' + serverUrl);
     // Delay long enough for Monaco + all scripts to load in renderer
@@ -462,6 +464,14 @@ function initSocketConnection(serverUrl) {
     // ── Exam State Commands ──
     socketClient.on('exam_started', () => forwardExamEvent({ type: 'exam_started' }));
     socketClient.on('exam_scheduled', (data) => forwardExamEvent({ type: 'exam_scheduled', data }));
+    socketClient.on('exam_command', (data) => {
+      console.log('[Socket] Received exam_command from server:', data);
+      forwardExamEvent(data);
+    });
+    socketClient.on('unsubmit', () => {
+      console.log('[Socket] Received unsubmit command from server');
+      forwardExamEvent({ type: 'UNSUBMIT' });
+    });
 
     // ── Invigilator Commands ──
     socketClient.on('warning', (data) => {
@@ -584,8 +594,8 @@ function registerIpcHandlers() {
     }
 
     // Zip and upload the workspace
-    if (rollNumber) {
-      const zipSuccess = await zipAndUploadWorkspace(rollNumber, SERVER_URL);
+    if (rollNumber && currentServerUrl) {
+      const zipSuccess = await zipAndUploadWorkspace(rollNumber, currentServerUrl);
       if (!zipSuccess) {
         console.warn('[Main] Workspace zip upload failed or returned false.');
       } else {
@@ -595,6 +605,7 @@ function registerIpcHandlers() {
 
     if (socketClient && socketClient.connected) {
       socketClient.emit('final-submit', { codeBuffers, clientIP });
+      socketClient.emit('submit_exam', { rollNumber });
       return { success: true };
     }
     // Fallback: HTTP POST
@@ -608,7 +619,7 @@ function registerIpcHandlers() {
     allIPs: getAllIPs(),
     devMode: isDevMode,
     mockMode: isMockMode,
-    serverURL: SERVER_URL,
+    serverURL: currentServerUrl || SERVER_URL,
     platform: process.platform,
   }));
 
@@ -636,7 +647,9 @@ function registerIpcHandlers() {
 function submitViaHttp(codeBuffers) {
   return new Promise((resolve) => {
     const payload = JSON.stringify({ codeBuffers, clientIP });
-    const url = new URL(`${SERVER_URL}/api/submit`);
+    const targetUrl = currentServerUrl || SERVER_URL;
+    if (!targetUrl) return resolve({ success: false, message: 'Server URL not configured.' });
+    const url = new URL(`${targetUrl}/api/submit`);
 
     const options = {
       hostname: url.hostname,

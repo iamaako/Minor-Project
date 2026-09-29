@@ -16,6 +16,7 @@ let globalExamStatus = "WAITING"; // WAITING or STARTED
 let globalScheduledTime = null; // timestamp or null
 let globalExamStartTime = null; // timestamp
 let autoStartInterval = null;
+let liveStudentAnalysis = {};
 
 function getLocalIpAddress() {
   const interfaces = os.networkInterfaces();
@@ -50,6 +51,7 @@ function startServer(port = 3000, mainWindow) {
     const { parse } = require('csv-parse');
     const fs = require('fs');
     const AdmZip = require('adm-zip');
+    const { spawn } = require('child_process');
     
     const { 
       getAdminCredentials, insertLog, getLogs, addStudent, getStudents, 
@@ -295,11 +297,192 @@ function startServer(port = 3000, mainWindow) {
       }
     });
 
+    // Run Submitted Code for Testing by Teacher
+    app.post('/api/admin/submissions/run', requireAdmin, async (req, res) => {
+      const { rollNumber, filename, input } = req.body;
+      if (!rollNumber || !filename) {
+        return res.status(400).json({ success: false, error: 'Missing rollNumber or filename' });
+      }
+
+      const safeFilename = path.basename(filename);
+      const studentDir = path.join(__dirname, 'submissions', rollNumber);
+      const filePath = path.join(studentDir, safeFilename);
+
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ success: false, error: 'File not found' });
+      }
+
+      const ext = path.extname(safeFilename).toLowerCase();
+      let command = '';
+      let args = [];
+      const startTime = Date.now();
+
+      const portablePy = path.join(__dirname, '..', 'AMUStudentPortal', 'portable-tools', 'python-embed', 'python.exe');
+      const pythonCmd = fs.existsSync(portablePy) ? portablePy : 'python';
+
+      const portableGcc = path.join(__dirname, '..', 'AMUStudentPortal', 'portable-tools', 'mingw', 'bin', 'gcc.exe');
+      const gccCmd = fs.existsSync(portableGcc) ? portableGcc : 'gcc';
+      const portableGpp = path.join(__dirname, '..', 'AMUStudentPortal', 'portable-tools', 'mingw', 'bin', 'g++.exe');
+      const gppCmd = fs.existsSync(portableGpp) ? portableGpp : 'g++';
+
+      const cleanupFiles = [];
+
+      try {
+        if (ext === '.py') {
+          command = pythonCmd;
+          args = [filePath];
+        } else if (ext === '.c' || ext === '.cpp') {
+          const compiler = ext === '.c' ? gccCmd : gppCmd;
+          const outName = process.platform === 'win32' ? 'runner.exe' : 'runner.out';
+          const outPath = path.join(studentDir, outName);
+          cleanupFiles.push(outPath);
+
+          const compileArgs = process.platform === 'win32'
+            ? [filePath, '-o', outPath, '-lm']
+            : [filePath, '-o', outPath, '-lm'];
+
+          const compileResult = await new Promise((resolve) => {
+            let stderr = '';
+            const proc = spawn(compiler, compileArgs, { windowsHide: true, cwd: studentDir });
+            proc.stderr.on('data', d => stderr += d.toString());
+            proc.on('close', code => resolve({ code, stderr }));
+          });
+
+          if (compileResult.code !== 0) {
+            return res.json({
+              success: true,
+              stdout: '',
+              stderr: `Compilation Error:\n${compileResult.stderr}`,
+              exitCode: compileResult.code,
+              executionTime: Date.now() - startTime
+            });
+          }
+
+          command = outPath;
+          args = [];
+        } else {
+          return res.status(400).json({ success: false, error: `Execution not supported for ${ext} files` });
+        }
+
+        const execResult = await new Promise((resolve) => {
+          let stdout = '';
+          let stderr = '';
+          let finished = false;
+
+          const proc = spawn(command, args, {
+            windowsHide: true,
+            cwd: studentDir
+          });
+
+          const timer = setTimeout(() => {
+            if (!finished) {
+              finished = true;
+              try {
+                if (process.platform === 'win32') {
+                  spawn('taskkill', ['/pid', String(proc.pid), '/f', '/t'], { windowsHide: true });
+                } else {
+                  proc.kill('SIGKILL');
+                }
+              } catch(e) {}
+              resolve({ stdout, stderr: stderr + '\n[Execution timed out (limit: 8s)]', exitCode: 124, timedOut: true });
+            }
+          }, 8000);
+
+          if (input && proc.stdin && proc.stdin.writable) {
+            try {
+              proc.stdin.write(input.endsWith('\n') ? input : input + '\n');
+              proc.stdin.end();
+            } catch(e) {}
+          } else if (proc.stdin) {
+            proc.stdin.end();
+          }
+
+          proc.stdout.on('data', d => stdout += d.toString());
+          proc.stderr.on('data', d => stderr += d.toString());
+
+          proc.on('close', (code) => {
+            if (!finished) {
+              finished = true;
+              clearTimeout(timer);
+              resolve({ stdout, stderr, exitCode: code, timedOut: false });
+            }
+          });
+
+          proc.on('error', (err) => {
+            if (!finished) {
+              finished = true;
+              clearTimeout(timer);
+              resolve({ stdout, stderr: `Process Error: ${err.message}`, exitCode: 1, timedOut: false });
+            }
+          });
+        });
+
+        for (const f of cleanupFiles) {
+          try { if (fs.existsSync(f)) fs.unlinkSync(f); } catch(e) {}
+        }
+
+        res.json({
+          success: true,
+          stdout: execResult.stdout,
+          stderr: execResult.stderr,
+          exitCode: execResult.exitCode,
+          executionTime: Date.now() - startTime
+        });
+
+      } catch (err) {
+        for (const f of cleanupFiles) {
+          try { if (fs.existsSync(f)) fs.unlinkSync(f); } catch(e) {}
+        }
+        res.status(500).json({ success: false, error: err.message });
+      }
+    });
+
     // Logout
     app.post('/api/admin/logout', requireAdmin, (req, res) => {
       req.session.destroy();
       logEvent('Admin logged out.');
       res.json({ success: true });
+    });
+
+    // Live Code & Test Analysis
+    app.get('/api/admin/live-analysis', requireAdmin, (req, res) => {
+      const activeRolls = new Set();
+      const combined = [];
+
+      Object.values(connectedClients).forEach(c => {
+        if (!c || !c.rollNumber) return;
+        activeRolls.add(c.rollNumber);
+        combined.push({
+          rollNumber: c.rollNumber,
+          name: c.name || 'Candidate',
+          systemNumber: c.systemNumber || 'SYS-??',
+          ip: c.ip || '',
+          status: c.status || 'CONNECTED',
+          socketId: c.id,
+          currentCode: c.currentCode || (c.behavior ? c.behavior.currentCode : '') || '',
+          currentLanguage: c.currentLanguage || (c.behavior ? c.behavior.currentLanguage : 'python') || 'python',
+          wpm: c.behavior ? c.behavior.wpm : 0,
+          idleSeconds: c.behavior ? c.behavior.idleSeconds : 0,
+          keystrokeVariance: c.behavior ? c.behavior.keystrokeVariance : 0,
+          backspaceRatio: c.behavior ? c.behavior.backspaceRatio : 0,
+          suspicionScore: c.behavior ? c.behavior.suspicionScore : 0,
+          riskLevel: c.behavior ? c.behavior.riskLevel : 'NORMAL',
+          anomalies: c.behavior ? (c.behavior.anomalies || []) : [],
+          lastUpdated: c.behavior ? c.behavior.lastUpdated : Date.now(),
+          isConnected: true
+        });
+      });
+
+      Object.keys(liveStudentAnalysis).forEach(roll => {
+        if (!activeRolls.has(roll)) {
+          combined.push({
+            ...liveStudentAnalysis[roll],
+            isConnected: false
+          });
+        }
+      });
+
+      res.json({ success: true, students: combined });
     });
 
     // Global Settings
@@ -555,6 +738,61 @@ function startServer(port = 3000, mainWindow) {
           } else {
             broadcastClientsUpdate();
           }
+        }
+      });
+
+      // Student Behavioral Biometrics Listener
+      socket.on('student_behavior', (data) => {
+        const c = connectedClients[socket.id];
+        if (c && data) {
+          const currentCode = data.currentCode || '';
+          const currentLanguage = data.currentLanguage || 'python';
+          c.currentCode = currentCode;
+          c.currentLanguage = currentLanguage;
+          c.behavior = {
+            wpm: data.wpm || 0,
+            idleSeconds: data.idleSeconds || 0,
+            keystrokeVariance: data.keystrokeVariance || 0,
+            backspaceRatio: data.backspaceRatio || 0,
+            suspicionScore: data.suspicionScore || 0,
+            riskLevel: data.riskLevel || 'NORMAL',
+            anomalies: data.anomalies || [],
+            currentCode,
+            currentLanguage,
+            lastUpdated: Date.now()
+          };
+
+          if (c.rollNumber) {
+            liveStudentAnalysis[c.rollNumber] = {
+              rollNumber: c.rollNumber,
+              name: c.name || 'Candidate',
+              systemNumber: c.systemNumber || 'SYS-??',
+              ip: c.ip || '',
+              status: c.status || 'CONNECTED',
+              socketId: socket.id,
+              currentCode,
+              currentLanguage,
+              ...c.behavior
+            };
+          }
+
+          if (data.alertAnomaly) {
+            const roll = c.rollNumber || 'Unknown';
+            const name = c.name || 'Candidate';
+            const sys = c.systemNumber || 'SYS-??';
+            const logMsg = `⚠️ [Behavior Anomaly] ${name} (${roll}, ${sys}): ${data.alertAnomaly} (Suspicion: ${data.suspicionScore}%)`;
+            logEvent(logMsg);
+            io.to('admin').emit('behavior_alert', {
+              socketId: socket.id,
+              rollNumber: roll,
+              name,
+              systemNumber: sys,
+              anomaly: data.alertAnomaly,
+              score: data.suspicionScore
+            });
+          }
+
+          broadcastClientsUpdate();
         }
       });
       

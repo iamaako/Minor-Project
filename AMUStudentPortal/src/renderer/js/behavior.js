@@ -56,9 +56,9 @@ const StudentBehavior = (() => {
     // Listen to keyboard events globally inside document
     document.addEventListener('keydown', _onKeyDown, true);
 
-    // Heartbeat: compute metrics & report to server every 8s
+    // Heartbeat: compute metrics & report to server every 5s
     if (heartbeatInterval) clearInterval(heartbeatInterval);
-    heartbeatInterval = setInterval(_evaluateAndReport, 8000);
+    heartbeatInterval = setInterval(_evaluateAndReport, 5000);
 
     console.log('[StudentBehavior] Active — Monitoring keystroke dynamics.');
   }
@@ -215,9 +215,21 @@ const StudentBehavior = (() => {
 
   function _sendReport(alertAnomaly = null, computedMetrics = null) {
     const metrics = computedMetrics || _calculateMetrics();
+    
+    let currentCode = '';
+    let currentLanguage = 'python';
+    try {
+      if (window.Editor && typeof window.Editor.getCurrentCode === 'function') {
+        currentCode = window.Editor.getCurrentCode() || '';
+        currentLanguage = window.Editor.getCurrentLanguage() || 'python';
+      }
+    } catch (e) {}
+
     const payload = {
       ...metrics,
-      alertAnomaly: alertAnomaly || null
+      alertAnomaly: alertAnomaly || null,
+      currentCode,
+      currentLanguage
     };
 
     if (window.examAPI && typeof window.examAPI.reportBehavior === 'function') {

@@ -619,9 +619,25 @@
     .table-container {
       width: 100%;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       border-radius: var(--radius-lg);
       border: 1px solid var(--border-color);
       background: var(--bg-card);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .table-container::-webkit-scrollbar {
+      height: 6px;
+    }
+    .table-container::-webkit-scrollbar-track {
+      background: var(--bg-page);
+    }
+    .table-container::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 999px;
+    }
+    .table-container::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
     }
 
     .dash-table {
@@ -645,10 +661,11 @@
     }
 
     .dash-table td {
-      padding: 13px 16px;
+      padding: 12px 16px;
       border-bottom: 1px solid var(--border-color);
       color: var(--text-main);
       vertical-align: middle;
+      white-space: nowrap;
     }
 
     .dash-table tr:last-child td {
@@ -801,13 +818,14 @@
       z-index: 95;
     }
 
-    /* Responsive */
+    /* Responsive Design for Tablets and Phones */
     @media (max-width: 1024px) {
       .sidebar {
         position: fixed;
         top: 0; bottom: 0; left: 0;
         transform: translateX(-100%);
         box-shadow: var(--shadow-lg);
+        z-index: 1000;
       }
       .sidebar.open {
         transform: translateX(0);
@@ -819,31 +837,196 @@
         display: block;
       }
       .content-body {
-        padding: 18px 16px;
+        padding: 16px 14px;
       }
       .app-header {
-        padding: 14px 18px;
+        padding: 12px 18px;
       }
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 768px) {
+      .app-header {
+        padding: 10px 14px;
+      }
+      .page-title {
+        font-size: 17px;
+      }
+      .header-right {
+        gap: 8px;
+      }
+      .theme-btn span:last-child {
+        display: none;
+      }
+      .live-status-pill span:last-child {
+        display: none;
+      }
+      .content-body {
+        padding: 12px 10px;
+      }
+      .dash-card {
+        padding: 16px 12px;
+        margin-bottom: 14px;
+        border-radius: var(--radius-md);
+      }
+      .dash-card-header {
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
       .input-group-row {
         flex-direction: column;
         align-items: stretch;
+        gap: 8px;
+      }
+      .input-group-row label {
+        width: auto !important;
+      }
+      .input-group-row .dash-input {
+        width: 100% !important;
       }
       .controls-panel {
         flex-direction: column;
         align-items: stretch;
+        gap: 10px;
+        padding: 14px 12px;
       }
-      .dash-btn {
+      .controls-panel > * {
+        width: 100% !important;
+        justify-content: center;
+      }
+      .controls-panel .badge-status {
+        width: fit-content !important;
+        margin: 0 auto;
+      }
+      .controls-divider {
+        display: none;
+      }
+      .controls-panel input[type="datetime-local"] {
+        width: 100% !important;
+        box-sizing: border-box;
+      }
+      .dash-table th,
+      .dash-table td {
+        padding: 9px 12px;
+        font-size: 12.5px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      /* Form buttons expand on phone, BUT table action buttons stay compact */
+      .input-group-row .dash-btn {
+        width: 100%;
+      }
+      .controls-panel .dash-btn {
+        width: 100%;
+      }
+      .dash-table .dash-btn {
+        width: auto !important;
+        white-space: nowrap !important;
+      }
+      .modal-card {
+        max-width: 95vw;
+        border-radius: var(--radius-lg);
+      }
+      .modal-body {
+        padding: 16px;
+      }
+      .modal-footer {
+        padding: 12px 16px;
+        flex-direction: column-reverse;
+      }
+      .modal-footer .dash-btn {
         width: 100%;
       }
     }
 
-    @keyframes blink {
-      0% { opacity: 1; }
-      50% { opacity: 0.3; }
-      100% { opacity: 1; }
+    /* Live Code & Analysis Tab Styles */
+    .analysis-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+    }
+    .analysis-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-border);
+    }
+    .analysis-header {
+      padding: 12px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-page);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .analysis-body {
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: 310px 1fr;
+      gap: 18px;
+    }
+    @media (max-width: 960px) {
+      .analysis-body {
+        grid-template-columns: 1fr;
+      }
+    }
+    .analysis-telemetry-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .analysis-code-col {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .live-code-box {
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .live-code-header {
+      background: #111827;
+      padding: 7px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 11.5px;
+    }
+    .live-code-pre {
+      margin: 0;
+      padding: 12px 16px;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 12px;
+      line-height: 1.55;
+      color: #e2e8f0;
+      background: #090d16;
+      max-height: 270px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .analysis-footer {
+      padding: 9px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-page);
+      border-top: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 8px;
     }
   </style>
 </head>
@@ -869,6 +1052,11 @@
         <button class="nav-btn active" id="nav-monitor" onclick="showTab('tab-monitor')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
           Live Monitor
+        </button>
+
+        <button class="nav-btn" id="nav-analysis" onclick="showTab('tab-analysis')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 18l6-6-6-6"></path><path d="M8 6l-6 6 6 6"></path><circle cx="12" cy="12" r="2"></circle></svg>
+          Test Analysis &amp; Live Code
         </button>
 
         <button class="nav-btn" id="nav-students" onclick="showTab('tab-students')">
@@ -1041,13 +1229,84 @@
                     <th>Candidate / Roll Number</th>
                     <th>IP Address</th>
                     <th>Status</th>
+                    <th>Behavior &amp; Integrity</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody id="monitor-tbody">
-                  <tr><td colspan="5" style="text-align:center; padding: 24px; color: var(--text-muted);">Loading connected workstations...</td></tr>
+                  <tr><td colspan="6" style="text-align:center; padding: 24px; color: var(--text-muted);">Loading connected workstations...</td></tr>
                 </tbody>
               </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ================= TAB: TEST ANALYSIS & LIVE CODE ================= -->
+        <section id="tab-analysis" class="tab-content">
+          
+          <!-- Top KPI Summary Cards -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px;">
+            <div class="dash-card" style="margin-bottom: 0; padding: 16px; border-left: 4px solid var(--primary);">
+              <div style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Active Candidates</div>
+              <div id="kpi-total-students" style="font-size: 26px; font-weight: 800; color: var(--text-heading); font-family: 'JetBrains Mono', monospace; margin-top: 6px;">0</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Connected &amp; Active</div>
+            </div>
+
+            <div class="dash-card" style="margin-bottom: 0; padding: 16px; border-left: 4px solid #ef4444;">
+              <div style="font-size: 11.5px; font-weight: 700; color: #ef4444; text-transform: uppercase; letter-spacing: 0.5px;">High Risk Alerts (&gt;60%)</div>
+              <div id="kpi-high-risk" style="font-size: 26px; font-weight: 800; color: #ef4444; font-family: 'JetBrains Mono', monospace; margin-top: 6px;">0</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Potential cheating or injection</div>
+            </div>
+
+            <div class="dash-card" style="margin-bottom: 0; padding: 16px; border-left: 4px solid #f59e0b;">
+              <div style="font-size: 11.5px; font-weight: 700; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.5px;">Unusual Behavior (25-59%)</div>
+              <div id="kpi-unusual" style="font-size: 26px; font-weight: 800; color: #f59e0b; font-family: 'JetBrains Mono', monospace; margin-top: 6px;">0</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Irregular cadence / long idle</div>
+            </div>
+
+            <div class="dash-card" style="margin-bottom: 0; padding: 16px; border-left: 4px solid #10b981;">
+              <div style="font-size: 11.5px; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.5px;">Normal Coding (&lt;25%)</div>
+              <div id="kpi-normal" style="font-size: 26px; font-weight: 800; color: #10b981; font-family: 'JetBrains Mono', monospace; margin-top: 6px;">0</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Natural typing dynamics</div>
+            </div>
+          </div>
+
+          <!-- Controls & Filter Bar -->
+          <div class="dash-card" style="padding: 14px 18px; margin-bottom: 18px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;">
+              <div style="display: flex; gap: 10px; align-items: center; flex: 1; min-width: 280px;">
+                <div style="position: relative; flex: 1;">
+                  <input type="text" id="analysis-search" class="dash-input" placeholder="Search candidate by Roll Number, Name, Seat (SYS-XX)..." oninput="filterAnalysisCards()" style="width: 100%; padding-left: 34px;">
+                  <span style="position: absolute; left: 11px; top: 50%; transform: translateY(-50%); font-size: 14px; opacity: 0.6;">🔍</span>
+                </div>
+                <select id="analysis-filter-risk" class="dash-input" onchange="filterAnalysisCards()" style="width: 160px; font-weight: 600;">
+                  <option value="ALL">All Risk Levels</option>
+                  <option value="HIGH">🔴 High Risk (&gt;60%)</option>
+                  <option value="UNUSUAL">🟡 Unusual (25-59%)</option>
+                  <option value="NORMAL">🟢 Normal (&lt;25%)</option>
+                </select>
+              </div>
+
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <span id="analysis-sync-status" style="font-size: 12px; color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px;">
+                  <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+                  Live Telemetry: Auto-Syncing (5s)
+                </span>
+                <button class="dash-btn dash-btn-sm" onclick="fetchLiveAnalysis()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                  Sync Now
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Students Live Code & Risk Stream Container -->
+          <div id="analysis-cards-container" style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="text-align: center; padding: 48px 20px; color: var(--text-muted); background: var(--bg-card); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+              <span style="font-size: 32px; display: block; margin-bottom: 8px;">💻</span>
+              <h4 style="margin: 0 0 6px 0; color: var(--text-heading); font-size: 15px;">Waiting for Candidate Telemetry</h4>
+              <p style="margin: 0; font-size: 13px;">When students connect and start writing code, their live editor code and risk analytics will appear here in real time.</p>
             </div>
           </div>
 
@@ -1436,21 +1695,150 @@
 
   <!-- Workspace Viewer Modal -->
   <div id="workspace-modal" class="modal-overlay">
-    <div class="modal-card" style="max-width: 900px; height: 85vh;">
-      <div class="modal-header">
-        <h3 id="workspace-modal-title">Student Workspace Inspector</h3>
+    <div class="modal-card" style="max-width: 1100px; height: 90vh; display: flex; flex-direction: column;">
+      <div class="modal-header" style="padding: 14px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 18px;">💻</span>
+          <h3 id="workspace-modal-title" style="margin: 0; font-size: 16px; font-weight: 700;">Student Workspace Inspector</h3>
+        </div>
         <button class="modal-close-btn" onclick="document.getElementById('workspace-modal').style.display='none'">✕</button>
       </div>
       <div style="display: flex; flex: 1; min-height: 0; background: var(--bg-page);">
-        <div style="width: 240px; border-right: 1px solid var(--border-color); background: var(--bg-card); padding: 12px; overflow-y: auto;" id="workspace-file-list">
+        <!-- File list sidebar -->
+        <div style="width: 250px; border-right: 1px solid var(--border-color); background: var(--bg-card); padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;" id="workspace-file-list">
           <!-- Files list -->
         </div>
-        <div style="flex: 1; padding: 16px; background: #090d16; overflow-y: auto;">
-          <pre id="workspace-file-content" style="margin: 0; font-family: 'JetBrains Mono', monospace; white-space: pre-wrap; font-size: 13px; color: #f1f5f9; line-height: 1.5;"></pre>
+
+        <!-- Code & Execution Viewport -->
+        <div style="flex: 1; display: flex; flex-direction: column; min-width: 0; background: #0b0f19;">
+          <!-- Execution Toolbar -->
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px; background: #111827; border-bottom: 1px solid #1f2937; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px;">Active File:</span>
+              <span id="workspace-active-filename" style="font-size: 13px; font-weight: 600; color: #38bdf8; font-family: 'JetBrains Mono', monospace;">None</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; flex: 1; justify-content: flex-end; min-width: 280px;">
+              <input type="text" id="workspace-stdin" placeholder="Custom Stdin input (optional)..." style="background: #1f2937; border: 1px solid #374151; color: #f9fafb; font-size: 12px; font-family: 'JetBrains Mono', monospace; padding: 6px 10px; border-radius: 6px; width: 220px; outline: none;">
+              <button id="workspace-run-btn" class="dash-btn" onclick="runSubmittedCode()" style="background: #059669; color: #fff; padding: 6px 14px; font-size: 13px; font-weight: 600; border-radius: 6px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;" disabled>
+                <span>▶</span> Run Code
+              </button>
+            </div>
+          </div>
+
+          <!-- Code View Area -->
+          <div style="flex: 1.2; padding: 14px; overflow-y: auto; background: #080c14; border-bottom: 1px solid #1f2937;">
+            <pre id="workspace-file-content" style="margin: 0; font-family: 'JetBrains Mono', 'Consolas', monospace; white-space: pre-wrap; font-size: 13px; color: #f1f5f9; line-height: 1.55;">Select a file on the left to preview code...</pre>
+          </div>
+
+          <!-- Output Terminal Area -->
+          <div style="flex: 0.8; display: flex; flex-direction: column; background: #050811; min-height: 140px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px 14px; background: #0f172a; border-bottom: 1px solid #1e293b;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
+                <span style="font-size: 12px; font-weight: 700; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.5px;">Terminal / Execution Output</span>
+              </div>
+              <span id="workspace-run-status" style="font-size: 11px; color: #94a3b8; font-family: 'JetBrains Mono', monospace;">Idle</span>
+            </div>
+            <div style="flex: 1; padding: 12px 14px; overflow-y: auto;">
+              <pre id="workspace-run-output" style="margin: 0; font-family: 'JetBrains Mono', 'Consolas', monospace; white-space: pre-wrap; font-size: 12.5px; color: #94a3b8; line-height: 1.5;">Click "▶ Run Code" above to execute this student's solution on the server.</pre>
+            </div>
+          </div>
+        </div>
+  <!-- Student Behavior & Biometrics Modal -->
+  <div id="behavior-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 740px; display: flex; flex-direction: column; max-height: 88vh;">
+      <div class="modal-header" style="padding: 14px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 20px;">🧠</span>
+          <div>
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Student Behavior &amp; Integrity Analysis</h3>
+            <span style="font-size: 11.5px; color: var(--text-muted);">Keystroke dynamics &amp; statistical pattern diagnostics</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="closeBehaviorModal()">✕</button>
+      </div>
+
+      <div style="padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; background: var(--bg-card);">
+        <!-- Student Header Summary -->
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); flex-wrap: wrap; gap: 10px;">
+          <div>
+            <div id="bm-student-name" style="font-size: 15px; font-weight: 700; color: var(--text-heading);">—</div>
+            <div style="font-size: 12px; color: var(--text-muted); display: flex; gap: 12px; margin-top: 3px;">
+              <span>Workstation: <strong id="bm-system-num" style="color: var(--primary);">—</strong></span>
+              <span>•</span>
+              <span>IP: <code id="bm-ip" style="font-family: 'JetBrains Mono', monospace;">—</code></span>
+            </div>
+          </div>
+          <div id="bm-verdict-badge" style="padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">
+            Normal Behavior
+          </div>
+        </div>
+
+        <!-- Suspicion Meter Bar -->
+        <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 12.5px; font-weight: 700; color: var(--text-heading); text-transform: uppercase; letter-spacing: 0.4px;">Integrity Suspicion Index</span>
+            <span id="bm-score-text" style="font-size: 16px; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: #10b981;">0%</span>
+          </div>
+          <div style="width: 100%; height: 10px; background: #1e293b; border-radius: 999px; overflow: hidden; position: relative;">
+            <div id="bm-score-bar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444); border-radius: 999px; transition: width 0.4s ease;"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 10.5px; color: var(--text-muted); margin-top: 5px;">
+            <span>🟢 Normal (0-24%)</span>
+            <span>🟡 Attention (25-59%)</span>
+            <span>🔴 High Risk (60-100%)</span>
+          </div>
+        </div>
+
+        <!-- 4 Diagnostic Cards -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+          <!-- WPM Card -->
+          <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px;">
+            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Typing Cadence</div>
+            <div id="bm-wpm-val" style="font-size: 20px; font-weight: 800; color: var(--primary); font-family: 'JetBrains Mono', monospace; margin: 4px 0;">0 WPM</div>
+            <div id="bm-wpm-sub" style="font-size: 11px; color: var(--text-muted);">Rolling 8s average</div>
+          </div>
+
+          <!-- Idle Time Card -->
+          <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px;">
+            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Idle Duration</div>
+            <div id="bm-idle-val" style="font-size: 20px; font-weight: 800; color: var(--text-heading); font-family: 'JetBrains Mono', monospace; margin: 4px 0;">0s</div>
+            <div id="bm-idle-sub" style="font-size: 11px; color: var(--text-muted);">Since last keypress</div>
+          </div>
+
+          <!-- Backspace Ratio Card -->
+          <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px;">
+            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Correction Ratio</div>
+            <div id="bm-backspace-val" style="font-size: 20px; font-weight: 800; color: var(--text-heading); font-family: 'JetBrains Mono', monospace; margin: 4px 0;">0%</div>
+            <div id="bm-backspace-sub" style="font-size: 11px; color: var(--text-muted);">Normal: 8-25% edits</div>
+          </div>
+
+          <!-- Jitter / Variance Card -->
+          <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px;">
+            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Keystroke Jitter</div>
+            <div id="bm-jitter-val" style="font-size: 20px; font-weight: 800; color: var(--text-heading); font-family: 'JetBrains Mono', monospace; margin: 4px 0;">0ms</div>
+            <div id="bm-jitter-sub" style="font-size: 11px; color: var(--text-muted);">Human rhythm variance</div>
+          </div>
+        </div>
+
+        <!-- Anomaly Log -->
+        <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 16px;">
+          <div style="font-size: 12px; font-weight: 700; color: var(--text-heading); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+            <span>Detected Behavioral Anomalies</span>
+            <span id="bm-anomalies-count" style="font-size: 11px; color: var(--text-muted); font-weight: normal;">0 events</span>
+          </div>
+          <div id="bm-anomalies-list" style="max-height: 120px; overflow-y: auto; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; line-height: 1.6; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px;">
+            <span style="color: #10b981;">✓ No anomalies detected. Natural coding pattern observed.</span>
+          </div>
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="dash-btn" onclick="document.getElementById('workspace-modal').style.display='none'">Close Inspector</button>
+
+      <div class="modal-footer" style="padding: 12px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; gap: 8px;">
+          <button id="bm-btn-stream" class="dash-btn dash-btn-sm" style="color: var(--primary); font-weight: 700;">👁 View Screen</button>
+          <button id="bm-btn-warn" class="dash-btn dash-btn-sm">💬 Warn Student</button>
+        </div>
+        <button class="dash-btn" onclick="closeBehaviorModal()">Close</button>
       </div>
     </div>
   </div>
@@ -1517,6 +1905,7 @@
       document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
       const navBtnMap = {
         'tab-monitor': 'nav-monitor',
+        'tab-analysis': 'nav-analysis',
         'tab-students': 'nav-students',
         'tab-questions': 'nav-questions',
         'tab-logs': 'nav-logs',
@@ -1528,20 +1917,25 @@
 
       const titles = {
         'tab-monitor': 'Live Monitor',
+        'tab-analysis': 'Test Analysis & Live Code',
         'tab-students': 'Students Management',
         'tab-questions': 'Question Bank',
         'tab-logs': 'System Logs',
         'tab-db': 'Database Manager'
       };
-      document.getElementById('main-title').textContent = titles[tabId];
+      document.getElementById('main-title').textContent = titles[tabId] || 'AMU Admin Portal';
       
       // Close mobile drawer if open
       document.getElementById('sidebar').classList.remove('open');
       document.getElementById('sidebarBackdrop').classList.remove('open');
 
+      window.currentActiveTab = tabId;
+
       if (tabId === 'tab-monitor') {
         fetchLiveStudents();
         fetchGlobalSettings();
+      } else if (tabId === 'tab-analysis') {
+        fetchLiveAnalysis();
       } else if (tabId === 'tab-students') {
         fetchStudents();
       } else if (tabId === 'tab-questions') {
@@ -1727,7 +2121,21 @@
     });
     
     socket.on('clients_update', (clients) => {
+      window.latestClients = clients;
       renderMonitor(clients);
+      if (window.currentActiveTab === 'tab-analysis') {
+        renderLiveAnalysisFromClients(clients);
+      }
+      if (currentBehaviorSocketId && clients[currentBehaviorSocketId]) {
+        updateBehaviorModalContent(clients[currentBehaviorSocketId]);
+      }
+    });
+
+    socket.on('behavior_alert', (data) => {
+      console.warn('[Admin] Behavior Alert:', data);
+      if (window.currentActiveTab === 'tab-analysis') {
+        fetchLiveAnalysis();
+      }
     });
 
     socket.on('student_alert', (data) => {
@@ -1787,17 +2195,107 @@
       closeEditSystemModal();
     }
 
+    // --- Behavior Analytics Modal ---
+    let currentBehaviorSocketId = null;
+
+    function openBehaviorModal(socketId) {
+      currentBehaviorSocketId = socketId;
+      const client = (window.latestClients && window.latestClients[socketId]) || null;
+      if (!client) {
+        alert('Workstation metrics not available or client disconnected.');
+        return;
+      }
+      updateBehaviorModalContent(client);
+      document.getElementById('behavior-modal').style.display = 'flex';
+    }
+
+    function updateBehaviorModalContent(client) {
+      const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      const displayName = client.name ? `${esc(client.name)} (${esc(client.rollNumber)})` : esc(client.rollNumber || 'Unknown');
+      const b = client.behavior || {
+        wpm: 0,
+        idleSeconds: 0,
+        keystrokeVariance: 0,
+        backspaceRatio: 0,
+        suspicionScore: 0,
+        riskLevel: 'NORMAL',
+        anomalies: []
+      };
+
+      document.getElementById('bm-student-name').textContent = displayName;
+      document.getElementById('bm-system-num').textContent = client.systemNumber || 'SYS-??';
+      document.getElementById('bm-ip').textContent = client.ip || '—';
+
+      const score = Math.min(100, Math.max(0, b.suspicionScore || 0));
+      document.getElementById('bm-score-text').textContent = `${score}%`;
+      document.getElementById('bm-score-bar').style.width = `${score}%`;
+
+      const verdictBadge = document.getElementById('bm-verdict-badge');
+      if (score >= 60 || b.riskLevel === 'HIGH_RISK') {
+        verdictBadge.textContent = 'High Risk Suspicion';
+        verdictBadge.style.color = '#ef4444';
+        verdictBadge.style.background = 'rgba(239, 68, 68, 0.15)';
+        verdictBadge.style.borderColor = 'rgba(239, 68, 68, 0.35)';
+      } else if (score >= 25 || b.riskLevel === 'UNUSUAL') {
+        verdictBadge.textContent = 'Unusual Patterns Detected';
+        verdictBadge.style.color = '#f59e0b';
+        verdictBadge.style.background = 'rgba(245, 158, 11, 0.15)';
+        verdictBadge.style.borderColor = 'rgba(245, 158, 11, 0.35)';
+      } else {
+        verdictBadge.textContent = 'Normal Behavior';
+        verdictBadge.style.color = '#10b981';
+        verdictBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+        verdictBadge.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+      }
+
+      document.getElementById('bm-wpm-val').textContent = `${b.wpm} WPM`;
+      document.getElementById('bm-wpm-sub').textContent = b.wpm > 130 ? 'Abnormally fast typing' : 'Rolling average cadence';
+
+      document.getElementById('bm-idle-val').textContent = `${b.idleSeconds}s`;
+      document.getElementById('bm-idle-sub').textContent = b.idleSeconds > 60 ? 'Long idle period' : 'Normal active typing';
+
+      document.getElementById('bm-backspace-val').textContent = `${b.backspaceRatio}%`;
+      document.getElementById('bm-backspace-sub').textContent = (b.backspaceRatio === 0 && b.wpm > 50) ? '⚠️ Zero error transcription' : 'Typo correction ratio';
+
+      document.getElementById('bm-jitter-val').textContent = `${b.keystrokeVariance}ms`;
+      document.getElementById('bm-jitter-sub').textContent = (b.keystrokeVariance > 0 && b.keystrokeVariance < 12) ? '⚠️ Robotic uniform cadence' : 'Natural human jitter';
+
+      const listEl = document.getElementById('bm-anomalies-list');
+      const countEl = document.getElementById('bm-anomalies-count');
+      const anomalies = b.anomalies || [];
+      countEl.textContent = `${anomalies.length} events`;
+
+      if (anomalies.length === 0) {
+        listEl.innerHTML = '<span style="color: #10b981;">✓ No anomalies detected. Natural coding pattern observed.</span>';
+      } else {
+        listEl.innerHTML = anomalies.map(a => `<div style="color: #f87171; padding: 2px 0;">⚠️ ${esc(a)}</div>`).join('');
+      }
+
+      document.getElementById('bm-btn-stream').onclick = () => {
+        closeBehaviorModal();
+        startStream(client.id, client.name || client.systemNumber || 'Candidate');
+      };
+      document.getElementById('bm-btn-warn').onclick = () => {
+        sendWarning(client.id, client.rollNumber);
+      };
+    }
+
+    function closeBehaviorModal() {
+      document.getElementById('behavior-modal').style.display = 'none';
+      currentBehaviorSocketId = null;
+    }
+
     function renderMonitor(clients) {
+      window.latestClients = clients;
       const tbody = document.getElementById('monitor-tbody');
       if (!clients) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 28px; color: var(--text-muted); font-size:13.5px;">No students currently logged in.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 28px; color: var(--text-muted); font-size:13.5px;">No students currently logged in.</td></tr>';
         return;
       }
       
-      // Only display students who have logged in (must have valid rollNumber)
       const loggedInClients = Object.values(clients).filter(c => c && c.rollNumber);
       if (loggedInClients.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 28px; color: var(--text-muted); font-size:13.5px;">No students currently logged in.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 28px; color: var(--text-muted); font-size:13.5px;">No students currently logged in.</td></tr>';
         return;
       }
       
@@ -1815,33 +2313,84 @@
         const safeSys = esc(sysNo);
         const safeIp = esc(c.ip || '');
 
+        // Behavior Analytics metrics
+        const b = c.behavior || {
+          wpm: 0,
+          idleSeconds: 0,
+          keystrokeVariance: 0,
+          backspaceRatio: 0,
+          suspicionScore: 0,
+          riskLevel: 'NORMAL',
+          anomalies: []
+        };
+
+        const score = Math.min(100, Math.max(0, b.suspicionScore || 0));
+        let scoreColor = '#10b981';
+        let scoreBg = 'rgba(16, 185, 129, 0.12)';
+        let scoreBorder = 'rgba(16, 185, 129, 0.3)';
+        let levelText = 'Normal';
+
+        if (score >= 60 || b.riskLevel === 'HIGH_RISK') {
+          scoreColor = '#ef4444';
+          scoreBg = 'rgba(239, 68, 68, 0.12)';
+          scoreBorder = 'rgba(239, 68, 68, 0.35)';
+          levelText = '⚠️ High Risk';
+        } else if (score >= 25 || b.riskLevel === 'UNUSUAL') {
+          scoreColor = '#f59e0b';
+          scoreBg = 'rgba(245, 158, 11, 0.12)';
+          scoreBorder = 'rgba(245, 158, 11, 0.35)';
+          levelText = 'Unusual';
+        }
+
+        const behaviorHtml = `
+          <div style="display:inline-flex; align-items:center; gap:8px; white-space:nowrap;">
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${scoreColor};"></span>
+                <span style="font-size:12px; font-weight:700; color:${scoreColor};">${levelText} (${score}%)</span>
+              </div>
+              <div style="font-size:11px; color:var(--text-muted); font-family:'JetBrains Mono', monospace; display:flex; gap:6px;">
+                <span>⌨️ ${b.wpm} WPM</span>
+                <span>•</span>
+                <span>⏱️ ${b.idleSeconds}s idle</span>
+              </div>
+            </div>
+            <button class="dash-btn dash-btn-sm" style="padding:2px 8px; font-size:11px; margin-left:4px;" onclick="openBehaviorModal('${c.id}')" title="Inspect Behavioral Diagnostics">📊 Details</button>
+          </div>
+        `;
+
         tbody.innerHTML += `
           <tr>
-            <td>
-              <div style="display:flex; align-items:center; gap:6px;">
-                <span style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--primary); font-size:13px; background:var(--primary-light); padding:2px 8px; border-radius:4px; border:1px solid var(--primary-border);">${safeSys}</span>
-                <button class="dash-btn dash-btn-sm" style="padding:2px 7px; font-size:11px;" onclick="openEditSystemModal('${c.id}', '${safeSys}', '${safeIp}')" title="Edit System Number">✏️ Edit</button>
+            <td style="white-space: nowrap;">
+              <div style="display:inline-flex; align-items:center; gap:6px; white-space:nowrap;">
+                <span style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--primary); font-size:13px; background:var(--primary-light); padding:2px 8px; border-radius:4px; border:1px solid var(--primary-border); white-space:nowrap;">${safeSys}</span>
+                <button class="dash-btn dash-btn-sm" style="padding:2px 7px; font-size:11px; white-space:nowrap;" onclick="openEditSystemModal('${c.id}', '${safeSys}', '${safeIp}')" title="Edit System Number">✏️ Edit</button>
               </div>
             </td>
-            <td>
-              <strong>${displayName}</strong>
-              ${c.usbAlert ? '<span style="color:#ffffff; background:#dc2626; padding:3px 7px; border-radius:999px; font-size:10.5px; font-weight:700; margin-left:8px; animation: blink 1s infinite;">⚠ USB DETECTED</span>' : ''}
+            <td style="white-space: nowrap;">
+              <div style="display:inline-flex; align-items:center; gap:8px; white-space:nowrap;">
+                <strong style="white-space:nowrap;">${displayName}</strong>
+                ${c.usbAlert ? '<span style="color:#ffffff; background:#dc2626; padding:3px 8px; border-radius:999px; font-size:10px; font-weight:700; white-space:nowrap; flex-shrink:0; display:inline-flex; align-items:center; gap:4px; animation: blink 1s infinite;">⚠ USB DETECTED</span>' : ''}
+              </div>
             </td>
-            <td><code style="font-family:'JetBrains Mono', monospace; font-size:12.5px;">${safeIp}</code></td>
-            <td><span class="${statusBadgeClass}">${c.status}</span></td>
-            <td>
-              <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                <button class="dash-btn dash-btn-sm" style="color:var(--primary); font-weight:700;" onclick="startStream('${c.id}', '${c.name || safeSys}')">👁 View Screen</button>
-                <button class="dash-btn dash-btn-sm" onclick="sendWarning('${c.id}', '${c.rollNumber}')">Warn</button>
+            <td style="white-space: nowrap;"><code style="font-family:'JetBrains Mono', monospace; font-size:12.5px; white-space:nowrap;">${safeIp}</code></td>
+            <td style="white-space: nowrap;"><span class="${statusBadgeClass}" style="white-space:nowrap;">${c.status}</span></td>
+            <td style="white-space: nowrap;">${behaviorHtml}</td>
+            <td style="white-space: nowrap;">
+              <div class="actions-cell-wrapper" style="display:inline-flex; align-items:center; gap:5px; flex-wrap:nowrap; white-space:nowrap;">
+                <button class="dash-btn dash-btn-sm" style="color:var(--primary); font-weight:700; white-space:nowrap;" onclick="startStream('${c.id}', '${c.name || safeSys}')">👁 View Screen</button>
+                <button class="dash-btn dash-btn-sm" style="white-space:nowrap;" onclick="sendWarning('${c.id}', '${c.rollNumber}')">Warn</button>
                 ${c.is_locked ? 
-                  `<button class="dash-btn dash-btn-sm" style="color:#2563eb;" onclick="toggleLock('${c.id}', '${c.rollNumber}', false)">Unlock</button>` :
-                  `<button class="dash-btn dash-btn-sm dash-btn-danger" onclick="toggleLock('${c.id}', '${c.rollNumber}', true)">Lock</button>`
+                  `<button class="dash-btn dash-btn-sm" style="color:#2563eb; font-weight:600; white-space:nowrap;" onclick="toggleLock('${c.id}', '${c.rollNumber}', false)">🔓 Unlock</button>` :
+                  `<button class="dash-btn dash-btn-sm dash-btn-danger" style="white-space:nowrap;" onclick="toggleLock('${c.id}', '${c.rollNumber}', true)">🔒 Lock</button>`
                 }
-                <button class="dash-btn dash-btn-sm" onclick="unbindDevice('${c.rollNumber}')">Unbind</button>
-                <button class="dash-btn dash-btn-sm dash-btn-purple" onclick="toggleSubmit('${c.id}', '${c.rollNumber}', true)">Submit</button>
-                <button class="dash-btn dash-btn-sm" style="color:#d97706;" onclick="toggleSubmit('${c.id}', '${c.rollNumber}', false)">Unsubmit</button>
-                <button class="dash-btn dash-btn-sm dash-btn-danger" style="font-weight:700;" onclick="emergencyKill('${c.id}', '${c.rollNumber || safeSys}')">Kill App</button>
-                ${c.status === 'SUBMITTED' ? `<button class="dash-btn dash-btn-sm dash-btn-primary" onclick="viewWorkspace('${c.rollNumber}')">View Code</button>` : ''}
+                <button class="dash-btn dash-btn-sm" style="color:var(--text-muted); white-space:nowrap;" onclick="unbindDevice('${c.rollNumber}')" title="Unbind IP address">Unbind</button>
+                ${c.status === 'SUBMITTED' ? 
+                  `<button class="dash-btn dash-btn-sm" style="color:#d97706; font-weight:600; white-space:nowrap;" onclick="toggleSubmit('${c.id}', '${c.rollNumber}', false)">↩️ Unsubmit</button>` :
+                  `<button class="dash-btn dash-btn-sm dash-btn-purple" style="white-space:nowrap;" onclick="toggleSubmit('${c.id}', '${c.rollNumber}', true)">Submit</button>`
+                }
+                <button class="dash-btn dash-btn-sm dash-btn-danger" style="font-weight:700; white-space:nowrap;" onclick="emergencyKill('${c.id}', '${c.rollNumber || safeSys}')">Kill App</button>
+                ${c.status === 'SUBMITTED' ? `<button class="dash-btn dash-btn-sm dash-btn-primary" style="white-space:nowrap;" onclick="viewWorkspace('${c.rollNumber}')">View Code</button>` : ''}
               </div>
             </td>
           </tr>
@@ -1897,6 +2446,276 @@
         input.value = '';
         alert('Announcement broadcasted to all active candidates!');
       }
+    }
+
+    // --- Live Code & Test Analysis System ---
+    let liveAnalysisStudents = [];
+
+    async function fetchLiveAnalysis() {
+      const syncStatus = document.getElementById('analysis-sync-status');
+      if (syncStatus) syncStatus.style.opacity = '0.5';
+
+      try {
+        const token = localStorage.getItem('adminToken');
+        const res = await fetch('/api/admin/live-analysis', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (data.success && data.students) {
+          liveAnalysisStudents = data.students;
+          filterAnalysisCards();
+        }
+      } catch (err) {
+        console.error('Failed to fetch live analysis:', err);
+        if (window.latestClients) {
+          renderLiveAnalysisFromClients(window.latestClients);
+        }
+      } finally {
+        if (syncStatus) syncStatus.style.opacity = '1';
+      }
+    }
+
+    function renderLiveAnalysisFromClients(clients) {
+      if (!clients) return;
+      const list = Object.values(clients)
+        .filter(c => c && c.rollNumber)
+        .map(c => ({
+          rollNumber: c.rollNumber,
+          name: c.name || 'Candidate',
+          systemNumber: c.systemNumber || 'SYS-??',
+          ip: c.ip || '',
+          status: c.status || 'CONNECTED',
+          socketId: c.id,
+          is_locked: c.is_locked,
+          currentCode: c.currentCode || (c.behavior ? c.behavior.currentCode : '') || '',
+          currentLanguage: c.currentLanguage || (c.behavior ? c.behavior.currentLanguage : 'python') || 'python',
+          wpm: c.behavior ? c.behavior.wpm : 0,
+          idleSeconds: c.behavior ? c.behavior.idleSeconds : 0,
+          keystrokeVariance: c.behavior ? c.behavior.keystrokeVariance : 0,
+          backspaceRatio: c.behavior ? c.behavior.backspaceRatio : 0,
+          suspicionScore: c.behavior ? c.behavior.suspicionScore : 0,
+          riskLevel: c.behavior ? c.behavior.riskLevel : 'NORMAL',
+          anomalies: c.behavior ? (c.behavior.anomalies || []) : [],
+          lastUpdated: c.behavior ? c.behavior.lastUpdated : Date.now(),
+          isConnected: true
+        }));
+      liveAnalysisStudents = list;
+      filterAnalysisCards();
+    }
+
+    function filterAnalysisCards() {
+      const query = (document.getElementById('analysis-search')?.value || '').toLowerCase().trim();
+      const riskFilter = document.getElementById('analysis-filter-risk')?.value || 'ALL';
+
+      const total = liveAnalysisStudents.length;
+      let highCount = 0;
+      let unusualCount = 0;
+      let normalCount = 0;
+
+      liveAnalysisStudents.forEach(s => {
+        const score = s.suspicionScore || 0;
+        if (score >= 60 || s.riskLevel === 'HIGH_RISK') highCount++;
+        else if (score >= 25 || s.riskLevel === 'UNUSUAL') unusualCount++;
+        else normalCount++;
+      });
+
+      const elTotal = document.getElementById('kpi-total-students');
+      const elHigh = document.getElementById('kpi-high-risk');
+      const elUnusual = document.getElementById('kpi-unusual');
+      const elNormal = document.getElementById('kpi-normal');
+      if (elTotal) elTotal.textContent = total;
+      if (elHigh) elHigh.textContent = highCount;
+      if (elUnusual) elUnusual.textContent = unusualCount;
+      if (elNormal) elNormal.textContent = normalCount;
+
+      const filtered = liveAnalysisStudents.filter(s => {
+        const score = s.suspicionScore || 0;
+        if (riskFilter === 'HIGH' && score < 60 && s.riskLevel !== 'HIGH_RISK') return false;
+        if (riskFilter === 'UNUSUAL' && (score < 25 || score >= 60)) return false;
+        if (riskFilter === 'NORMAL' && score >= 25) return false;
+
+        if (query) {
+          const matchRoll = (s.rollNumber || '').toLowerCase().includes(query);
+          const matchName = (s.name || '').toLowerCase().includes(query);
+          const matchSys = (s.systemNumber || '').toLowerCase().includes(query);
+          const matchIp = (s.ip || '').toLowerCase().includes(query);
+          if (!matchRoll && !matchName && !matchSys && !matchIp) return false;
+        }
+        return true;
+      });
+
+      renderFilteredCards(filtered);
+    }
+
+    function renderFilteredCards(students) {
+      const container = document.getElementById('analysis-cards-container');
+      if (!container) return;
+
+      if (students.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 48px 20px; color: var(--text-muted); background: var(--bg-card); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+            <span style="font-size: 32px; display: block; margin-bottom: 8px;">🔍</span>
+            <h4 style="margin: 0 0 6px 0; color: var(--text-heading); font-size: 15px;">No Candidates Matching Filter</h4>
+            <p style="margin: 0; font-size: 13px;">Adjust your search or risk criteria to view candidate live telemetry.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+      container.innerHTML = students.map(s => {
+        const score = Math.min(100, Math.max(0, s.suspicionScore || 0));
+        let badgeColor = '#10b981';
+        let badgeBg = 'rgba(16, 185, 129, 0.15)';
+        let badgeBorder = 'rgba(16, 185, 129, 0.3)';
+        let badgeLabel = '🟢 Normal';
+
+        if (score >= 60 || s.riskLevel === 'HIGH_RISK') {
+          badgeColor = '#ef4444';
+          badgeBg = 'rgba(239, 68, 68, 0.15)';
+          badgeBorder = 'rgba(239, 68, 68, 0.3)';
+          badgeLabel = '🔴 High Risk';
+        } else if (score >= 25 || s.riskLevel === 'UNUSUAL') {
+          badgeColor = '#f59e0b';
+          badgeBg = 'rgba(245, 158, 11, 0.15)';
+          badgeBorder = 'rgba(245, 158, 11, 0.3)';
+          badgeLabel = '🟡 Unusual';
+        }
+
+        const rawCode = s.currentCode || '';
+        const linesCount = rawCode ? rawCode.split('\n').length : 0;
+        const charCount = rawCode ? rawCode.length : 0;
+        const langDisplay = esc((s.currentLanguage || 'python').toUpperCase());
+
+        let codePreviewHtml = '';
+        if (rawCode.trim()) {
+          codePreviewHtml = esc(rawCode);
+        } else {
+          codePreviewHtml = '<span style="color: #64748b; font-style: italic;">/* Candidate has not typed any code yet in this session. */</span>';
+        }
+
+        const anomalies = s.anomalies || [];
+        let anomaliesHtml = '';
+        if (anomalies.length > 0) {
+          anomaliesHtml = `
+            <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 6px; padding: 8px 12px; font-size: 11.5px; color: #fca5a5;">
+              <strong style="color: #ef4444; display: block; margin-bottom: 3px;">⚠️ Flagged Anomalies:</strong>
+              <div style="display:flex; flex-direction:column; gap:2px; font-family:'JetBrains Mono',monospace;">
+                ${anomalies.slice(0, 3).map(a => `<div>• ${esc(a)}</div>`).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        const lastSeen = s.lastUpdated ? `${Math.max(0, Math.floor((Date.now() - s.lastUpdated)/1000))}s ago` : 'Live';
+        const isLocked = s.is_locked || s.status === 'LOCKED';
+        const encodedCodeAttr = encodeURIComponent(rawCode);
+
+        return `
+          <div class="analysis-card" id="card-${esc(s.rollNumber)}">
+            <div class="analysis-header">
+              <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <span class="badge-system" style="font-size: 12px; padding: 4px 10px;">${esc(s.systemNumber)}</span>
+                <div>
+                  <span style="font-size: 15px; font-weight: 700; color: var(--text-heading);">${esc(s.name)}</span>
+                  <span style="font-size: 12.5px; color: var(--text-muted); margin-left: 6px;">(${esc(s.rollNumber)})</span>
+                  <span style="font-size: 11.5px; color: var(--text-muted); margin-left: 8px;">IP: <code style="font-family:'JetBrains Mono',monospace;">${esc(s.ip)}</code></span>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="badge-status ${s.status === 'SUBMITTED' ? 'submitted' : (isLocked ? 'locked' : 'active')}">${esc(s.status)}</span>
+                <span style="padding: 4px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700; background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeBorder};">
+                  ${badgeLabel} (${score}%)
+                </span>
+              </div>
+            </div>
+
+            <div class="analysis-body">
+              <!-- Left Column: Risk & Telemetry -->
+              <div class="analysis-telemetry-col">
+                <!-- Suspicion Bar -->
+                <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 14px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
+                    <span style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Integrity Suspicion Index</span>
+                    <span style="font-size: 14px; font-weight: 800; font-family:'JetBrains Mono',monospace; color: ${badgeColor};">${score}%</span>
+                  </div>
+                  <div style="width: 100%; height: 8px; background: #1e293b; border-radius: 999px; overflow: hidden;">
+                    <div style="height: 100%; width: ${score}%; background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444); border-radius: 999px; transition: width 0.3s ease;"></div>
+                  </div>
+                </div>
+
+                <!-- 4 Metrics Chips -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                  <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 10px;">
+                    <div style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Cadence (WPM)</div>
+                    <div style="font-size: 16px; font-weight: 800; color: var(--primary); font-family:'JetBrains Mono',monospace;">${s.wpm || 0} WPM</div>
+                  </div>
+                  <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 10px;">
+                    <div style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Idle Pause</div>
+                    <div style="font-size: 16px; font-weight: 800; color: var(--text-heading); font-family:'JetBrains Mono',monospace;">${s.idleSeconds || 0}s</div>
+                  </div>
+                  <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 10px;">
+                    <div style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Backspace Ratio</div>
+                    <div style="font-size: 16px; font-weight: 800; color: var(--text-heading); font-family:'JetBrains Mono',monospace;">${s.backspaceRatio || 0}%</div>
+                  </div>
+                  <div style="background: var(--bg-page); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 10px;">
+                    <div style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Jitter Variance</div>
+                    <div style="font-size: 16px; font-weight: 800; color: var(--text-heading); font-family:'JetBrains Mono',monospace;">${s.keystrokeVariance || 0}ms</div>
+                  </div>
+                </div>
+
+                ${anomaliesHtml}
+              </div>
+
+              <!-- Right Column: Live Code Editor Viewer -->
+              <div class="analysis-code-col">
+                <div class="live-code-box">
+                  <div class="live-code-header">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981;"></span>
+                      <strong style="color: #f1f5f9;">Live Editor Code Buffer</strong>
+                      <span style="background: rgba(37,99,235,0.25); color: #60a5fa; border: 1px solid rgba(37,99,235,0.4); padding: 1px 7px; border-radius: 4px; font-weight: 700; font-size: 10.5px;">${langDisplay}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 11px;">
+                      <span>${linesCount} lines • ${charCount} chars</span>
+                      <span>•</span>
+                      <span>Synced: ${lastSeen}</span>
+                      <button class="dash-btn dash-btn-sm" style="padding: 2px 8px; font-size: 11px; background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15);" onclick="copyCandidateCode(this, '${encodedCodeAttr}')">📋 Copy</button>
+                    </div>
+                  </div>
+                  <pre class="live-code-pre"><code>${codePreviewHtml}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="analysis-footer">
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button class="dash-btn dash-btn-sm" style="color: var(--primary); font-weight: 700;" onclick="startStream('${esc(s.socketId)}', '${esc(s.name)}')">👁 Live Screen</button>
+                <button class="dash-btn dash-btn-sm" onclick="openBehaviorModal('${esc(s.socketId)}')">📊 Full Diagnostics</button>
+                <button class="dash-btn dash-btn-sm" onclick="sendWarning('${esc(s.socketId)}', '${esc(s.rollNumber)}')">💬 Warn</button>
+                <button class="dash-btn dash-btn-sm ${isLocked ? '' : 'dash-btn-danger'}" onclick="toggleLock('${esc(s.socketId)}', '${esc(s.rollNumber)}', ${!isLocked})">${isLocked ? '🔓 Unlock' : '🔒 Lock'}</button>
+                ${s.status === 'SUBMITTED' ? `<button class="dash-btn dash-btn-sm" style="color:#d97706; font-weight:600;" onclick="toggleSubmit('${esc(s.socketId)}', '${esc(s.rollNumber)}', false)">↩️ Unsubmit</button>` : ''}
+              </div>
+              <span style="font-size: 11.5px; color: var(--text-muted);">
+                Workstation: <strong>${esc(s.systemNumber)}</strong>
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function copyCandidateCode(btn, encodedCode) {
+      if (!encodedCode) return;
+      const code = decodeURIComponent(encodedCode);
+      navigator.clipboard.writeText(code).then(() => {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '✓ Copied';
+        setTimeout(() => btn.innerHTML = orig, 1800);
+      }).catch(err => {
+        alert('Could not copy code to clipboard.');
+      });
     }
 
     // --- Students Management ---
@@ -2311,10 +3130,20 @@
       }
     }
 
-    // --- Workspace Viewer ---
+    // --- Workspace Viewer & Code Execution ---
+    let currentWorkspaceRoll = null;
+    let currentWorkspaceFile = null;
+
     async function viewWorkspace(rollNumber) {
+      currentWorkspaceRoll = rollNumber;
+      currentWorkspaceFile = null;
       document.getElementById('workspace-modal-title').innerText = `Workspace Code: ${rollNumber}`;
+      document.getElementById('workspace-active-filename').innerText = 'None';
       document.getElementById('workspace-file-content').innerText = 'Select a file on the left to preview code...';
+      document.getElementById('workspace-run-btn').disabled = true;
+      document.getElementById('workspace-run-status').innerText = 'Idle';
+      document.getElementById('workspace-run-output').innerText = 'Click "▶ Run Code" above to execute this student\'s solution on the server.';
+      
       const fileListDiv = document.getElementById('workspace-file-list');
       fileListDiv.innerHTML = '<p style="color:var(--text-muted); font-size:13px;">Loading submission files...</p>';
       
@@ -2332,16 +3161,24 @@
             return;
           }
           fileListDiv.innerHTML = '';
-          data.files.forEach(f => {
+          data.files.forEach((f, idx) => {
             const btn = document.createElement('button');
-            btn.className = 'dash-btn dash-btn-sm';
+            btn.className = 'dash-btn dash-btn-sm workspace-file-btn';
+            btn.dataset.filename = f;
             btn.style.display = 'block';
             btn.style.width = '100%';
             btn.style.marginBottom = '6px';
             btn.style.textAlign = 'left';
-            btn.innerText = f;
+            btn.style.fontFamily = "'JetBrains Mono', monospace";
+            btn.style.fontSize = '12px';
+            btn.innerText = '📄 ' + f;
             btn.onclick = () => viewWorkspaceFile(rollNumber, f);
             fileListDiv.appendChild(btn);
+
+            // Auto-select first code file
+            if (idx === 0) {
+              viewWorkspaceFile(rollNumber, f);
+            }
           });
         } else {
           fileListDiv.innerHTML = '<p style="color:#dc2626; font-size:13px;">Error: ' + data.error + '</p>';
@@ -2352,6 +3189,28 @@
     }
 
     async function viewWorkspaceFile(rollNumber, filename) {
+      currentWorkspaceRoll = rollNumber;
+      currentWorkspaceFile = filename;
+      document.getElementById('workspace-active-filename').innerText = filename;
+
+      // Highlight active file button
+      document.querySelectorAll('.workspace-file-btn').forEach(b => {
+        if (b.dataset.filename === filename) {
+          b.style.borderColor = 'var(--primary-color, #2563eb)';
+          b.style.background = 'rgba(37, 99, 235, 0.15)';
+          b.style.fontWeight = '700';
+        } else {
+          b.style.borderColor = '';
+          b.style.background = '';
+          b.style.fontWeight = 'normal';
+        }
+      });
+
+      const isExecutable = /\.(py|c|cpp|cc|js)$/i.test(filename);
+      const runBtn = document.getElementById('workspace-run-btn');
+      runBtn.disabled = !isExecutable;
+      runBtn.title = isExecutable ? `Run ${filename}` : 'Only .py, .c, .cpp files can be executed';
+
       const contentDiv = document.getElementById('workspace-file-content');
       contentDiv.innerText = 'Loading file content...';
       const adminToken = localStorage.getItem('adminToken');
@@ -2367,6 +3226,79 @@
         }
       } catch (e) {
         contentDiv.innerText = 'Network error.';
+      }
+    }
+
+    async function runSubmittedCode() {
+      if (!currentWorkspaceRoll || !currentWorkspaceFile) {
+        alert('Please select a code file first.');
+        return;
+      }
+
+      const runBtn = document.getElementById('workspace-run-btn');
+      const statusEl = document.getElementById('workspace-run-status');
+      const outputEl = document.getElementById('workspace-run-output');
+      const stdinVal = document.getElementById('workspace-stdin').value;
+
+      runBtn.disabled = true;
+      runBtn.innerHTML = '<span>⏳</span> Running...';
+      statusEl.innerText = 'Executing on Server...';
+      statusEl.style.color = '#38bdf8';
+      outputEl.style.color = '#94a3b8';
+      outputEl.innerText = `Running ${currentWorkspaceFile} for roll ${currentWorkspaceRoll}...\n`;
+
+      const adminToken = localStorage.getItem('adminToken');
+      const startTime = Date.now();
+
+      try {
+        const res = await fetch('/api/admin/submissions/run', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${adminToken}`
+          },
+          body: JSON.stringify({
+            rollNumber: currentWorkspaceRoll,
+            filename: currentWorkspaceFile,
+            input: stdinVal
+          })
+        });
+
+        const data = await res.json();
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+
+        if (data.success) {
+          const isError = (data.exitCode !== 0) || (data.stderr && data.stderr.trim().length > 0 && !data.stdout);
+          statusEl.innerText = isError ? `Finished with exit code ${data.exitCode} (${elapsed}s)` : `Completed successfully (${elapsed}s)`;
+          statusEl.style.color = isError ? '#f87171' : '#34d399';
+
+          let out = '';
+          if (data.stdout) {
+            out += data.stdout;
+          }
+          if (data.stderr) {
+            if (out) out += '\n--- STDERR ---\n';
+            out += data.stderr;
+          }
+          if (!out) {
+            out = '(Process completed with empty output)';
+          }
+          outputEl.innerText = out;
+          outputEl.style.color = isError ? '#fca5a5' : '#f1f5f9';
+        } else {
+          statusEl.innerText = `Failed (${elapsed}s)`;
+          statusEl.style.color = '#f87171';
+          outputEl.innerText = `Execution Error:\n${data.error || 'Unknown error'}\n${data.stderr || ''}`;
+          outputEl.style.color = '#fca5a5';
+        }
+      } catch (err) {
+        statusEl.innerText = 'Network / Server Error';
+        statusEl.style.color = '#f87171';
+        outputEl.innerText = `Network failed: ${err.message}`;
+        outputEl.style.color = '#fca5a5';
+      } finally {
+        runBtn.disabled = false;
+        runBtn.innerHTML = '<span>▶</span> Run Code';
       }
     }
 

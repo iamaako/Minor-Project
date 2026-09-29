@@ -626,8 +626,6 @@ async function _doFinalSubmit(force = false) {
 }
 
 async function _undoFinalSubmit() {
-  if (currentState !== AppState.EXAM_SUBMITTED) return;
-  
   currentState = AppState.EXAM_ACTIVE;
   showScreen('exam');
   
