@@ -87,40 +87,43 @@ const Workspace = (() => {
       li.appendChild(nameSpan);
 
       if (f !== 'main.py' && f !== 'main.cpp' && f !== 'main.c') {
-        const delBtn = document.createElement('button');
-        delBtn.textContent = 'x';
-        delBtn.style.color = 'red';
-        delBtn.style.border = 'none';
-        delBtn.style.background = 'transparent';
-        delBtn.style.cursor = 'pointer';
-        delBtn.onclick = (e) => {
-          e.stopPropagation();
-          
-          const modal = document.getElementById('delete-confirm-screen');
-          const msg = document.getElementById('delete-confirm-msg');
-          const btnYes = document.getElementById('btn-delete-yes');
-          const btnNo = document.getElementById('btn-delete-no');
-          
-          if (!modal) return;
-          
-          msg.textContent = `Are you sure you want to delete ${f}?`;
-          modal.style.display = 'flex';
-          
-          const cleanup = () => {
-            modal.style.display = 'none';
-            btnYes.onclick = null;
-            btnNo.onclick = null;
-          };
+        const isReadOnly = window.Editor && window.Editor.isReadOnly && window.Editor.isReadOnly();
+        if (!isReadOnly) {
+          const delBtn = document.createElement('button');
+          delBtn.textContent = 'x';
+          delBtn.style.color = 'red';
+          delBtn.style.border = 'none';
+          delBtn.style.background = 'transparent';
+          delBtn.style.cursor = 'pointer';
+          delBtn.onclick = (e) => {
+            e.stopPropagation();
+            
+            const modal = document.getElementById('delete-confirm-screen');
+            const msg = document.getElementById('delete-confirm-msg');
+            const btnYes = document.getElementById('btn-delete-yes');
+            const btnNo = document.getElementById('btn-delete-no');
+            
+            if (!modal) return;
+            
+            msg.textContent = `Are you sure you want to delete ${f}?`;
+            modal.style.display = 'flex';
+            
+            const cleanup = () => {
+              modal.style.display = 'none';
+              btnYes.onclick = null;
+              btnNo.onclick = null;
+            };
 
-          btnNo.onclick = cleanup;
-          btnYes.onclick = async () => {
-            cleanup();
-            await window.examAPI.deleteWorkspace(f);
-            if (currentActiveFile === f) currentActiveFile = null;
-            refreshFileList();
+            btnNo.onclick = cleanup;
+            btnYes.onclick = async () => {
+              cleanup();
+              await window.examAPI.deleteWorkspace(f);
+              if (currentActiveFile === f) currentActiveFile = null;
+              refreshFileList();
+            };
           };
-        };
-        li.appendChild(delBtn);
+          li.appendChild(delBtn);
+        }
       }
 
       li.onclick = () => openFile(f);
@@ -131,7 +134,8 @@ const Workspace = (() => {
   async function openFile(filename) {
     if (!window.examAPI) return;
     
-    if (currentActiveFile && window.Editor) {
+    const isReadOnly = window.Editor && window.Editor.isReadOnly && window.Editor.isReadOnly();
+    if (currentActiveFile && window.Editor && !isReadOnly) {
       await window.examAPI.writeWorkspace(currentActiveFile, window.Editor.getCurrentCode());
     }
 
@@ -153,6 +157,8 @@ const Workspace = (() => {
   }
 
   async function syncActiveFile() {
+    const isReadOnly = window.Editor && window.Editor.isReadOnly && window.Editor.isReadOnly();
+    if (isReadOnly) return;
     if (currentActiveFile && window.Editor && window.examAPI) {
       await window.examAPI.writeWorkspace(currentActiveFile, window.Editor.getCurrentCode());
     }

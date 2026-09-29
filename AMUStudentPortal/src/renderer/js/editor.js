@@ -123,6 +123,9 @@ const Editor = (() => {
     monacoEditor.onDidChangeModelContent(() => {
       if (modifiedDotEl) modifiedDotEl.classList.add('visible');
       _saveCurrentBuffer();
+      if (window.StudentBehavior && typeof window.StudentBehavior.notifyEditorChange === 'function') {
+        window.StudentBehavior.notifyEditorChange(monacoEditor.getValue().length);
+      }
     });
 
     // Wire language select
@@ -213,11 +216,20 @@ const Editor = (() => {
 
     // Focus editor
     monacoEditor.focus();
+
+    if (isReadOnly) {
+      monacoEditor.updateOptions({ readOnly: true });
+      if (allowRunInReadOnly && runBtn) {
+        runBtn.disabled = false;
+        runBtn.style.opacity = '1';
+      }
+    }
   }
 
   // ── Public: Switch language within same question ──────
 
   function switchLanguage(lang) {
+    if (isReadOnly) return;
     if (!LANG_MONACO[lang]) return;
 
     // Save current language buffer
@@ -253,6 +265,9 @@ const Editor = (() => {
       monaco.editor.setModelLanguage(monacoEditor.getModel(), monacoLang);
       monacoEditor.setValue(code);
       monacoEditor.setScrollPosition({ scrollTop: 0 });
+      if (isReadOnly) {
+        monacoEditor.updateOptions({ readOnly: true });
+      }
     }
 
     if (filenameEl) {
@@ -260,14 +275,15 @@ const Editor = (() => {
     }
     if (modifiedDotEl) modifiedDotEl.classList.remove('visible');
 
-    // Disable run button if it's a text file
+    // Disable run button if it's a text file or if readOnly without allowRun
     if (runBtn) {
       if (lang === 'plaintext' || lang === 'json') {
         runBtn.disabled = true;
         runBtn.style.opacity = '0.5';
       } else {
-        runBtn.disabled = false;
-        runBtn.style.opacity = '1';
+        const canRun = !isReadOnly || allowRunInReadOnly;
+        runBtn.disabled = !canRun;
+        runBtn.style.opacity = canRun ? '1' : '0.5';
       }
     }
   }
@@ -377,20 +393,27 @@ const Editor = (() => {
     return currentLanguage;
   }
 
-  // ── Public: Set read-only (for PAUSE_EXAM) ────────────
+  // ── Public: Set read-only (with optional allowRun for invigilator checks) ─
+  let allowRunInReadOnly = false;
 
-  function setReadOnly(readOnly) {
+  function setReadOnly(readOnly, allowRun = false) {
     isReadOnly = readOnly;
+    allowRunInReadOnly = allowRun;
     if (monacoEditor) {
       monacoEditor.updateOptions({ readOnly });
     }
-    if (runBtn)  runBtn.disabled  = readOnly;
+    if (runBtn) {
+      runBtn.disabled  = allowRun ? false : readOnly;
+      runBtn.style.opacity = (allowRun || !readOnly) ? '1' : '0.5';
+    }
     if (saveBtn) saveBtn.disabled = readOnly;
+    if (langSelect) langSelect.disabled = readOnly;
   }
 
   // ── Internal: Buffer management ───────────────────────
 
   function _saveCurrentBuffer() {
+    if (isReadOnly) return;
     if (currentQuestionId === null || !monacoEditor) return;
     if (!codeBuffers[currentQuestionId]) {
       codeBuffers[currentQuestionId] = {};
@@ -408,6 +431,7 @@ const Editor = (() => {
   // ── Internal: localStorage persistence ────────────────
 
   function _persistToStorage() {
+    if (isReadOnly) return;
     _saveCurrentBuffer();
     try {
       localStorage.setItem('amu_code_buffers', JSON.stringify(codeBuffers));
@@ -450,6 +474,7 @@ const Editor = (() => {
     getCurrentLanguage,
     setLanguageAndCode,
     setReadOnly,
+    isReadOnly: () => isReadOnly,
     clearStorage,
   };
 })();

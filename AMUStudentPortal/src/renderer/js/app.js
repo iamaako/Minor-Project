@@ -342,8 +342,11 @@ async function _transitionToExam() {
   // Wire all toolbar + overlay buttons
   _wireButtons();
 
-  // Activate anti-cheat
+  // Activate anti-cheat and behavior biometrics
   AntiCheat.activate();
+  if (window.StudentBehavior) {
+    StudentBehavior.activate();
+  }
 }
 
 // ── Init Exam Content ─────────────────────────────────────
@@ -567,8 +570,12 @@ async function _doFinalSubmit(force = false) {
   currentState = AppState.EXAM_SUBMITTED;
 
   Timer.stop();
-  Editor.setReadOnly(true);
+  // Pass allowRun = true so invigilator can still run solutions on-desk
+  Editor.setReadOnly(true, true);
   AntiCheat.deactivate();
+  if (window.StudentBehavior) {
+    StudentBehavior.deactivate();
+  }
 
   const buffers = Editor.getAllBuffers();
   Terminal.info('Submitting all code buffers to server...');
@@ -581,12 +588,40 @@ async function _doFinalSubmit(force = false) {
     console.error('[App] Final submit error:', err);
   }
 
-  showScreen('submitted');
-  const tsEl = document.getElementById('submit-timestamp');
-  if (tsEl) {
-    tsEl.textContent = `Submitted at: ${new Date().toLocaleTimeString()} — Roll: ${studentInfo?.rollNumber || '—'}`;
+  // Display Read-Only Banner on exam screen
+  const subBanner = document.getElementById('submitted-banner');
+  if (subBanner) {
+    subBanner.classList.remove('hidden');
+    subBanner.innerHTML = `🔒 &nbsp;EXAM SUBMITTED at ${new Date().toLocaleTimeString()} — Solutions locked in Read-Only Mode. (Invigilator: "Run Code" is active for on-desk evaluation).`;
   }
 
+  // Toolbar action buttons: keep Run enabled for invigilator, lock everything else
+  const btnRun = document.getElementById('btn-run');
+  const btnSave = document.getElementById('btn-submit');
+  const btnFinal = document.getElementById('btn-final-submit');
+  const btnNewFile = document.getElementById('btn-new-file');
+  if (btnRun) {
+    btnRun.disabled = false;
+    btnRun.style.opacity = '1';
+    btnRun.title = 'Run solution code for invigilator checking';
+  }
+  if (btnSave) {
+    btnSave.disabled = true;
+    btnSave.style.opacity = '0.5';
+  }
+  if (btnFinal) {
+    btnFinal.disabled = true;
+    btnFinal.textContent = 'Submitted ✓';
+    btnFinal.style.opacity = '0.6';
+  }
+  if (btnNewFile) {
+    btnNewFile.disabled = true;
+    btnNewFile.style.opacity = '0.5';
+  }
+
+  Terminal.success('✓ Exam submitted successfully. Code locked in Read-Only Mode.');
+  Terminal.info('💡 "Run Code" is available for invigilator verification.');
+  _setStatus('Exam Submitted — Read-Only Mode (Run Code active for Invigilator).');
   if (success) Editor.clearStorage();
 }
 
@@ -598,11 +633,30 @@ async function _undoFinalSubmit() {
   
   Editor.setReadOnly(false);
   AntiCheat.activate();
+  if (window.StudentBehavior) {
+    StudentBehavior.activate();
+  }
   
-  // Timer is tricky: we'd need to sync or just resume. Let's resume.
+  const subBanner = document.getElementById('submitted-banner');
+  if (subBanner) subBanner.classList.add('hidden');
+
+  const btnRun = document.getElementById('btn-run');
+  const btnSave = document.getElementById('btn-submit');
+  const btnFinal = document.getElementById('btn-final-submit');
+  const btnNewFile = document.getElementById('btn-new-file');
+  if (btnRun) btnRun.disabled = false;
+  if (btnSave) btnSave.disabled = false;
+  if (btnFinal) {
+    btnFinal.disabled = false;
+    btnFinal.textContent = 'Final Submit';
+    btnFinal.style.opacity = '1';
+  }
+  if (btnNewFile) btnNewFile.disabled = false;
+
+  // Resume timer
   Timer.resume();
   
-  Terminal.info('🔄 Exam has been unsubmitted by the invigilator. You may continue.');
+  Terminal.info('🔄 Exam has been unsubmitted by the invigilator. You may continue editing.');
   _setStatus('Exam resumed after unsubmit.');
 }
 

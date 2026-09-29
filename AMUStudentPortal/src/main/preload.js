@@ -87,8 +87,9 @@ contextBridge.exposeInMainWorld('examAPI', {
     ipcRenderer.on('invigilator-event', (_event, data) => callback(data));
   },
 
-  // ── Anti-Cheat Reporting (renderer → main) ──
+  // ── Anti-Cheat & Behavior Reporting (renderer → main) ──
   reportFocusLoss: () => ipcRenderer.send('report-focus-loss'),
+  reportBehavior: (data) => ipcRenderer.send('report-behavior', data),
 
   // ── App Info ──
   getAppInfo: () => ipcRenderer.invoke('get-app-info'),

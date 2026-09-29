@@ -619,6 +619,17 @@ function registerIpcHandlers() {
       socketClient.emit('focus-loss', { clientIP, focusViolations });
     }
   });
+
+  // ── Behavior Analytics Report ──
+  ipcMain.on('report-behavior', (_event, behaviorData) => {
+    if (socketClient && socketClient.connected) {
+      socketClient.emit('student_behavior', {
+        ...behaviorData,
+        clientIP,
+        systemNumber: getSystemNumber()
+      });
+    }
+  });
 }
 
 // ── HTTP Fallback Submission ──

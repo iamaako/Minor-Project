@@ -154,24 +154,6 @@ const Questions = (() => {
         <div class="question-section-title">Explanation</div>
         <div class="question-explanation">${_esc(q.explanation)}</div>
       ` : ''}
-
-      <!-- Test Cases preview (non-hidden) -->
-      ${parsedTestCases.length > 0 ? `
-        <div class="question-section-title">Test Cases (${parsedTestCases.length} total)</div>
-        ${parsedTestCases.map((tc, ti) => `
-          <div style="margin-bottom:8px;">
-            <div style="font-size:10px;color:#808080;margin-bottom:2px;">Case ${ti + 1}:</div>
-            <div class="io-row">
-              <span class="io-label">Input:</span>
-              <pre class="io-value" style="font-size:10px;">${_esc(tc.input)}</pre>
-            </div>
-            <div class="io-row">
-              <span class="io-label">Expected:</span>
-              <pre class="io-value" style="font-size:10px;">${_esc(tc.expected)}</pre>
-            </div>
-          </div>
-        `).join('')}
-      ` : ''}
     `;
 
     // Scroll question panel to top on switch
