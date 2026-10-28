@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AMU Student Portal - AI Webcam Proctoring Feature Report</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 14mm 14mm 14mm 14mm;
+      @bottom-right {
+        content: counter(page);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #1e293b;
+      line-height: 1.5;
+      font-size: 11pt;
+      margin: 0;
+      padding: 0;
+      background: #ffffff;
+    }
+
+    .header {
+      border-bottom: 2.5px solid #0055ea;
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left h1 {
+      font-size: 19pt;
+      color: #0f172a;
+      margin: 0 0 4px 0;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .header-left .subtitle {
+      font-size: 11pt;
+      color: #2563eb;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .badge-doc {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1d4ed8;
+      font-size: 8.5pt;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
+    .meta-bar {
+      display: flex;
+      gap: 16px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 9pt;
+      color: #64748b;
+      margin-bottom: 18px;
+    }
+
+    .meta-bar strong {
+      color: #334155;
+    }
+
+    h2 {
+      font-size: 13pt;
+      color: #1e3a8a;
+      border-bottom: 1.5px solid #e2e8f0;
+      padding-bottom: 4px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    h3 {
+      font-size: 11pt;
+      color: #0f172a;
+      margin-top: 12px;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 0 0 8px 0;
+      text-align: justify;
+    }
+
+    .highlight-card {
+      background: #f8fafc;
+      border-left: 4px solid #2563eb;
+      padding: 10px 14px;
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 10px;
+    }
+
+    .highlight-card h4 {
+      margin: 0 0 3px 0;
+      font-size: 10.5pt;
+      color: #1e40af;
+      font-weight: 700;
+    }
+
+    .highlight-card p {
+      margin: 0;
+      font-size: 9.5pt;
+      color: #334155;
+    }
+
+    .formula-box {
+      background: #f1f5f9;
+      border: 1px dashed #94a3b8;
+      border-radius: 6px;
+      padding: 10px 14px;
+      text-align: center;
+      font-family: "JetBrains Mono", Consolas, "Courier New", monospace;
+      font-size: 10pt;
+      color: #0f172a;
+      margin: 10px 0;
+      font-weight: 600;
+    }
+
+    .steps-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .step-box {
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 10px 12px;
+      background: #ffffff;
+    }
+
+    .step-box h4 {
+      margin: 0 0 4px 0;
+      font-size: 10pt;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .step-box p {
+      font-size: 9pt;
+      color: #475569;
+      margin: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      margin-bottom: 16px;
+      font-size: 9pt;
+    }
+
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 7px 10px;
+      text-align: left;
+    }
+
+    th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+      font-size: 9pt;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    .code-badge {
+      font-family: Consolas, monospace;
+      font-size: 8.5pt;
+      background: #e2e8f0;
+      color: #0f172a;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    .footer-note {
+      margin-top: 16px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 8px;
+      font-size: 8pt;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PAGE 1: Overview & Highlights -->
+  <div class="header">
+    <div class="header-left">
+      <h1>Aligarh Muslim University</h1>
+      <div class="subtitle">Secure Test Portal — AI Webcam Proctoring & Neighbor Detection</div>
+    </div>
+    <div>
+      <span class="badge-doc">Feature Specification</span>
+    </div>
+  </div>
+
+  <div class="meta-bar">
+    <div><strong>Module:</strong> Computer Vision Anti-Cheat</div>
+    <div><strong>Platform:</strong> Electron.js / Node.js</div>
+    <div><strong>Deployment:</strong> 100% Offline (Local LAN)</div>
+    <div><strong>Engine:</strong> Face-API / TensorFlow.js WebGL</div>
+  </div>
+
+  <h2>1. Executive Summary & Purpose</h2>
+  <p>
+    In high-stakes university programming examinations, visual cheating (such as glancing at adjacent candidate screens or conferring with the student seated next door) represents a common academic integrity challenge. The <strong>AI Webcam Proctoring & Neighbor Detection</strong> module addresses this by introducing continuous, on-device facial landmark and head-pose analysis that monitors candidate attention in real time.
+  </p>
+
+  <h2>2. Key Highlights</h2>
+
+  <div class="highlight-card">
+    <h4>100% Offline On-Device Computer Vision</h4>
+    <p>
+      The system runs entirely within the student's Electron client environment without making external cloud API calls. Neural network weights (<strong>TinyFaceDetector</strong> and <strong>FaceLandmark68</strong>) are packaged locally in the application bundle, satisfying strict air-gapped lab network requirements.
+    </p>
+  </div>
+
+  <div class="highlight-card">
+    <h4>Biometric Facial Symmetry & Head Yaw Tracking</h4>
+    <p>
+      By extracting 68 facial landmark coordinates 7 to 8 times per second, the algorithm tracks the relative position of the nose tip relative to both eye corners. This enables precise differentiation between natural screen viewing, glancing down at a keyboard, and turning sideways to view an adjacent student's terminal.
+    </p>
+  </div>
+
+  <div class="highlight-card">
+    <h4>Multi-Stage Violation & Grace Period Lifecycle</h4>
+    <p>
+      To prevent false positives from natural blinking or brief neck adjustments, infractions are managed via a multi-tier threshold: minor glances (&lt; 1.0s) are ignored; sustained turns (&ge; 1.0s) trigger an amber warning indicator; persistent turns (&ge; 2.0s) record an official violation, trigger an evidentiary snapshot, and alert the invigilator.
+    </p>
+  </div>
+
+  <div class="highlight-card">
+    <h4>Floating Windows XP Picture-in-Picture (PiP) Interface</h4>
+    <p>
+      Students are provided with a draggable, minimizable Picture-in-Picture window styled in the native Windows XP visual design. The live video stream includes face bounding boxes, direction markers (<span class="code-badge">✓ SCREEN FOCUS</span>, <span class="code-badge">⚠ LOOKING RIGHT</span>, <span class="code-badge">⚠ LOOKING LEFT</span>), and real-time status diagnostics.
+    </p>
+  </div>
+
+  <div class="highlight-card">
+    <h4>Automatic Evidentiary Snapshot & Teacher Server Synchronization</h4>
+    <p>
+      Upon confirming an infraction, the application captures a compressed JPEG webcam frame and transmits it alongside timestamp, seat number, and roll number to the Teacher Admin Server via Socket.io for immediate invigilator review.
+    </p>
+  </div>
+
+  <!-- PAGE BREAK FOR PAGE 2 -->
+  <div class="page-break"></div>
+
+  <h2>3. How It Works: Technical Architecture</h2>
+  <p>
+    The proctoring pipeline follows a real-time cycle: Frame Capture &rarr; Offline Tensor Processing &rarr; Geometric Yaw Estimation &rarr; Temporal Smoothing &rarr; Alert Dispatch.
+  </p>
+
+  <div class="steps-container">
+    <div class="step-box">
+      <h4>📷 1. Frame Ingestion</h4>
+      <p>
+        Captured via <span class="code-badge">navigator.mediaDevices.getUserMedia</span> at 320&times;240 resolution (15–20 FPS). Camera permissions are granted silently by the Electron main process via session handlers without prompting dialogs.
+      </p>
+    </div>
+    <div class="step-box">
+      <h4>🧠 2. Neural Landmark Detection</h4>
+      <p>
+        WebGL-accelerated <span class="code-badge">TinyFaceDetector</span> locates face bounding boxes, followed by <span class="code-badge">FaceLandmark68Net</span> mapping 68 anatomical coordinates across jawline, eyes, nose, and mouth.
+      </p>
+    </div>
+    <div class="step-box">
+      <h4>📐 3. Mathematical Yaw Calculation</h4>
+      <p>
+        Evaluates horizontal displacement of Nose Tip (<span class="code-badge">Point 30</span>) relative to the Eye Centerline midpoint and the Euclidean distances to the Left Eye (<span class="code-badge">Point 36</span>) and Right Eye (<span class="code-badge">Point 45</span>).
+      </p>
+    </div>
+    <div class="step-box">
+      <h4>🚨 4. Alert & Evidence Dispatch</h4>
+      <p>
+        Upon exceeding the 2.0s threshold, an offscreen canvas extracts a 320&times;240 JPEG evidence snapshot, notifies the student with a warning banner, and emits a socket event to the teacher's dashboard.
+      </p>
+    </div>
+  </div>
+
+  <h3>Mathematical Formulation</h3>
+  <div class="formula-box">
+    Symmetry Ratio = Distance(Nose Tip, Right Eye Outer) / Distance(Nose Tip, Left Eye Outer)<br/>
+    Nose Offset X = (Nose Tip X - Eye Midpoint X) / Eye Span Width
+  </div>
+
+  <p>
+    <strong>Decision Boundary Thresholds:</strong>
+  </p>
+  <ul>
+    <li><strong>Facing Screen (Normal):</strong> <span class="code-badge">0.60 &le; Symmetry Ratio &le; 1.65</span> and <span class="code-badge">|Nose Offset X| &le; 0.16</span>.</li>
+    <li><strong>Looking Right (Neighbor on Right):</strong> <span class="code-badge">Symmetry Ratio &gt; 1.65</span> or <span class="code-badge">Nose Offset X &gt; +0.16</span>.</li>
+    <li><strong>Looking Left (Neighbor on Left):</strong> <span class="code-badge">Symmetry Ratio &lt; 0.60</span> or <span class="code-badge">Nose Offset X &lt; -0.16</span>.</li>
+    <li><strong>Candidate Absent / No Face:</strong> Face detector returns zero bounding boxes for &gt; 3.0s.</li>
+  </ul>
+
+  <h2>4. Files Modified & Created</h2>
+  <p>
+    The following table outlines the architectural components created or updated to implement this feature across the client application and admin server:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 22%;">Component</th>
+        <th style="width: 38%;">File Path</th>
+        <th style="width: 40%;">Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Detection Engine</strong></td>
+        <td><span class="code-badge">src/renderer/js/webcamProctor.js</span></td>
+        <td>Core AI detection loop, head pose angle calculation, snapshot capture, and warning trigger.</td>
+      </tr>
+      <tr>
+        <td><strong>PiP Styles</strong></td>
+        <td><span class="code-badge">src/renderer/css/webcam.css</span></td>
+        <td>Windows XP styled draggable PiP box, status indicators, and warning animations.</td>
+      </tr>
+      <tr>
+        <td><strong>Offline Models</strong></td>
+        <td><span class="code-badge">src/renderer/assets/models/</span></td>
+        <td>Bundled model weights (<span class="code-badge">tiny_face_detector</span> and <span class="code-badge">face_landmark_68</span>).</td>
+      </tr>
+      <tr>
+        <td><strong>Offline Library</strong></td>
+        <td><span class="code-badge">src/renderer/js/lib/face-api.js</span></td>
+        <td>Standalone Face-API bundle.</td>
+      </tr>
+      <tr>
+        <td><strong>UI Integration</strong></td>
+        <td><span class="code-badge">src/renderer/index.html</span></td>
+        <td>Added PiP widget HTML markup, CSS stylesheet, and script references.</td>
+      </tr>
+      <tr>
+        <td><strong>App Lifecycle</strong></td>
+        <td><span class="code-badge">src/renderer/js/app.js</span></td>
+        <td>Hooks <span class="code-badge">WebcamProctor.init()</span> on startup, <span class="code-badge">WebcamProctor.start()</span> during exam, and <span class="code-badge">WebcamProctor.stop()</span> on submit.</td>
+      </tr>
+      <tr>
+        <td><strong>Bridge API</strong></td>
+        <td><span class="code-badge">src/main/preload.js</span></td>
+        <td>Exposed <span class="code-badge">reportWebcamViolation</span> safely via <span class="code-badge">contextBridge</span>.</td>
+      </tr>
+      <tr>
+        <td><strong>Main Process</strong></td>
+        <td><span class="code-badge">src/main/main.js</span></td>
+        <td>Granted media permissions automatically and forwarded violations via Socket.io.</td>
+      </tr>
+      <tr>
+        <td><strong>Teacher Server</strong></td>
+        <td><span class="code-badge">AMUAdminServer/server.js</span></td>
+        <td>Added <span class="code-badge">webcam_violation</span> socket listener to log alerts and forward evidence snapshots to the invigilator dashboard.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer-note">
+    <span>AMU Interdisciplinary Centre for Artificial Intelligence</span>
+    <span>Document Generated: October 2026</span>
+    <span>Confidential & Academic Use Only</span>
+  </div>
+
+</body>
+</html>

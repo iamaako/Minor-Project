@@ -90,6 +90,7 @@ contextBridge.exposeInMainWorld('examAPI', {
   // ── Anti-Cheat & Behavior Reporting (renderer → main) ──
   reportFocusLoss: () => ipcRenderer.send('report-focus-loss'),
   reportBehavior: (data) => ipcRenderer.send('report-behavior', data),
+  reportWebcamViolation: (data) => ipcRenderer.send('report-webcam-violation', data),
 
   // ── App Info ──
   getAppInfo: () => ipcRenderer.invoke('get-app-info'),

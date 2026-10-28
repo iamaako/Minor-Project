@@ -84,6 +84,21 @@ function startServer(port = 3000, mainWindow) {
     }, 1000);
 
     app.use(express.json());
+    
+    // Add CORS headers to allow cross-origin requests from any device
+    app.use((req, res, next) => {
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+      res.header('Access-Control-Allow-Credentials', 'true');
+      
+      // Handle preflight requests
+      if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+      }
+      next();
+    });
+    
     app.use(session({
       secret: 'amu-exam-secret-key-2026',
       resave: false,
@@ -795,6 +810,44 @@ function startServer(port = 3000, mainWindow) {
           broadcastClientsUpdate();
         }
       });
+
+      // Webcam Neighbor / Gaze Violation Listener
+      socket.on('webcam_violation', (data) => {
+        const c = connectedClients[socket.id];
+        const roll = (c && c.rollNumber) || 'Candidate';
+        const name = (c && c.name) || 'Candidate';
+        const sys = (c && c.systemNumber) || data.systemNumber || 'SYS-??';
+        const ip = (c && c.ip) || data.clientIP || '';
+        const direction = data.direction || 'BESIDE';
+        const duration = data.durationSeconds || 2;
+        const msg = `🚨 [Webcam Alert] ${name} (${roll}, ${sys}) looking ${direction} at neighbor for ${duration}s!`;
+        logEvent(msg);
+
+        // Notify Admin UI
+        io.to('admin').emit('webcam_alert', {
+          socketId: socket.id,
+          rollNumber: roll,
+          name,
+          systemNumber: sys,
+          ip,
+          direction,
+          duration,
+          snapshot: data.snapshot,
+          timestamp: Date.now()
+        });
+
+        // Also push into student alert channel so it highlights on the lab map
+        io.to('admin').emit('student_alert', {
+          name,
+          roll,
+          ip,
+          type: 'WEBCAM_VIOLATION',
+          message: msg,
+          snapshot: data.snapshot
+        });
+
+        broadcastClientsUpdate();
+      });
       
       // Admin Actions Receiver (from Admin UI to specific socket)
       socket.on('admin_action', async (actionData, callback) => {
@@ -922,9 +975,13 @@ function startServer(port = 3000, mainWindow) {
       
     });
 
-    server.listen(port, () => {
+    // Listen on all network interfaces (0.0.0.0) to allow connections from other devices
+    server.listen(port, '0.0.0.0', () => {
+      const localIp = getLocalIpAddress();
       logEvent(`Exam Server listening on port ${port}`);
-      resolve({ ip: getLocalIpAddress(), port });
+      logEvent(`Access from this PC: http://localhost:${port}/admin`);
+      logEvent(`Access from other devices: http://${localIp}:${port}/admin`);
+      resolve({ ip: localIp, port });
     });
 
     server.on('error', (err) => {

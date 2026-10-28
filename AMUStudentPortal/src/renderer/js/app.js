@@ -48,6 +48,11 @@ function showScreen(name) {
     if (!el) return;
     el.classList.toggle('hidden', key !== name);
   });
+  if (name === 'exam' && window.WebcamProctor) {
+    window.WebcamProctor.start();
+  } else if (name === 'submitted' && window.WebcamProctor) {
+    window.WebcamProctor.stop();
+  }
 }
 
 function _setStatus(text) {
@@ -59,6 +64,10 @@ function _setStatus(text) {
 
 function boot() {
   console.log('[App] Booting AMU Test Portal...');
+
+  if (window.WebcamProctor) {
+    WebcamProctor.init();
+  }
 
   // Start at SETUP screen
   showScreen('setup');
@@ -347,11 +356,18 @@ async function _transitionToExam() {
   if (window.StudentBehavior) {
     StudentBehavior.activate();
   }
+  if (window.WebcamProctor) {
+    WebcamProctor.start();
+  }
 }
 
 // ── Init Exam Content ─────────────────────────────────────
 
 function _initExamEnvironment() {
+  if (window.WebcamProctor) {
+    window.WebcamProctor.start();
+  }
+
   if (isInitialized) {
     Questions.load(questionsData, _onQuestionSwitch);
     if (questionsData.length > 0) {
@@ -576,6 +592,9 @@ async function _doFinalSubmit(force = false) {
   if (window.StudentBehavior) {
     StudentBehavior.deactivate();
   }
+  if (window.WebcamProctor) {
+    WebcamProctor.stop();
+  }
 
   const buffers = Editor.getAllBuffers();
   Terminal.info('Submitting all code buffers to server...');
@@ -633,6 +652,9 @@ async function _undoFinalSubmit() {
   AntiCheat.activate();
   if (window.StudentBehavior) {
     StudentBehavior.activate();
+  }
+  if (window.WebcamProctor) {
+    WebcamProctor.start();
   }
   
   const subBanner = document.getElementById('submitted-banner');

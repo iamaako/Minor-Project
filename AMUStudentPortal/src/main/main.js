@@ -252,6 +252,10 @@ function createMainWindow() {
     }
   });
 
+  mainWindow.webContents.on('console-message', (_event, _level, message, line, sourceId) => {
+    console.log(`[Renderer] ${message}`);
+  });
+
   // ── Prevent navigation away from app ──
   mainWindow.webContents.on('will-navigate', (event) => {
     event.preventDefault();
@@ -641,6 +645,20 @@ function registerIpcHandlers() {
       });
     }
   });
+
+  // ── Webcam Proctoring Violation Report ──
+  ipcMain.on('report-webcam-violation', (_event, violationData) => {
+    console.warn(`[Main] Webcam violation detected: ${violationData.type} - looking ${violationData.direction}`);
+    focusViolations++;
+    if (socketClient && socketClient.connected) {
+      socketClient.emit('webcam_violation', {
+        ...violationData,
+        clientIP,
+        systemNumber: getSystemNumber(),
+        timestamp: Date.now()
+      });
+    }
+  });
 }
 
 // ── HTTP Fallback Submission ──
@@ -758,6 +776,16 @@ function loadMockQuestions() {
 // ═══════════════════════════════════════════════════════════
 
 function applyCSP() {
+  // Allow webcam/media access without permission popups
+  session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
+    if (permission === 'media') return callback(true);
+    callback(false);
+  });
+  session.defaultSession.setPermissionCheckHandler((webContents, permission) => {
+    if (permission === 'media') return true;
+    return false;
+  });
+
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
       responseHeaders: {

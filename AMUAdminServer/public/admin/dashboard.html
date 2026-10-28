@@ -224,6 +224,185 @@
       stroke-width: 2.2;
     }
 
+    .alert-badge {
+      background: #dc2626;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 999px;
+      margin-left: auto;
+    }
+
+    /* Webcam Alert Styles */
+    .webcam-alert-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .webcam-alert-card {
+      background: var(--bg-card);
+      border: 2px solid #dc2626;
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+      animation: alertPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes alertPulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2); }
+      50% { box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4); }
+    }
+
+    .alert-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 10px;
+    }
+
+    .alert-student-info h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #dc2626;
+      margin-bottom: 4px;
+    }
+
+    .alert-student-info p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin: 2px 0;
+    }
+
+    .alert-severity {
+      background: #dc2626;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .alert-message {
+      background: rgba(220, 38, 38, 0.08);
+      border-left: 3px solid #dc2626;
+      padding: 10px 12px;
+      margin: 12px 0;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      color: #dc2626;
+    }
+
+    .alert-snapshot {
+      margin: 12px 0;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .alert-snapshot img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .alert-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+
+    .alert-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .toast-notification {
+      position: fixed;
+      top: 80px;
+      right: 24px;
+      background: #dc2626;
+      color: white;
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 24px rgba(220, 38, 38, 0.4);
+      z-index: 10001;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 320px;
+      animation: slideIn 0.3s ease;
+      cursor: pointer;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .toast-notification.hiding {
+      animation: slideOut 0.3s ease forwards;
+    }
+
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(400px); opacity: 0; }
+    }
+
+    .toast-icon {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .toast-content {
+      flex: 1;
+    }
+
+    .toast-title {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+
+    .toast-message {
+      font-size: 12px;
+      opacity: 0.95;
+    }
+
+    .no-alerts-message {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .no-alerts-message svg {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      opacity: 0.3;
+    }
+
+    .no-alerts-message h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .no-alerts-message p {
+      font-size: 14px;
+    }
+
     .sidebar-footer {
       border-top: 1px solid var(--border-color);
       padding-top: 16px;
@@ -1059,6 +1238,12 @@
           Test Analysis &amp; Live Code
         </button>
 
+        <button class="nav-btn" id="nav-webcam-alerts" onclick="showTab('tab-webcam-alerts')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle><path d="M12 8v2m0 6v2"></path></svg>
+          Webcam Alerts
+          <span class="alert-badge" id="webcam-alert-count" style="display: none;">0</span>
+        </button>
+
         <button class="nav-btn" id="nav-students" onclick="showTab('tab-students')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
           Students
@@ -1307,6 +1492,51 @@
               <span style="font-size: 32px; display: block; margin-bottom: 8px;">💻</span>
               <h4 style="margin: 0 0 6px 0; color: var(--text-heading); font-size: 15px;">Waiting for Candidate Telemetry</h4>
               <p style="margin: 0; font-size: 13px;">When students connect and start writing code, their live editor code and risk analytics will appear here in real time.</p>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ================= TAB: WEBCAM ALERTS ================= -->
+        <section id="tab-webcam-alerts" class="tab-content">
+          
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-title">
+                <span class="card-pill"></span>
+                <span>🚨 Webcam Proctoring Violations</span>
+              </div>
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <button class="dash-btn dash-btn-sm" onclick="clearAllWebcamAlerts()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  Clear All
+                </button>
+                <button class="dash-btn dash-btn-sm" onclick="fetchWebcamAlerts()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                  Refresh
+                </button>
+              </div>
+            </div>
+
+            <div style="background: rgba(220, 38, 38, 0.08); border: 1px solid rgba(220, 38, 38, 0.2); border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 18px;">
+              <p style="font-size: 13px; font-weight: 600; color: #dc2626; margin-bottom: 4px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle; margin-right: 6px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                Real-Time Monitoring Active
+              </p>
+              <p style="font-size: 12px; color: var(--text-muted);">
+                This dashboard displays real-time violations when students look away from their screen or at their neighbor's screen. Review each alert and take appropriate action.
+              </p>
+            </div>
+
+            <div id="webcam-alerts-container" class="webcam-alert-container">
+              <div class="no-alerts-message">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                  <circle cx="12" cy="13" r="4"></circle>
+                </svg>
+                <h3>No Violations Detected</h3>
+                <p>All students are currently focused on their screens. Alerts will appear here automatically.</p>
+              </div>
             </div>
           </div>
 
@@ -1906,6 +2136,7 @@
       const navBtnMap = {
         'tab-monitor': 'nav-monitor',
         'tab-analysis': 'nav-analysis',
+        'tab-webcam-alerts': 'nav-webcam-alerts',
         'tab-students': 'nav-students',
         'tab-questions': 'nav-questions',
         'tab-logs': 'nav-logs',
@@ -1918,6 +2149,7 @@
       const titles = {
         'tab-monitor': 'Live Monitor',
         'tab-analysis': 'Test Analysis & Live Code',
+        'tab-webcam-alerts': 'Webcam Proctoring Alerts',
         'tab-students': 'Students Management',
         'tab-questions': 'Question Bank',
         'tab-logs': 'System Logs',
@@ -1936,6 +2168,8 @@
         fetchGlobalSettings();
       } else if (tabId === 'tab-analysis') {
         fetchLiveAnalysis();
+      } else if (tabId === 'tab-webcam-alerts') {
+        renderWebcamAlerts();
       } else if (tabId === 'tab-students') {
         fetchStudents();
       } else if (tabId === 'tab-questions') {
@@ -2147,6 +2381,173 @@
         isAlertVisible = true;
       }
     });
+
+    // --- Webcam Proctoring Alerts ---
+    let webcamAlerts = [];
+    let webcamAlertIdCounter = 0;
+
+    socket.on('webcam_alert', (data) => {
+      console.warn('[Admin] Webcam violation detected:', data);
+      
+      // Add to alerts array
+      const alertId = ++webcamAlertIdCounter;
+      const alert = {
+        id: alertId,
+        timestamp: data.timestamp || Date.now(),
+        rollNumber: data.rollNumber || 'Unknown',
+        name: data.name || 'Candidate',
+        systemNumber: data.systemNumber || 'SYS-??',
+        ip: data.ip || '',
+        direction: data.direction || 'BESIDE',
+        duration: data.duration || 2,
+        snapshot: data.snapshot || null,
+        message: data.message || `Looking ${data.direction || 'BESIDE'} at neighbor`
+      };
+      
+      webcamAlerts.unshift(alert); // Add to beginning of array
+      
+      // Update badge count
+      updateWebcamAlertBadge();
+      
+      // Show toast notification
+      showWebcamToast(alert);
+      
+      // Refresh webcam alerts tab if it's currently active
+      if (window.currentActiveTab === 'tab-webcam-alerts') {
+        renderWebcamAlerts();
+      }
+    });
+
+    function updateWebcamAlertBadge() {
+      const badge = document.getElementById('webcam-alert-count');
+      if (badge) {
+        if (webcamAlerts.length > 0) {
+          badge.textContent = webcamAlerts.length;
+          badge.style.display = 'inline-block';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+    }
+
+    function showWebcamToast(alert) {
+      // Create toast notification
+      const toast = document.createElement('div');
+      toast.className = 'toast-notification';
+      toast.innerHTML = `
+        <div class="toast-icon">🚨</div>
+        <div class="toast-content">
+          <div class="toast-title">Webcam Violation Detected</div>
+          <div class="toast-message">Student on ${alert.systemNumber} is looking ${alert.direction}</div>
+        </div>
+      `;
+      
+      // Click to view alerts tab
+      toast.onclick = () => {
+        showTab('tab-webcam-alerts');
+        toast.remove();
+      };
+      
+      document.body.appendChild(toast);
+      
+      // Auto-remove after 5 seconds
+      setTimeout(() => {
+        toast.classList.add('hiding');
+        setTimeout(() => toast.remove(), 300);
+      }, 5000);
+    }
+
+    function renderWebcamAlerts() {
+      const container = document.getElementById('webcam-alerts-container');
+      if (!container) return;
+      
+      if (webcamAlerts.length === 0) {
+        container.innerHTML = `
+          <div class="no-alerts-message">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+              <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+            <h3>No Violations Detected</h3>
+            <p>All students are currently focused on their screens. Alerts will appear here automatically.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      
+      container.innerHTML = webcamAlerts.map(alert => {
+        const time = new Date(alert.timestamp).toLocaleTimeString();
+        const directionLabel = alert.direction === 'LEFT' ? 'LEFT (Towards Left Neighbor)' : 
+                               alert.direction === 'RIGHT' ? 'RIGHT (Towards Right Neighbor)' : 
+                               'ASIDE (Away from Screen)';
+        
+        return `
+          <div class="webcam-alert-card" data-alert-id="${alert.id}">
+            <div class="alert-card-header">
+              <div class="alert-student-info">
+                <h4>🚨 ${esc(alert.name)}</h4>
+                <p><strong>System:</strong> ${esc(alert.systemNumber)} | <strong>Roll:</strong> ${esc(alert.rollNumber)}</p>
+                <p><strong>IP:</strong> ${esc(alert.ip)}</p>
+              </div>
+              <div class="alert-severity">VIOLATION</div>
+            </div>
+            
+            <div class="alert-message">
+              ⚠️ Student detected looking <strong>${directionLabel}</strong> for <strong>${alert.duration} seconds</strong>
+            </div>
+            
+            ${alert.snapshot ? `
+              <div class="alert-snapshot">
+                <img src="${esc(alert.snapshot)}" alt="Webcam snapshot" />
+              </div>
+            ` : ''}
+            
+            <div class="alert-meta">
+              <span>🕒 ${time}</span>
+              <span style="font-weight: 600; color: #dc2626;">Duration: ${alert.duration}s</span>
+            </div>
+            
+            <div class="alert-actions">
+              <button class="dash-btn dash-btn-sm" onclick="reviewStudent('${esc(alert.rollNumber)}')">
+                👁️ Review Student
+              </button>
+              <button class="dash-btn dash-btn-sm" onclick="dismissAlert(${alert.id})">
+                ✓ Dismiss
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function dismissAlert(alertId) {
+      webcamAlerts = webcamAlerts.filter(a => a.id !== alertId);
+      updateWebcamAlertBadge();
+      renderWebcamAlerts();
+    }
+
+    function clearAllWebcamAlerts() {
+      if (webcamAlerts.length === 0) return;
+      if (confirm(`Are you sure you want to clear all ${webcamAlerts.length} webcam alerts?`)) {
+        webcamAlerts = [];
+        updateWebcamAlertBadge();
+        renderWebcamAlerts();
+      }
+    }
+
+    function fetchWebcamAlerts() {
+      // Refresh the display
+      renderWebcamAlerts();
+    }
+
+    function reviewStudent(rollNumber) {
+      // Switch to monitor tab and highlight the student
+      showTab('tab-monitor');
+      // You can add additional logic here to highlight the specific student
+      alert(`Reviewing student: ${rollNumber}\n\nYou can now monitor this student's PC and take appropriate action.`);
+    }
 
     socket.on('stream_frame_receive', (data) => {
       if (activeStreamSid === data.targetSocketId && data.frameData) {

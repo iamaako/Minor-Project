@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/xp-theme.css" />
   <link rel="stylesheet" href="css/login.css" />
   <link rel="stylesheet" href="css/editor.css" />
+  <link rel="stylesheet" href="css/webcam.css" />
 </head>
 
 <body>
@@ -400,6 +401,30 @@
     </div>
 
   </div><!-- .exam-window -->
+
+  <!-- Floating XP Webcam Proctoring Widget -->
+  <div id="webcam-pip" class="xp-window webcam-pip-box">
+    <div class="webcam-pip-titlebar" id="webcam-pip-titlebar">
+      <div class="webcam-pip-title-left">
+        <span>📹</span>
+        <span>AI Proctor — Live Monitor</span>
+      </div>
+      <div class="webcam-pip-controls">
+        <button class="webcam-btn-min" id="btn-toggle-webcam" title="Minimize / Restore">_</button>
+      </div>
+    </div>
+    <div class="webcam-pip-body" id="webcam-pip-body">
+      <div class="webcam-video-container">
+        <video id="webcam-video" autoplay playsinline muted></video>
+        <canvas id="webcam-overlay"></canvas>
+      </div>
+      <div class="webcam-status-panel" id="webcam-status-panel">
+        <span class="webcam-status-dot green" id="webcam-status-dot">●</span>
+        <span class="webcam-status-text" id="webcam-status-text">Initializing AI...</span>
+      </div>
+    </div>
+  </div>
+
 </div><!-- #exam-screen -->
 
 <!-- ═══════════════════════════════════════════════════════
@@ -524,6 +549,8 @@
 <script src="js/behavior.js"></script>
 <script src="js/login.js"></script>
 <script src="js/editor.js"></script>
+<script src="js/lib/face-api.js"></script>
+<script src="js/webcamProctor.js"></script>
 
 <script src="js/monaco-env.js"></script>
 <script src="../../node_modules/monaco-editor/min/vs/loader.js"></script>
