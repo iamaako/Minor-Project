@@ -74,7 +74,9 @@ function boot() {
 
   const btnConnect = document.getElementById('btn-connect-server');
   btnConnect.addEventListener('click', async () => {
-    const ip = document.getElementById('input-server-ip').value.trim();
+    // Accept a pasted address too: "http://10.0.0.5:3000/admin" -> 10.0.0.5
+    const ip = document.getElementById('input-server-ip').value.trim()
+      .replace(/^https?:\/\//i, '').replace(/[:/].*$/, '');
     const port = document.getElementById('input-server-port').value.trim();
     const errorEl = document.getElementById('setup-error');
     
@@ -82,6 +84,11 @@ function boot() {
       errorEl.textContent = 'Please enter both IP and Port.';
       return;
     }
+    if (!/^[A-Za-z0-9.-]+$/.test(ip) || !/^\d{1,5}$/.test(port) || Number(port) < 1 || Number(port) > 65535) {
+      errorEl.textContent = 'Invalid IP address or port. Example: 192.168.1.20 and 3000.';
+      return;
+    }
+    document.getElementById('input-server-ip').value = ip;
     
     errorEl.textContent = '';
     
@@ -129,17 +136,20 @@ function boot() {
     // Update connecting screen error text if failed
     if (status.error && currentState === AppState.CONNECTING) {
       const el = document.getElementById('connect-status');
+      const reason = (window.SocketBridge && SocketBridge.describeError)
+        ? SocketBridge.describeError(status.error)
+        : 'Failed to connect. Please check IP/Port and try again.';
       if (el) { 
-        el.textContent = `Error: Failed to connect`; 
+        el.textContent = reason; 
         el.style.color = 'red'; 
       }
-      // Provide option to go back to setup
+      // Go back to the setup screen, with the reason, once the student has had time to read it
       setTimeout(() => {
         currentState = AppState.SETUP;
         showScreen('setup');
         const setupErr = document.getElementById('setup-error');
-        if (setupErr) setupErr.textContent = 'Failed to connect. Please check IP/Port and try again.';
-      }, 3000);
+        if (setupErr) setupErr.textContent = reason;
+      }, 5000);
     }
 
     // Connection lost mid-session: keep the exam on screen. The main process keeps

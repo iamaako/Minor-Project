@@ -51,10 +51,72 @@ function addLog(msg) {
   }
 }
 
+// ── Network addresses ─────────────────────────────────────
+// The list is re-read every few seconds: the laptop hotspot is often switched on
+// AFTER this app was opened, and its address must show up without a restart.
+
+const ipList = document.getElementById('ip-list');
+const studentIpList = document.getElementById('student-ip-list');
+let currentIp = '';
+let serverRunning = false;
+
+function _chip(c) {
+  const el = document.createElement('span');
+  el.textContent = `${c.address}  (${c.label})`;
+  el.title = 'Click to copy';
+  el.style.cssText = 'display:inline-block;margin:2px 6px 2px 0;padding:2px 9px;border-radius:999px;' +
+    'background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;font-weight:600;cursor:pointer;';
+  el.addEventListener('click', () => { navigator.clipboard.writeText(c.address); el.style.background = '#d1fae5'; });
+  return el;
+}
+
+function _renderIpList(target, cands) {
+  if (!target) return;
+  target.textContent = '';
+  const usable = cands.filter((c) => !c.virtual);
+  const virtual = cands.filter((c) => c.virtual);
+
+  if (usable.length === 0) {
+    const warn = document.createElement('div');
+    warn.textContent = 'No Wi-Fi, Ethernet or hotspot address found. Connect this PC to a network (or switch on Mobile Hotspot), ' +
+      'then wait a few seconds. Other devices cannot reach this PC until then.';
+    warn.style.cssText = 'color:#b91c1c;font-weight:600;';
+    target.appendChild(warn);
+  } else {
+    const head = document.createElement('div');
+    head.textContent = usable.length > 1 ? 'Use the address of the network the students are on:' : 'Students connect to:';
+    head.style.cssText = 'color:#475569;';
+    target.appendChild(head);
+    usable.forEach((c) => target.appendChild(_chip(c)));
+  }
+
+  virtual.forEach((c) => {
+    const note = document.createElement('div');
+    note.textContent = `Ignored: ${c.address} (${c.name}) is a virtual adapter (VirtualBox / VMware / Hyper-V). Other devices cannot use it.`;
+    note.style.cssText = 'color:#94a3b8;font-size:11px;';
+    target.appendChild(note);
+  });
+}
+
+async function refreshIps() {
+  let cands = [];
+  try { cands = await window.adminAPI.getNetworkCandidates(); } catch (e) { return; }
+  const best = cands.find((c) => !c.virtual) || null;
+  currentIp = best ? best.address : '';
+
+  ipDisplay.textContent = best ? best.address : 'No network';
+  ipDisplay.style.color = best ? '' : '#b91c1c';
+  if (serverRunning && studentIp) studentIp.textContent = currentIp || 'No network';
+  if (serverRunning) serverUrl = currentIp ? `http://${currentIp}:${studentPort.textContent}/admin` : '';
+
+  _renderIpList(ipList, cands);
+  _renderIpList(studentIpList, cands);
+}
+
 // Initialize
 async function init() {
-  const ip = await window.adminAPI.getLocalIp();
-  ipDisplay.textContent = ip;
+  await refreshIps();
+  setInterval(refreshIps, 3000);
 
   const creds = await window.adminAPI.getAdminCredentials();
   if (creds) {
@@ -70,8 +132,8 @@ if (btnCopyIp) {
   let copyIpTimeout = null;
 
   btnCopyIp.addEventListener('click', () => {
-    const ip = ipDisplay ? ipDisplay.textContent : '';
-    if (ip && ip !== 'Loading...') {
+    const ip = currentIp;
+    if (ip) {
       navigator.clipboard.writeText(ip);
 
       if (copyIpTimeout) clearTimeout(copyIpTimeout);
@@ -151,6 +213,7 @@ btnStart.addEventListener('click', async () => {
     errorMsg.textContent = '';
     
     // Highlighted Student Details
+    serverRunning = true;
     studentIp.textContent = result.info.ip;
     studentPort.textContent = result.info.port;
     
@@ -186,6 +249,7 @@ if (window.adminAPI.onServerLog) {
 }
 
 window.adminAPI.onServerStopped(() => {
+  serverRunning = false;
   dashboardPanel.classList.add('hidden');
   setupPanel.classList.remove('hidden');
 });

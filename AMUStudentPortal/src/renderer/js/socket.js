@@ -77,17 +77,31 @@ const SocketBridge = (() => {
         connectStatusEl.textContent = 'Connected! Loading login screen...';
         connectStatusEl.style.color = 'var(--clr-success)';
       } else if (status.error) {
-        connectStatusEl.textContent = `Error: Failed to connect`;
+        connectStatusEl.textContent = describeError(status.error);
         connectStatusEl.style.color = 'var(--clr-error)';
       }
     }
+  }
+
+  // Plain-language reason for a failed connection (shown on the connecting / setup screens)
+  function describeError(err) {
+    const e = String(err || '').toLowerCase();
+    if (e.includes('econnrefused') || e.includes('refused')) {
+      return 'The server refused the connection. Is the Admin Server started, and is the port correct?';
+    }
+    if (e.includes('timeout') || e.includes('websocket error') || e.includes('xhr poll error') ||
+        e.includes('etimedout') || e.includes('unreach') || e.includes('enotfound')) {
+      return 'Cannot reach the server. Check: this PC is on the same Wi-Fi / hotspot as the teacher PC, ' +
+        'the IP is the one shown in the Admin app, and the Admin PC allows the connection (firewall).';
+    }
+    return 'Could not connect' + (err ? ' (' + err + ')' : '') + '. Check the IP address and port.';
   }
 
   function getConnectionState() {
     return { isConnected, isMockMode };
   }
 
-  return { init, getConnectionState };
+  return { init, getConnectionState, describeError };
 })();
 
 window.SocketBridge = SocketBridge;

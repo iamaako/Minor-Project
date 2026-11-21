@@ -5,7 +5,7 @@ if (process.platform === 'linux') {
 const path = require('path');
 const crypto = require('crypto');
 const fs = require('fs');
-const { startServer, stopServer, getLocalIpAddress, getConnectedClients } = require('./server');
+const { startServer, stopServer, getLocalIpAddress, getNetworkCandidates, getConnectedClients } = require('./server');
 const { initDB, setAdminPassword, flushDB } = require('./db');
 
 let mainWindow;
@@ -69,6 +69,11 @@ app.on('window-all-closed', () => {
 // IPC Handlers
 ipcMain.handle('get-local-ip', () => {
   return getLocalIpAddress();
+});
+
+// All usable addresses (re-read every time: the hotspot can be switched on after start-up)
+ipcMain.handle('get-network-candidates', () => {
+  return getNetworkCandidates();
 });
 
 ipcMain.handle('get-admin-credentials', () => {

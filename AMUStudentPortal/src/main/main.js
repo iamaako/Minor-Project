@@ -24,7 +24,7 @@ const {
   startInteractiveProcess, writeToProcess, killInteractiveProcess,
   listWorkspaceFiles, readWorkspaceFile, writeWorkspaceFile, deleteWorkspaceFile, clearWorkspace, getWorkspacePath, zipAndUploadWorkspace, setWorkspaceRollNumber
 } = require('./codeExecutor');
-const { getClientIP, getAllIPs } = require('./networkUtils');
+const { getClientIP, getLocalIPToward, getAllIPs } = require('./networkUtils');
 const { SERVER_URL, EVENTS } = require('../common/constants');
 
 // ── CLI Flags ──
@@ -354,8 +354,19 @@ function registerKeyboardLocks() {
 // ═══════════════════════════════════════════════════════════
 
 ipcMain.handle('connect-server', async (event, { ip, port }) => {
-  const url = `http://${ip}:${port}`;
-  initSocketConnection(url);
+  const host = String(ip || '').trim();
+  const portNum = Number(port);
+  if (!/^[A-Za-z0-9.-]+$/.test(host) || !Number.isInteger(portNum) || portNum < 1 || portNum > 65535) {
+    return { success: false, message: 'Invalid IP address or port.' };
+  }
+
+  // Report the address of the adapter that actually reaches the server. The first adapter
+  // in the list is often a VirtualBox/VMware one (e.g. 192.168.56.1).
+  const routed = await getLocalIPToward(host, portNum);
+  if (routed) clientIP = routed;
+  console.log(`[Main] Server ${host}:${portNum}, this PC reaches it from ${clientIP}`);
+
+  initSocketConnection(`http://${host}:${portNum}`);
   return { success: true };
 });
 

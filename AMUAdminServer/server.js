@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
+const { getNetworkCandidates, getBestIp } = require('./network');
 
 const JWT_SECRET = crypto.randomBytes(32).toString('hex');
 
@@ -69,18 +70,10 @@ function getSubmissionsDir() {
   return dir;
 }
 
+// The old "first non-internal address" picked VirtualBox / VMware / Hyper-V adapters.
+// See network.js for how real adapters are told apart.
 function getLocalIpAddress() {
-  const interfaces = os.networkInterfaces();
-  for (const devName in interfaces) {
-    const iface = interfaces[devName];
-    for (let i = 0; i < iface.length; i++) {
-      const alias = iface[i];
-      if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal) {
-        return alias.address;
-      }
-    }
-  }
-  return '127.0.0.1';
+  return getBestIp();
 }
 
 function startServer(port = 3000, mainWindow) {
@@ -1152,7 +1145,13 @@ function startServer(port = 3000, mainWindow) {
       const localIp = getLocalIpAddress();
       logEvent(`Exam Server listening on port ${port}`);
       logEvent(`Access from this PC: http://localhost:${port}/admin`);
-      logEvent(`Access from other devices: http://${localIp}:${port}/admin`);
+      const usable = getNetworkCandidates().filter((c) => !c.virtual);
+      if (usable.length === 0) {
+        logEvent('WARNING: no Wi-Fi / Ethernet / hotspot address found. Connect to a network first; other devices cannot reach this PC.');
+      }
+      usable.forEach((c) => logEvent(`Access from other devices (${c.label}): http://${c.address}:${port}/admin`));
+      getNetworkCandidates().filter((c) => c.virtual)
+        .forEach((c) => logEvent(`Ignored virtual adapter ${c.name} (${c.address}): other devices cannot use it.`));
       resolve({ ip: localIp, port });
     });
 
@@ -1197,5 +1196,6 @@ module.exports = {
   startServer,
   stopServer,
   getLocalIpAddress,
+  getNetworkCandidates,
   getConnectedClients
 };

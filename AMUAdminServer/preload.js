@@ -2,6 +2,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('adminAPI', {
   getLocalIp: () => ipcRenderer.invoke('get-local-ip'),
+  getNetworkCandidates: () => ipcRenderer.invoke('get-network-candidates'),
   getAdminCredentials: () => ipcRenderer.invoke('get-admin-credentials'),
   openExternal: (url) => ipcRenderer.invoke('open-external', url),
   startServer: (port) => ipcRenderer.invoke('start-server', port),

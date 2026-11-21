@@ -41,6 +41,7 @@
       "main.js",
       "preload.js",
       "server.js",
+      "network.js",
       "index.html",
       "public/**/*",
       "css/**/*",
