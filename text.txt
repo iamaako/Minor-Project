@@ -1,0 +1,24 @@
+LHLD 2050H      ; Load 16-bit number from 2050H-2051H into HL pair
+        MVI C, 00H      ; Zero counter = 00H
+
+        ; --- Check Lower Byte (L Register) ---
+        MOV A, L        ; Copy lower byte into Accumulator
+        MVI B, 08H      ; Bit counter = 8
+LOOP1:  RAR             ; Rotate right through Carry
+        JC NEXT1        ; If CY = 1, skip increment
+        INR C           ; If CY = 0, increment zero counter
+NEXT1:  DCR B           ; Decrement bit counter
+        JNZ LOOP1       ; Repeat for all 8 bits of L
+
+        ; --- Check Higher Byte (H Register) ---
+        MOV A, H        ; Copy higher byte into Accumulator
+        MVI B, 08H      ; Bit counter = 8
+LOOP2:  RAR             ; Rotate right through Carry
+        JC NEXT2        ; If CY = 1, skip increment
+        INR C           ; If CY = 0, increment zero counter
+NEXT2:  DCR B           ; Decrement bit counter
+        JNZ LOOP2       ; Repeat for all 8 bits of H
+
+        MOV A, C        ; Move total count of zeroes (out of 16) to A
+        STA 2052H       ; Store result at 2052H
+        HLT             ; Stop execution

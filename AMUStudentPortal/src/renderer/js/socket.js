@@ -17,11 +17,17 @@ const SocketBridge = (() => {
   const connDotStatus = document.getElementById('status-conn-dot');
   const connTextEl    = document.getElementById('status-conn-text');
 
+  let initialized = false;
+
   function init() {
+    // init() runs on every "Connect" click; register the IPC listener only once.
+    if (initialized) return;
     if (!window.examAPI) {
       console.error('[SocketBridge] examAPI not available — preload may have failed.');
       return;
     }
+
+    initialized = true;
 
     // Connection status updates from main process
     window.examAPI.onConnectionStatus((status) => {

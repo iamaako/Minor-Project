@@ -11,8 +11,8 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('examAPI', {
 
   // ── Code Execution (Interactive) ──
-  startInteractive: (code, language) =>
-    ipcRenderer.invoke('start-interactive', { code, language }),
+  startInteractive: (code, language, filename) =>
+    ipcRenderer.invoke('start-interactive', { code, language, filename }),
 
   sendTerminalInput: (text) =>
     ipcRenderer.send('terminal-input', text),

@@ -88,13 +88,36 @@ async function initDB() {
     } catch (e) { }
   }
 
-  saveDB();
+  writeDBNow();
   return db;
 }
 
-function saveDB() {
+// Writing the whole database after every INSERT blocked the event loop (every log line
+// triggered a full export). Writes are now batched: at most one per SAVE_DELAY_MS,
+// and flushDB() forces the pending write (called on app quit).
+const SAVE_DELAY_MS = 500;
+let saveTimer = null;
+
+function writeDBNow() {
+  if (!db || !dbPath) return;
   const data = db.export();
   fs.writeFileSync(dbPath, Buffer.from(data));
+}
+
+function saveDB() {
+  if (saveTimer) return;
+  saveTimer = setTimeout(() => {
+    saveTimer = null;
+    try { writeDBNow(); } catch (e) { console.error('[DB] Save failed:', e.message); }
+  }, SAVE_DELAY_MS);
+}
+
+function flushDB() {
+  if (saveTimer) {
+    clearTimeout(saveTimer);
+    saveTimer = null;
+  }
+  try { writeDBNow(); } catch (e) { console.error('[DB] Flush failed:', e.message); }
 }
 
 // ── Admin Auth Functions ──
@@ -187,9 +210,12 @@ function getAllStudents() {
 function addStudent(rollNumber, name, password, boundIp = null, assignedQuestions = []) {
   return new Promise((resolve) => {
     try {
-      db.run(`INSERT OR REPLACE INTO students 
-        (roll_number, name, password, bound_ip, is_locked, assigned_questions, has_submitted) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      // Upsert, not INSERT OR REPLACE: re-adding a student (or re-uploading the CSV) must
+      // only update name/password. REPLACE used to wipe the IP binding, lock and submitted flag.
+      db.run(`INSERT INTO students
+        (roll_number, name, password, bound_ip, is_locked, assigned_questions, has_submitted)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(roll_number) DO UPDATE SET name = excluded.name, password = excluded.password`,
         [rollNumber, name, password, boundIp, 0, JSON.stringify(assignedQuestions), 0]
       );
       saveDB();
@@ -271,9 +297,10 @@ function addQuestion(id, title, description, time_limit, difficulty, constraints
         (id, title, description, time_limit, difficulty, constraints, sampleInput, sampleOutput, explanation, testCases) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
-          id, title, description, time_limit,
-          difficulty, constraints, sampleInput,
-          sampleOutput, explanation,
+          id, title, description,
+          Number.isFinite(time_limit) ? time_limit : null, // NaN/undefined cannot be bound by sql.js
+          difficulty ?? null, constraints ?? null, sampleInput ?? null,
+          sampleOutput ?? null, explanation ?? null,
           typeof testCases === 'string' ? testCases : JSON.stringify(testCases || [])
         ]
       );
@@ -338,8 +365,12 @@ function addSubmission(rollNumber, questionId, code, language, status) {
   });
 }
 
+const CLEARABLE_TABLES = ['students', 'questions', 'logs', 'submissions'];
+
 module.exports = {
   initDB,
+  flushDB,
+  getDbPath: () => dbPath,
   getAdminCredentials,
   setAdminPassword: (password) => createAdmin('admin', password),
   createAdmin,
@@ -374,6 +405,8 @@ module.exports = {
   }),
   clearTable: (tableName) => new Promise(res => {
     try {
+      // The name goes into SQL text (identifiers cannot be bound), so only known tables pass.
+      if (!CLEARABLE_TABLES.includes(tableName)) return res(false);
       db.run(`DELETE FROM ${tableName}`);
       saveDB();
       res(true);

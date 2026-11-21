@@ -6,7 +6,7 @@ const path = require('path');
 const crypto = require('crypto');
 const fs = require('fs');
 const { startServer, stopServer, getLocalIpAddress, getConnectedClients } = require('./server');
-const { initDB, setAdminPassword } = require('./db');
+const { initDB, setAdminPassword, flushDB } = require('./db');
 
 let mainWindow;
 let adminCredentials = null;
@@ -29,7 +29,8 @@ function createWindow() {
     width: 900,
     height: 700,
     title: "AMU Admin Server",
-    icon: path.join(__dirname, 'app_icon.png'),
+    // Admin-style badge (dark green + amber ring), so it is not mistaken for the student app
+    icon: path.join(__dirname, 'installer-assets', 'app_icon.png'),
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -55,6 +56,9 @@ app.whenReady().then(() => {
     }
   });
 });
+
+// Database writes are batched (see db.js); make sure the last ones reach the disk.
+app.on('before-quit', () => flushDB());
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

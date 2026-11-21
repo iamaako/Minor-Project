@@ -4,6 +4,8 @@ const Workspace = (() => {
   const fileListEl = document.getElementById('file-list');
   const btnNewFile = document.getElementById('btn-new-file');
   let currentActiveFile = 'main.py';
+  // Must match isSafeFileName() in the main process (codeExecutor.js).
+  const FILE_NAME_RE = /^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$/;
 
   const newFileContainer = document.getElementById('new-file-container');
   const inputNewFile = document.getElementById('input-new-file');
@@ -31,14 +33,34 @@ const Workspace = (() => {
 
     if (btnCreateFile) {
       btnCreateFile.addEventListener('click', async () => {
-        const name = inputNewFile.value;
-        if (name && name.trim()) {
-          await window.examAPI.writeWorkspace(name.trim(), '');
-          refreshFileList();
-          openFile(name.trim());
-        }
+        const name = (inputNewFile.value || '').trim();
         newFileContainer.style.display = 'none';
         btnNewFile.style.display = 'block';
+        if (!name) return;
+
+        if (!FILE_NAME_RE.test(name) || name.includes('..') || name.endsWith('.')) {
+          if (window.Terminal) {
+            window.Terminal.warn('Invalid file name. Use letters, digits, "_", "-" and "." only (max 64 characters, no spaces or folders).');
+          }
+          return;
+        }
+
+        // Never overwrite: creating "main.py" again used to wipe the solution.
+        const existing = await window.examAPI.listWorkspace();
+        const same = existing.find((f) => f.toLowerCase() === name.toLowerCase());
+        if (same) {
+          if (window.Terminal) window.Terminal.info(`"${same}" already exists, opening it.`);
+          openFile(same);
+          return;
+        }
+
+        const ok = await window.examAPI.writeWorkspace(name, '');
+        if (!ok) {
+          if (window.Terminal) window.Terminal.warn(`Could not create "${name}".`);
+          return;
+        }
+        await refreshFileList();
+        openFile(name);
       });
     }
 
@@ -156,6 +178,12 @@ const Workspace = (() => {
     }
   }
 
+  // Called by the editor when it loads a question's code: that code belongs to main.<ext>.
+  function setActiveFile(filename) {
+    currentActiveFile = filename;
+    refreshFileList();
+  }
+
   async function syncActiveFile() {
     const isReadOnly = window.Editor && window.Editor.isReadOnly && window.Editor.isReadOnly();
     if (isReadOnly) return;
@@ -164,7 +192,7 @@ const Workspace = (() => {
     }
   }
 
-  return { init, refreshFileList, openFile, syncActiveFile, getCurrentActiveFile: () => currentActiveFile };
+  return { init, refreshFileList, openFile, setActiveFile, syncActiveFile, getCurrentActiveFile: () => currentActiveFile };
 })();
 
 window.Workspace = Workspace;

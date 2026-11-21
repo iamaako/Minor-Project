@@ -14,6 +14,14 @@ const Editor = (() => {
   let currentQuestionId = null;
   let isReadOnly       = false;
 
+  // Saved code is stored per student (roll number), never shared between students.
+  let storageKey       = 'amu_code_buffers_anon';
+  // true while the editor shows the question's solution file (main.*).
+  // Other workspace files (helper.py ...) must not overwrite the question buffer.
+  let isMainFile       = true;
+  // true while code sets the editor value (question switch, file open). Not a student edit.
+  let programmaticChange = false;
+
   // Per-question code buffers: { [questionId]: { [language]: code } }
   let codeBuffers = {};
 
@@ -80,7 +88,10 @@ const Editor = (() => {
 
   // ── Public: Initialise ────────────────────────────────
 
-  function init() {
+  function init(rollNumber) {
+    storageKey = 'amu_code_buffers_' + String(rollNumber || 'anon').replace(/[^A-Za-z0-9_-]/g, '_');
+    try { localStorage.removeItem('amu_code_buffers'); } catch (e) { /* legacy shared key, owner unknown */ }
+
     if (typeof monaco === 'undefined') {
       console.error('[Editor] Monaco not loaded!');
       return;
@@ -121,6 +132,14 @@ const Editor = (() => {
 
     // Track modifications
     monacoEditor.onDidChangeModelContent(() => {
+      if (programmaticChange) {
+        // Not typing: keep the behaviour monitor's baseline in step so a question switch
+        // is not mistaken for a pasted block of code.
+        if (window.StudentBehavior && typeof window.StudentBehavior.syncEditorLength === 'function') {
+          window.StudentBehavior.syncEditorLength(monacoEditor.getValue().length);
+        }
+        return;
+      }
       if (modifiedDotEl) modifiedDotEl.classList.add('visible');
       _saveCurrentBuffer();
       if (window.StudentBehavior && typeof window.StudentBehavior.notifyEditorChange === 'function') {
@@ -193,7 +212,11 @@ const Editor = (() => {
       _saveCurrentBuffer();
     }
 
+    // Leaving a helper file: write its text to disk first (arguments are read right now).
+    if (!isMainFile && window.Workspace) window.Workspace.syncActiveFile();
+
     currentQuestionId = questionId;
+    isMainFile = true;
 
     // Restore saved code or use starter
     const savedCode = _getBuffer(questionId, language || currentLanguage);
@@ -206,8 +229,13 @@ const Editor = (() => {
 
     const monacoLang = LANG_MONACO[lang] || 'python';
     monaco.editor.setModelLanguage(monacoEditor.getModel(), monacoLang);
-    monacoEditor.setValue(code);
+    _setEditorValue(code);
     monacoEditor.setScrollPosition({ scrollTop: 0 });
+
+    // The question's code lives in main.<ext>: tell the file panel so autosave and Run use it.
+    if (window.Workspace && typeof window.Workspace.setActiveFile === 'function') {
+      window.Workspace.setActiveFile('main.' + (LANG_EXT[lang] || 'py'));
+    }
 
     if (filenameEl) {
       filenameEl.textContent = `solution.${LANG_EXT[lang] || 'py'}`;
@@ -232,6 +260,9 @@ const Editor = (() => {
     if (isReadOnly) return;
     if (!LANG_MONACO[lang]) return;
 
+    // Leaving a helper file: write its text to disk first.
+    if (!isMainFile && window.Workspace) window.Workspace.syncActiveFile();
+
     // Save current language buffer
     _saveCurrentBuffer();
 
@@ -242,7 +273,11 @@ const Editor = (() => {
 
     const monacoLang = LANG_MONACO[lang];
     monaco.editor.setModelLanguage(monacoEditor.getModel(), monacoLang);
-    monacoEditor.setValue(code);
+    _setEditorValue(code);
+    isMainFile = true;
+    if (window.Workspace && typeof window.Workspace.setActiveFile === 'function') {
+      window.Workspace.setActiveFile('main.' + LANG_EXT[lang]);
+    }
 
     if (filenameEl) {
       filenameEl.textContent = `solution.${LANG_EXT[lang]}`;
@@ -254,6 +289,7 @@ const Editor = (() => {
 
   function setLanguageAndCode(lang, code, filename) {
     currentLanguage = lang;
+    isMainFile = /^main\.(py|c|cpp)$/.test(filename || '');
     
     // If it's a known language, update select
     if (LANG_MONACO[lang] && langSelect) {
@@ -263,7 +299,7 @@ const Editor = (() => {
     const monacoLang = LANG_MONACO[lang] || 'plaintext';
     if (monacoEditor) {
       monaco.editor.setModelLanguage(monacoEditor.getModel(), monacoLang);
-      monacoEditor.setValue(code);
+      _setEditorValue(code);
       monacoEditor.setScrollPosition({ scrollTop: 0 });
       if (isReadOnly) {
         monacoEditor.updateOptions({ readOnly: true });
@@ -331,7 +367,9 @@ const Editor = (() => {
     Terminal.setRunningState(true);
 
     try {
-      await window.examAPI.startInteractive(code, currentLanguage);
+      // Run the file being edited (helper.py, main.c ...), never silently overwrite main.*.
+      const activeFile = window.Workspace && window.Workspace.getCurrentActiveFile && window.Workspace.getCurrentActiveFile();
+      await window.examAPI.startInteractive(code, currentLanguage, activeFile || undefined);
     } catch (err) {
       Terminal.stderr(`Execution error: ${err.message}`);
       Terminal.setRunningState(false);
@@ -365,7 +403,7 @@ const Editor = (() => {
       await window.Workspace.syncActiveFile();
     }
 
-    const code = getCurrentCode();
+    const code = getSolutionCode();
     const result = await window.examAPI.submitCode(currentQuestionId, code, currentLanguage);
 
     if (result && result.success) {
@@ -389,6 +427,13 @@ const Editor = (() => {
     return monacoEditor ? monacoEditor.getValue() : '';
   }
 
+  // The question's solution: the editor text when main.* is open, else the stored buffer.
+  function getSolutionCode() {
+    if (isMainFile) return getCurrentCode();
+    const buf = _getBuffer(currentQuestionId, currentLanguage);
+    return buf === null ? '' : buf;
+  }
+
   function getCurrentLanguage() {
     return currentLanguage;
   }
@@ -410,10 +455,22 @@ const Editor = (() => {
     if (langSelect) langSelect.disabled = readOnly;
   }
 
+  // ── Internal: set editor text from code (not a student edit) ──
+
+  function _setEditorValue(code) {
+    programmaticChange = true;
+    try {
+      monacoEditor.setValue(code);
+    } finally {
+      programmaticChange = false;
+    }
+  }
+
   // ── Internal: Buffer management ───────────────────────
 
   function _saveCurrentBuffer() {
     if (isReadOnly) return;
+    if (!isMainFile) return;
     if (currentQuestionId === null || !monacoEditor) return;
     if (!codeBuffers[currentQuestionId]) {
       codeBuffers[currentQuestionId] = {};
@@ -434,7 +491,7 @@ const Editor = (() => {
     if (isReadOnly) return;
     _saveCurrentBuffer();
     try {
-      localStorage.setItem('amu_code_buffers', JSON.stringify(codeBuffers));
+      localStorage.setItem(storageKey, JSON.stringify(codeBuffers));
     } catch (e) {
       console.warn('[Editor] localStorage write failed:', e.message);
     }
@@ -447,11 +504,9 @@ const Editor = (() => {
 
   function _loadFromStorage() {
     try {
-      const saved = localStorage.getItem('amu_code_buffers');
-      if (saved) {
-        codeBuffers = JSON.parse(saved);
-        console.log('[Editor] Restored code buffers from localStorage');
-      }
+      const saved = localStorage.getItem(storageKey);
+      codeBuffers = saved ? JSON.parse(saved) : {};
+      if (saved) console.log('[Editor] Restored code buffers from localStorage');
     } catch (e) {
       console.warn('[Editor] localStorage read failed:', e.message);
       codeBuffers = {};
@@ -459,7 +514,7 @@ const Editor = (() => {
   }
 
   function clearStorage() {
-    localStorage.removeItem('amu_code_buffers');
+    localStorage.removeItem(storageKey);
     codeBuffers = {};
   }
 
@@ -471,6 +526,7 @@ const Editor = (() => {
     saveCurrentQuestion,
     getAllBuffers,
     getCurrentCode,
+    getSolutionCode,
     getCurrentLanguage,
     setLanguageAndCode,
     setReadOnly,

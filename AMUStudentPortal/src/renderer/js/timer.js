@@ -13,6 +13,8 @@ const Timer = (() => {
   let intervalId      = null;
   let onExpireCallback = null;
   let isTicking       = false;
+  // True until start() and after pause()/stop(). A server sync must not start or restart a halted timer.
+  let halted          = true;
 
   const displayEl   = document.getElementById('timer-display');
   const progressEl  = document.getElementById('timer-progress');
@@ -80,6 +82,7 @@ const Timer = (() => {
       return;
     }
 
+    halted            = false;
     isTicking         = true;
     updateUI();
     intervalId = setInterval(tick, 1000);
@@ -98,6 +101,7 @@ const Timer = (() => {
       return;
     }
     
+    halted = false;
     isTicking = true;
     updateUI();
     intervalId = setInterval(tick, 1000);
@@ -105,11 +109,13 @@ const Timer = (() => {
 
   function syncFromServer(data) {
     // data: { remainingSeconds: number, totalSeconds?: number }
+    if (!data || !Number.isFinite(data.remainingSeconds)) return;
     if (data.totalSeconds) {
       totalSeconds = data.totalSeconds;
     }
     remainingSeconds = data.remainingSeconds;
-    if (!isTicking && remainingSeconds > 0) {
+    // Only an active timer is (re)started by a sync. A paused or stopped one stays halted.
+    if (!halted && !isTicking && remainingSeconds > 0) {
       isTicking = true;
       intervalId = setInterval(tick, 1000);
     }
@@ -117,12 +123,14 @@ const Timer = (() => {
   }
 
   function pause() {
+    halted = true;
     isTicking = false;
     clearInterval(intervalId);
     intervalId = null;
   }
 
   function resume() {
+    halted = false;
     if (!isTicking && remainingSeconds > 0) {
       isTicking = true;
       intervalId = setInterval(tick, 1000);
@@ -130,6 +138,7 @@ const Timer = (() => {
   }
 
   function stop() {
+    halted = true;
     isTicking = false;
     clearInterval(intervalId);
     intervalId = null;

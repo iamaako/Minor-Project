@@ -142,19 +142,29 @@ function boot() {
       }, 3000);
     }
 
-    // Handle forceful disconnection mid-session
+    // Connection lost mid-session: keep the exam on screen. The main process keeps
+    // reconnecting and logs the student in again by itself. Work is stored locally.
     if (!status.connected && currentState !== AppState.SETUP && currentState !== AppState.CONNECTING) {
-      console.warn('[App] Server connection lost mid-session!');
-      currentState = AppState.SETUP;
-      showScreen('setup');
-      const setupErr = document.getElementById('setup-error');
-      if (setupErr) setupErr.textContent = 'Connection to Exam Server was lost. Please reconnect.';
+      console.warn('[App] Server connection lost mid-session. Waiting for reconnect...');
+      _setConnectionBanner(true);
+    } else if (status.connected) {
+      _setConnectionBanner(false);
     }
   });
 
   // Questions loaded from server/mock
   window.examAPI.onQuestionsLoaded((questions) => {
     console.log('[App] Questions loaded:', questions.length);
+
+    // After a reconnect the server re-sends the same questions. Reloading them would
+    // jump the student back to Q1 and reset the editor, so keep the current view.
+    const sameSet = isInitialized &&
+      JSON.stringify(questions.map((q) => q.id)) === JSON.stringify(questionsData.map((q) => q.id));
+    if (sameSet) {
+      console.log('[App] Question set unchanged, keeping current view.');
+      return;
+    }
+
     questionsData = questions;
     window.questionsReceivedFlag = true;
     if (currentState === AppState.EXAM_ACTIVE && !isInitialized) {
@@ -185,13 +195,33 @@ function boot() {
   }
 }
 
+// ── Connection-lost banner ────────────────────────────────
+
+function _setConnectionBanner(show) {
+  let el = document.getElementById('conn-lost-banner');
+  if (!el) {
+    if (!show) return;
+    el = document.createElement('div');
+    el.id = 'conn-lost-banner';
+    el.textContent = '⚠ Connection to the exam server was lost. Reconnecting... Your work is saved on this PC.';
+    el.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:1000000;padding:6px 12px;' +
+      'background:#fef3c7;color:#92400e;border-bottom:2px solid #f59e0b;' +
+      'font:bold 12px Tahoma,sans-serif;text-align:center;pointer-events:none;';
+    document.body.appendChild(el);
+  }
+  el.style.display = show ? 'block' : 'none';
+}
+
 // ── Connecting Screen Animation ───────────────────────────
+
+let connectingDotsTimer = null;
 
 function _startConnectingDots() {
   const dotsEl = document.getElementById('connecting-dots');
   if (!dotsEl) return;
   let count = 1;
-  setInterval(() => {
+  if (connectingDotsTimer) clearInterval(connectingDotsTimer);
+  connectingDotsTimer = setInterval(() => {
     count = (count % 3) + 1;
     dotsEl.textContent = '.'.repeat(count);
   }, 500);
@@ -328,8 +358,8 @@ async function _transitionToExam() {
     });
   }
 
-  // Init Monaco editor
-  Editor.init();
+  // Init Monaco editor (saved code is kept per roll number)
+  Editor.init(studentInfo && studentInfo.rollNumber);
   if (window.Workspace) {
     window.Workspace.init();
   }
@@ -562,10 +592,15 @@ function _showNotification(title, message, bgColor, textColor) {
   notif.style.minWidth = '300px';
   notif.style.fontFamily = 'var(--font-ui)';
   
-  notif.innerHTML = `
-    <div style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">${title}</div>
-    <div style="font-size: 12px;">${message}</div>
-  `;
+  // textContent, not innerHTML: the message comes over the network.
+  const titleEl = document.createElement('div');
+  titleEl.style.cssText = 'font-weight: bold; margin-bottom: 5px; font-size: 14px;';
+  titleEl.textContent = title;
+  const msgEl = document.createElement('div');
+  msgEl.style.cssText = 'font-size: 12px;';
+  msgEl.textContent = message;
+  notif.appendChild(titleEl);
+  notif.appendChild(msgEl);
 
   container.appendChild(notif);
 

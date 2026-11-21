@@ -55,6 +55,24 @@ const CPP_BLOCKED = [
 
 let activeProcess = null;
 
+// ── Safe names (the renderer is not trusted to send clean paths) ──
+const SAFE_NAME_RE = /^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$/;
+const WIN_RESERVED_RE = /^(con|prn|aux|nul|com[1-9]|lpt[1-9])(\..*)?$/i;
+
+function isSafeFileName(name) {
+  return typeof name === 'string' &&
+    SAFE_NAME_RE.test(name) &&
+    !name.includes('..') &&
+    !name.endsWith('.') &&
+    !WIN_RESERVED_RE.test(name);
+}
+
+function sanitizeRoll(roll) {
+  return String(roll === undefined || roll === null ? 'default' : roll)
+    .replace(/[^A-Za-z0-9_-]/g, '_')
+    .slice(0, 64) || 'default';
+}
+
 function ensureTempDir() {
   if (!fs.existsSync(tempDirPath)) {
     fs.mkdirSync(tempDirPath, { recursive: true });
@@ -64,7 +82,7 @@ function ensureTempDir() {
 /**
  * Starts an interactive process and pipes output via callbacks.
  */
-async function startInteractiveProcess(code, language, onStdout, onStderr, onExit) {
+async function startInteractiveProcess(code, language, onStdout, onStderr, onExit, filename) {
   if (activeProcess) {
     try {
       activeProcess.kill('SIGKILL');
@@ -101,8 +119,12 @@ async function startInteractiveProcess(code, language, onStdout, onStderr, onExi
   const workspacePath = getWorkspacePath();
 
   const ext = LANG_EXTENSIONS[language];
-  // Instead of UUID, we use a fixed filename in the workspace
-  const sourceFileName = language === 'python' ? 'main.py' : `main${ext}`;
+  // Run the file the student is editing. Falling back to main.* keeps old behaviour.
+  // Never write the editor content over main.* when another file (helper.py ...) is active.
+  let sourceFileName = `main${ext}`;
+  if (isSafeFileName(filename) && filename.toLowerCase().endsWith(ext)) {
+    sourceFileName = filename;
+  }
   const sourceFile = path.join(workspacePath, sourceFileName);
   const outputFileName = isWin ? 'main.exe' : 'main.out';
   const outputFile = path.join(workspacePath, outputFileName);
@@ -116,7 +138,8 @@ async function startInteractiveProcess(code, language, onStdout, onStderr, onExi
 
     if (language === 'python') {
       command = PYTHON_EXE;
-      args = [sourceFile];
+      // -u: unbuffered stdout/stderr, so print() output shows up while the program runs
+      args = ['-u', sourceFile];
     } else {
       filesToClean.push(outputFile);
       const compiler = language === 'c' ? GCC_EXE : GPP_EXE;
@@ -290,7 +313,7 @@ function cleanupFiles(files) {
 let currentRollNumber = 'default';
 
 function setWorkspaceRollNumber(roll) {
-  currentRollNumber = roll;
+  currentRollNumber = sanitizeRoll(roll);
 }
 
 function getWorkspacePath() {
@@ -308,8 +331,8 @@ function listWorkspaceFiles() {
 }
 
 function readWorkspaceFile(filename) {
-  const ws = getWorkspacePath();
-  const filePath = path.join(ws, filename);
+  if (!isSafeFileName(filename)) return null;
+  const filePath = path.join(getWorkspacePath(), filename);
   if (fs.existsSync(filePath)) {
     return fs.readFileSync(filePath, 'utf8');
   }
@@ -317,15 +340,15 @@ function readWorkspaceFile(filename) {
 }
 
 function writeWorkspaceFile(filename, content) {
-  const ws = getWorkspacePath();
-  const filePath = path.join(ws, filename);
-  fs.writeFileSync(filePath, content, 'utf8');
+  if (!isSafeFileName(filename)) return false;
+  const filePath = path.join(getWorkspacePath(), filename);
+  fs.writeFileSync(filePath, String(content === undefined || content === null ? '' : content), 'utf8');
   return true;
 }
 
 function deleteWorkspaceFile(filename) {
-  const ws = getWorkspacePath();
-  const filePath = path.join(ws, filename);
+  if (!isSafeFileName(filename)) return false;
+  const filePath = path.join(getWorkspacePath(), filename);
   if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
   }
@@ -344,21 +367,32 @@ function clearWorkspace() {
   } catch(e) {}
 }
 
-async function zipAndUploadWorkspace(rollNumber, serverUrl) {
+const UPLOAD_TIMEOUT_MS = 20000;
+
+async function zipAndUploadWorkspace(rollNumber, serverUrl, uploadToken) {
   return new Promise((resolve) => {
     const ws = getWorkspacePath();
-    const zipPath = path.join(tempDirPath, `workspace_${rollNumber}.zip`);
-    
+    const zipPath = path.join(tempDirPath, `workspace_${sanitizeRoll(rollNumber)}.zip`);
+
+    let settled = false;
+    const done = (ok) => {
+      if (settled) return;
+      settled = true;
+      try { if (fs.existsSync(zipPath)) fs.unlinkSync(zipPath); } catch (e) { /* best effort */ }
+      resolve(ok);
+    };
+
     try {
       const zip = new AdmZip();
       zip.addLocalFolder(ws);
       zip.writeZip(zipPath);
-      
+
       // Upload via HTTP form-data
       const form = new FormData();
-      form.append('roll_number', rollNumber);
-      form.append('workspace_zip', fs.createReadStream(zipPath), `workspace_${rollNumber}.zip`);
-      
+      form.append('roll_number', String(rollNumber));
+      form.append('upload_token', uploadToken || '');
+      form.append('workspace_zip', fs.createReadStream(zipPath), `workspace_${sanitizeRoll(rollNumber)}.zip`);
+
       const urlObj = new URL(`${serverUrl}/api/admin/submit-workspace`);
       const req = http.request({
         hostname: urlObj.hostname,
@@ -367,18 +401,25 @@ async function zipAndUploadWorkspace(rollNumber, serverUrl) {
         method: 'POST',
         headers: form.getHeaders()
       }, (res) => {
-        resolve(res.statusCode === 200);
+        res.resume();
+        done(res.statusCode === 200);
       });
-      
+
+      // Without this, a silent server would block the final submit forever.
+      req.setTimeout(UPLOAD_TIMEOUT_MS, () => {
+        console.error('[codeExecutor] Upload timed out');
+        req.destroy(new Error('Upload timed out'));
+      });
+
       req.on('error', (err) => {
-        console.error('[codeExecutor] Upload error:', err);
-        resolve(false);
+        console.error('[codeExecutor] Upload error:', err.message);
+        done(false);
       });
-      
+
       form.pipe(req);
     } catch (err) {
       console.error('[codeExecutor] Zip error:', err);
-      resolve(false);
+      done(false);
     }
   });
 }
@@ -394,5 +435,6 @@ module.exports = {
   deleteWorkspaceFile,
   clearWorkspace,
   zipAndUploadWorkspace,
-  setWorkspaceRollNumber
+  setWorkspaceRollNumber,
+  isSafeFileName
 };

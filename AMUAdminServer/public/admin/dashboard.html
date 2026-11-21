@@ -2342,6 +2342,19 @@
       }
     }
 
+    // --- HTML escaping helpers ---
+    // Names, roll numbers and log lines can contain text typed by students: never put them
+    // into innerHTML (or an inline onclick) unescaped.
+    function escHtml(s) {
+      return String(s === undefined || s === null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+    // For a value inside a single-quoted JS string inside a double-quoted HTML attribute
+    function escJsAttr(s) {
+      return escHtml(String(s === undefined || s === null ? '' : s).replace(/\\/g, '\\\\').replace(/'/g, "\\'"));
+    }
+
     // --- Sockets ---
     const socket = io();
     
@@ -2398,10 +2411,12 @@
         name: data.name || 'Candidate',
         systemNumber: data.systemNumber || 'SYS-??',
         ip: data.ip || '',
-        direction: data.direction || 'BESIDE',
-        duration: data.duration || 2,
+        type: data.type || 'LOOKING_BESIDE',
+        direction: data.direction || null,
+        cause: data.cause || null,
+        duration: data.duration || 0,
         snapshot: data.snapshot || null,
-        message: data.message || `Looking ${data.direction || 'BESIDE'} at neighbor`
+        message: data.message || 'violation detected'
       };
       
       webcamAlerts.unshift(alert); // Add to beginning of array
@@ -2438,7 +2453,7 @@
         <div class="toast-icon">🚨</div>
         <div class="toast-content">
           <div class="toast-title">Webcam Violation Detected</div>
-          <div class="toast-message">Student on ${alert.systemNumber} is looking ${alert.direction}</div>
+          <div class="toast-message">Student on ${escHtml(alert.systemNumber)}: ${escHtml(alert.message)}</div>
         </div>
       `;
       
@@ -2479,9 +2494,10 @@
       
       container.innerHTML = webcamAlerts.map(alert => {
         const time = new Date(alert.timestamp).toLocaleTimeString();
-        const directionLabel = alert.direction === 'LEFT' ? 'LEFT (Towards Left Neighbor)' : 
-                               alert.direction === 'RIGHT' ? 'RIGHT (Towards Right Neighbor)' : 
-                               'ASIDE (Away from Screen)';
+        // LEFT / RIGHT are the student's own left and right (the camera image is already corrected)
+        const directionLabel = alert.direction === 'LEFT' ? "Student's LEFT (left neighbour)" :
+                               alert.direction === 'RIGHT' ? "Student's RIGHT (right neighbour)" :
+                               alert.direction === 'DOWN' ? 'DOWN (desk / lap)' : '';
         
         return `
           <div class="webcam-alert-card" data-alert-id="${alert.id}">
@@ -2495,7 +2511,7 @@
             </div>
             
             <div class="alert-message">
-              ⚠️ Student detected looking <strong>${directionLabel}</strong> for <strong>${alert.duration} seconds</strong>
+              ⚠️ Student ${esc(alert.message)}${directionLabel ? ` <strong>[${esc(directionLabel)}]</strong>` : ''}
             </div>
             
             ${alert.snapshot ? `
@@ -2506,7 +2522,7 @@
             
             <div class="alert-meta">
               <span>🕒 ${time}</span>
-              <span style="font-weight: 600; color: #dc2626;">Duration: ${alert.duration}s</span>
+              ${alert.duration > 0 ? `<span style="font-weight: 600; color: #dc2626;">Duration: ${esc(alert.duration)}s</span>` : ''}
             </div>
             
             <div class="alert-actions">
@@ -3138,16 +3154,16 @@
             const escapedAssigned = (s.assigned_questions || '[]').replace(/"/g, '&quot;');
             
             tbody.innerHTML += `<tr>
-              <td><strong>${s.roll_number}</strong></td>
-              <td>${s.name}</td>
-              <td><code>${s.bound_ip || 'None'}</code></td>
+              <td><strong>${escHtml(s.roll_number)}</strong></td>
+              <td>${escHtml(s.name)}</td>
+              <td><code>${escHtml(s.bound_ip || 'None')}</code></td>
               <td>${lockedText}</td>
               <td>${submittedText}</td>
-              <td>${assignedText}</td>
+              <td>${escHtml(assignedText)}</td>
               <td>
                 <div style="display:flex; gap:6px;">
-                  <button class="dash-btn dash-btn-sm" onclick="openAssignModal('${s.roll_number}', '${s.name}', '${escapedAssigned}')">Assign Qs</button>
-                  <button class="dash-btn dash-btn-sm dash-btn-danger" onclick="unbindDevice('${s.roll_number}')">Unbind</button>
+                  <button class="dash-btn dash-btn-sm" onclick="openAssignModal('${escJsAttr(s.roll_number)}', '${escJsAttr(s.name)}', '${escJsAttr(s.assigned_questions || '[]')}')">Assign Qs</button>
+                  <button class="dash-btn dash-btn-sm dash-btn-danger" onclick="unbindDevice('${escJsAttr(s.roll_number)}')">Unbind</button>
                 </div>
               </td>
             </tr>`;
@@ -3314,13 +3330,13 @@
           window.cachedQuestions = data.questions;
           data.questions.forEach((q, i) => {
             tbody.innerHTML += `<tr>
-              <td><strong>${q.id}</strong></td>
-              <td>${q.title}</td>
+              <td><strong>${escHtml(q.id)}</strong></td>
+              <td>${escHtml(q.title)}</td>
               <td>
                 <div style="display:flex; gap:6px;">
                   <button class="dash-btn dash-btn-sm" onclick="loadQuestionForEdit(${i})">Edit</button>
                   <button class="dash-btn dash-btn-sm" onclick="previewExistingQuestion(${i})">Preview</button>
-                  <button class="dash-btn dash-btn-sm dash-btn-danger" onclick="deleteQuestion('${q.id}')">Delete</button>
+                  <button class="dash-btn dash-btn-sm dash-btn-danger" onclick="deleteQuestion('${escJsAttr(q.id)}')">Delete</button>
                 </div>
               </td>
             </tr>`;
@@ -3499,7 +3515,7 @@
           container.innerHTML = '';
           data.logs.slice().reverse().forEach(log => {
             const d = new Date(log.timestamp);
-            container.innerHTML += `<div>[${d.toLocaleTimeString()}] ${log.message}</div>`;
+            container.innerHTML += `<div>[${d.toLocaleTimeString()}] ${escHtml(log.message)}</div>`;
           });
           container.scrollTop = container.scrollHeight;
         }

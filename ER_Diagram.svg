@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1130" height="700" viewBox="0 0 1130 700" font-family="Segoe UI, Arial, sans-serif">
+<rect width="1130" height="700" fill="#ffffff"/>
+<text x="565" y="36" text-anchor="middle" font-size="20" font-weight="700" fill="#0a5a14">AMU Exam Portal: Entity Relationship Diagram</text>
+<g stroke="#1f2937" stroke-width="1.6" fill="none">
+<path d="M 300 272 V 460 H 420"/>
+<path d="M 293 286 H 307 M 293 292 H 307"/>
+<path d="M 400 460 L 420 452 M 400 460 L 420 468"/>
+<circle cx="391" cy="460" r="4" fill="#fff"/>
+<path d="M 860 344 V 484 H 680"/>
+<path d="M 853 358 H 867 M 853 364 H 867"/>
+<path d="M 700 484 L 680 476 M 700 484 L 680 492"/>
+<circle cx="709" cy="484" r="4" fill="#fff"/>
+</g>
+<path d="M 340 236 H 780" stroke="#6b7280" stroke-width="1.6" stroke-dasharray="7 5" fill="none"/>
+<g stroke="#6b7280" stroke-width="1.6" fill="none">
+<path d="M 360 236 L 340 228 M 360 236 L 340 244"/>
+<path d="M 760 236 L 780 228 M 760 236 L 780 244"/>
+</g>
+<text x="560" y="222" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937" stroke="#fff" stroke-width="4" paint-order="stroke">is assigned</text>
+<text x="560" y="258" text-anchor="middle" font-size="11.5" fill="#6b7280" stroke="#fff" stroke-width="4" paint-order="stroke">many-to-many, stored as a JSON list</text>
+<text x="560" y="274" text-anchor="middle" font-size="11.5" fill="#6b7280" stroke="#fff" stroke-width="4" paint-order="stroke">in students.assigned_questions</text>
+<text x="310" y="366" font-size="13" font-weight="600" fill="#1f2937" stroke="#fff" stroke-width="4" paint-order="stroke">submits</text>
+<text x="870" y="414" font-size="13" font-weight="600" fill="#1f2937" stroke="#fff" stroke-width="4" paint-order="stroke">answered in</text>
+<text x="312" y="294" font-size="12" fill="#1f2937" stroke="#fff" stroke-width="4" paint-order="stroke">1</text>
+<text x="872" y="366" font-size="12" fill="#1f2937" stroke="#fff" stroke-width="4" paint-order="stroke">1</text>
+<text x="414" y="448" text-anchor="end" font-size="12" fill="#1f2937" stroke="#fff" stroke-width="4" paint-order="stroke">0..*</text>
+<text x="686" y="472" font-size="12" fill="#1f2937" stroke="#fff" stroke-width="4" paint-order="stroke">0..*</text>
+<g>
+<rect x="40" y="70" width="300" height="202" rx="6" fill="#ffffff" stroke="#0a5a14" stroke-width="2"/>
+<path d="M 40 104 V 76 a 6 6 0 0 1 6 -6 H 334 a 6 6 0 0 1 6 6 V 104 Z" fill="#0a5a14"/>
+<text x="190" y="93" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff" letter-spacing="1">STUDENTS</text>
+<rect x="41" y="104" width="298" height="24" fill="#eef6ef"/>
+<rect x="48" y="109" width="26" height="14" rx="3" fill="#f2b705"/>
+<text x="61" y="120" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1f2937">PK</text>
+<text x="82" y="121" font-size="13" font-weight="700" fill="#1f2937">roll_number</text>
+<text x="330" y="121" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+<text x="82" y="145" font-size="13"  fill="#1f2937">name</text>
+<text x="330" y="145" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+<rect x="41" y="152" width="298" height="24" fill="#eef6ef"/>
+<text x="82" y="169" font-size="13"  fill="#1f2937">password</text>
+<text x="330" y="169" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+<text x="82" y="193" font-size="13"  fill="#1f2937">bound_ip</text>
+<text x="330" y="193" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+<rect x="41" y="200" width="298" height="24" fill="#eef6ef"/>
+<text x="82" y="217" font-size="13"  fill="#1f2937">is_locked</text>
+<text x="330" y="217" text-anchor="end" font-size="11.5" fill="#6b7280">INTEGER</text>
+<text x="82" y="241" font-size="13"  fill="#1f2937">assigned_questions</text>
+<text x="330" y="241" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT (JSON list)</text>
+<rect x="41" y="248" width="298" height="24" fill="#eef6ef"/>
+<text x="82" y="265" font-size="13"  fill="#1f2937">has_submitted</text>
+<text x="330" y="265" text-anchor="end" font-size="11.5" fill="#6b7280">INTEGER</text>
+</g>
+<g>
+<rect x="780" y="70" width="300" height="274" rx="6" fill="#ffffff" stroke="#0a5a14" stroke-width="2"/>
+<path d="M 780 104 V 76 a 6 6 0 0 1 6 -6 H 1074 a 6 6 0 0 1 6 6 V 104 Z" fill="#0a5a14"/>
+<text x="930" y="93" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff" letter-spacing="1">QUESTIONS</text>
+<rect x="781" y="104" width="298" height="24" fill="#eef6ef"/>
+<rect x="788" y="109" width="26" height="14" rx="3" fill="#f2b705"/>
+<text x="801" y="120" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1f2937">PK</text>
+<text x="822" y="121" font-size="13" font-weight="700" fill="#1f2937">id</text>
+<text x="1070" y="121" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+<text x="822" y="145" font-size="13"  fill="#1f2937">title</text>
+<text x="1070" y="145" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+<rect x="781" y="152" width="298" height="24" fill="#eef6ef"/>
+<text x="822" y="169" font-size="13"  fill="#1f2937">description</text>
+<text x="1070" y="169" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+<text x="822" y="193" font-size="13"  fill="#1f2937">time_limit</text>
+<text x="1070" y="193" text-anchor="end" font-size="11.5" fill="#6b7280">INTEGER</text>
+<rect x="781" y="200" width="298" height="24" fill="#eef6ef"/>
+<text x="822" y="217" font-size="13"  fill="#1f2937">difficulty</text>
+<text x="1070" y="217" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+<text x="822" y="241" font-size="13"  fill="#1f2937">constraints</text>
+<text x="1070" y="241" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+<rect x="781" y="248" width="298" height="24" fill="#eef6ef"/>
+<text x="822" y="265" font-size="13"  fill="#1f2937">sampleInput</text>
+<text x="1070" y="265" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+<text x="822" y="289" font-size="13"  fill="#1f2937">sampleOutput</text>
+<text x="1070" y="289" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+<rect x="781" y="296" width="298" height="24" fill="#eef6ef"/>
+<text x="822" y="313" font-size="13"  fill="#1f2937">explanation</text>
+<text x="1070" y="313" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+<text x="822" y="337" font-size="13"  fill="#1f2937">testCases</text>
+<text x="1070" y="337" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT (JSON)</text>
+</g>
+<g>
+<rect x="420" y="390" width="260" height="202" rx="6" fill="#ffffff" stroke="#0a5a14" stroke-width="2"/>
+<path d="M 420 424 V 396 a 6 6 0 0 1 6 -6 H 674 a 6 6 0 0 1 6 6 V 424 Z" fill="#0a5a14"/>
+<text x="550" y="413" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff" letter-spacing="1">SUBMISSIONS</text>
+<rect x="421" y="424" width="258" height="24" fill="#eef6ef"/>
+<rect x="428" y="429" width="26" height="14" rx="3" fill="#f2b705"/>
+<text x="441" y="440" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1f2937">PK</text>
+<text x="462" y="441" font-size="13" font-weight="700" fill="#1f2937">id</text>
+<text x="670" y="441" text-anchor="end" font-size="11.5" fill="#6b7280">INTEGER (auto)</text>
+<rect x="428" y="453" width="26" height="14" rx="3" fill="#2563eb"/>
+<text x="441" y="464" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">FK</text>
+<text x="462" y="465" font-size="13"  fill="#1f2937">roll_number</text>
+<text x="670" y="465" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+<rect x="421" y="472" width="258" height="24" fill="#eef6ef"/>
+<rect x="428" y="477" width="26" height="14" rx="3" fill="#2563eb"/>
+<text x="441" y="488" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">FK</text>
+<text x="462" y="489" font-size="13"  fill="#1f2937">question_id</text>
+<text x="670" y="489" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+<text x="462" y="513" font-size="13"  fill="#1f2937">code</text>
+<text x="670" y="513" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+<rect x="421" y="520" width="258" height="24" fill="#eef6ef"/>
+<text x="462" y="537" font-size="13"  fill="#1f2937">language</text>
+<text x="670" y="537" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+<text x="462" y="561" font-size="13"  fill="#1f2937">status</text>
+<text x="670" y="561" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+<rect x="421" y="568" width="258" height="24" fill="#eef6ef"/>
+<text x="462" y="585" font-size="13"  fill="#1f2937">timestamp</text>
+<text x="670" y="585" text-anchor="end" font-size="11.5" fill="#6b7280">INTEGER</text>
+</g>
+<g>
+<rect x="40" y="400" width="220" height="82" rx="6" fill="#ffffff" stroke="#0a5a14" stroke-width="2"/>
+<path d="M 40 434 V 406 a 6 6 0 0 1 6 -6 H 254 a 6 6 0 0 1 6 6 V 434 Z" fill="#0a5a14"/>
+<text x="150" y="423" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff" letter-spacing="1">ADMINS</text>
+<rect x="41" y="434" width="218" height="24" fill="#eef6ef"/>
+<rect x="48" y="439" width="26" height="14" rx="3" fill="#f2b705"/>
+<text x="61" y="450" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1f2937">PK</text>
+<text x="82" y="451" font-size="13" font-weight="700" fill="#1f2937">id</text>
+<text x="250" y="451" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+<text x="82" y="475" font-size="13"  fill="#1f2937">password</text>
+<text x="250" y="475" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+</g>
+<g>
+<rect x="900" y="470" width="190" height="106" rx="6" fill="#ffffff" stroke="#0a5a14" stroke-width="2"/>
+<path d="M 900 504 V 476 a 6 6 0 0 1 6 -6 H 1084 a 6 6 0 0 1 6 6 V 504 Z" fill="#0a5a14"/>
+<text x="995" y="493" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff" letter-spacing="1">LOGS</text>
+<rect x="901" y="504" width="188" height="24" fill="#eef6ef"/>
+<rect x="908" y="509" width="26" height="14" rx="3" fill="#f2b705"/>
+<text x="921" y="520" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1f2937">PK</text>
+<text x="942" y="521" font-size="13" font-weight="700" fill="#1f2937">id</text>
+<text x="1080" y="521" text-anchor="end" font-size="11.5" fill="#6b7280">INTEGER (auto)</text>
+<text x="942" y="545" font-size="13"  fill="#1f2937">timestamp</text>
+<text x="1080" y="545" text-anchor="end" font-size="11.5" fill="#6b7280">INTEGER</text>
+<rect x="901" y="552" width="188" height="24" fill="#eef6ef"/>
+<text x="942" y="569" font-size="13"  fill="#1f2937">message</text>
+<text x="1080" y="569" text-anchor="end" font-size="11.5" fill="#6b7280">TEXT</text>
+</g>
+<text x="40" y="502" font-size="11.5" fill="#6b7280">Standalone table (no relationship).</text>
+<text x="40" y="517" font-size="11.5" fill="#6b7280">New random password at every server start.</text>
+<text x="900" y="596" font-size="11.5" fill="#6b7280">Standalone table (no relationship).</text>
+<text x="900" y="611" font-size="11.5" fill="#6b7280">Server event log for the dashboard.</text>
+<rect x="40" y="640" width="1050" height="42" rx="6" fill="#f9fafb" stroke="#d1d5db"/>
+<rect x="56" y="653" width="26" height="14" rx="3" fill="#f2b705"/><text x="69" y="664" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1f2937">PK</text>
+<text x="90" y="665" font-size="12" fill="#1f2937">Primary key</text>
+<rect x="180" y="653" width="26" height="14" rx="3" fill="#2563eb"/><text x="193" y="664" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">FK</text>
+<text x="214" y="665" font-size="12" fill="#1f2937">Foreign key</text>
+<path d="M 310 660 H 350" stroke="#1f2937" stroke-width="1.6"/><path d="M 322 653 V 667 M 328 653 V 667" stroke="#1f2937" stroke-width="1.6" fill="none"/>
+<text x="358" y="665" font-size="12" fill="#1f2937">exactly one</text>
+<path d="M 450 660 H 490" stroke="#1f2937" stroke-width="1.6"/><path d="M 470 660 L 490 652 M 470 660 L 490 668" stroke="#1f2937" stroke-width="1.6" fill="none"/><circle cx="462" cy="660" r="4" fill="#fff" stroke="#1f2937" stroke-width="1.6"/>
+<text x="498" y="665" font-size="12" fill="#1f2937">zero or many</text>
+<path d="M 610 660 H 660" stroke="#6b7280" stroke-width="1.6" stroke-dasharray="7 5"/>
+<text x="668" y="665" font-size="12" fill="#1f2937">logical link (no SQL foreign key, held in a JSON column)</text>
+</svg>

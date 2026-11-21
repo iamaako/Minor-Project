@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Everything is local: nothing may be loaded from or sent to the network from this page.
+       (Socket.io runs in the main process.) 'unsafe-eval' is needed by Monaco,
+       'wasm-unsafe-eval' by MediaPipe, 'unsafe-inline' by the inline boot script. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; worker-src 'self' blob:; connect-src 'self' data: blob:; media-src 'self' blob: mediastream:; object-src 'none'; base-uri 'none'; form-action 'none'" />
   <title>AMU Examination Portal</title>
 
   <!-- CSS -->
@@ -398,6 +402,7 @@
       <div class="xp-statusbar-panel">Roll: <span id="status-roll">—</span></div>
       <div class="xp-statusbar-panel">Seat: <span id="status-seat">—</span></div>
       <div class="xp-statusbar-panel" id="status-violations" title="Focus violations">⚠ 0</div>
+      <div class="xp-statusbar-panel" id="status-cam-violations" title="Camera proctor violations">📷 0</div>
     </div>
 
   </div><!-- .exam-window -->
@@ -549,7 +554,7 @@
 <script src="js/behavior.js"></script>
 <script src="js/login.js"></script>
 <script src="js/editor.js"></script>
-<script src="js/lib/face-api.js"></script>
+<script src="js/gaze.js"></script>
 <script src="js/webcamProctor.js"></script>
 
 <script src="js/monaco-env.js"></script>
@@ -568,9 +573,6 @@
   });
 </script>
 <script src="js/app.js"></script>
-
-</body>
-</html>
 
 </body>
 </html>

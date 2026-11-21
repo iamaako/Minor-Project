@@ -43,6 +43,11 @@ let blockKeysProcess = null;
 let usbDetectorProcess = null;
 let screenStreamInterval = null;
 let isLicenseValid = false;
+// Kept in main-process memory only. Used to silently log the student in again
+// after a network blip, so the exam screen is never thrown away.
+let lastCredentials = null;
+// Proof of a successful login, required by the server for the workspace upload.
+let uploadToken = null;
 
 const LICENSE_DIR = process.platform === 'win32'
   ? 'C:\\ProgramData\\AMUExamPortal'
@@ -354,8 +359,32 @@ ipcMain.handle('connect-server', async (event, { ip, port }) => {
   return { success: true };
 });
 
+function silentReauth() {
+  if (!lastCredentials || !socketClient || !socketClient.connected) return;
+  socketClient.emit('auth', {
+    rollNumber: lastCredentials.rollNumber,
+    password: lastCredentials.examPassword,
+    clientIP,
+    systemNumber: getSystemNumber()
+  }, (result) => {
+    if (result && result.success) {
+      uploadToken = result.uploadToken || uploadToken;
+      console.log('[Socket] Re-authenticated after reconnect');
+    } else if (mainWindow) {
+      const msg = (result && result.message) || 'no response';
+      console.warn('[Socket] Re-authentication failed:', msg);
+      mainWindow.webContents.send('invigilator-event', {
+        type: 'WARNING',
+        message: `Reconnected, but the server rejected your session (${msg}). Contact the invigilator.`
+      });
+    }
+  });
+}
+
 function initSocketConnection(serverUrl) {
   currentServerUrl = serverUrl;
+  lastCredentials = null;
+  uploadToken = null;
   if (isDevMode && isMockMode) {
     console.log('[Socket] Mock mode - simulating server connection to ' + serverUrl);
     // Delay long enough for Monaco + all scripts to load in renderer
@@ -381,12 +410,17 @@ function initSocketConnection(serverUrl) {
 
     socketClient = io(serverUrl, {
       transports: ['websocket'],
-      reconnectionAttempts: 10,
+      // Never give up mid-exam: a lab Wi-Fi blip must not end the session.
+      reconnectionAttempts: Infinity,
       reconnectionDelay: 2000,
+      reconnectionDelayMax: 10000,
       timeout: 10000,
     });
 
+    let hasConnected = false;
+
     socketClient.on('connect', () => {
+      hasConnected = true;
       console.log('[Socket] Connected to server');
       if (mainWindow) {
         mainWindow.webContents.send('connection-status', { connected: true, mock: false });
@@ -397,6 +431,8 @@ function initSocketConnection(serverUrl) {
           hostname: require('os').hostname()
         });
       }
+      // A reconnect gives a fresh socket id with no login on the server side.
+      silentReauth();
     });
 
     socketClient.on('set_system_number', (data) => {
@@ -444,6 +480,11 @@ function initSocketConnection(serverUrl) {
       console.error('[Socket] Connection error:', err.message);
       if (mainWindow) {
         mainWindow.webContents.send('connection-status', { connected: false, error: err.message });
+      }
+      // Wrong IP/port on the very first attempt: stop here, the setup screen asks again.
+      // Once connected at least once, keep retrying forever (see reconnectionAttempts).
+      if (!hasConnected && socketClient) {
+        socketClient.disconnect();
       }
     });
 
@@ -517,7 +558,7 @@ function forwardExamEvent(data) {
 function registerIpcHandlers() {
 
   // ── Code Execution (Interactive) ──
-  ipcMain.handle('start-interactive', async (event, { code, language }) => {
+  ipcMain.handle('start-interactive', async (event, { code, language, filename }) => {
     // Send output back to the specific renderer that started it
     const sender = event.sender;
     
@@ -529,7 +570,8 @@ function registerIpcHandlers() {
       // onStderr
       (data) => sender.send('terminal-error', data),
       // onExit
-      (exitCode, executionTime, timedOut) => sender.send('terminal-exit', { exitCode, executionTime, timedOut })
+      (exitCode, executionTime, timedOut) => sender.send('terminal-exit', { exitCode, executionTime, timedOut }),
+      filename
     );
     return { success: true };
   });
@@ -561,14 +603,31 @@ function registerIpcHandlers() {
     }
 
     return new Promise((resolve) => {
-      socketClient.emit('auth', { rollNumber, password: examPassword, clientIP, systemNumber: getSystemNumber() }, (result) => {
-        if (result.success) {
-          setWorkspaceRollNumber(rollNumber);
-        }
-        resolve(result);
-      });
+      let settled = false;
+      const finish = (value) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve(value);
+      };
       // We set a timeout in case server doesn't respond
-      setTimeout(() => resolve({ success: false, message: 'Server did not respond. Try again.' }), 8000);
+      const timer = setTimeout(
+        () => finish({ success: false, message: 'Server did not respond. Try again.' }),
+        8000
+      );
+
+      socketClient.emit('auth', { rollNumber, password: examPassword, clientIP, systemNumber: getSystemNumber() }, (result) => {
+        if (result && result.success) {
+          setWorkspaceRollNumber(rollNumber);
+          lastCredentials = { rollNumber, examPassword };
+          uploadToken = result.uploadToken || null;
+          // The upload token stays in the main process; the renderer does not need it.
+          const { uploadToken: _hidden, ...forRenderer } = result;
+          finish(forRenderer);
+        } else {
+          finish(result || { success: false, message: 'Empty response from server.' });
+        }
+      });
     });
   });
 
@@ -599,7 +658,7 @@ function registerIpcHandlers() {
 
     // Zip and upload the workspace
     if (rollNumber && currentServerUrl) {
-      const zipSuccess = await zipAndUploadWorkspace(rollNumber, currentServerUrl);
+      const zipSuccess = await zipAndUploadWorkspace(rollNumber, currentServerUrl, uploadToken);
       if (!zipSuccess) {
         console.warn('[Main] Workspace zip upload failed or returned false.');
       } else {
@@ -647,12 +706,19 @@ function registerIpcHandlers() {
   });
 
   // ── Webcam Proctoring Violation Report ──
-  ipcMain.on('report-webcam-violation', (_event, violationData) => {
-    console.warn(`[Main] Webcam violation detected: ${violationData.type} - looking ${violationData.direction}`);
-    focusViolations++;
+  ipcMain.on('report-webcam-violation', (_event, v) => {
+    if (!v || typeof v !== 'object') return;
+    console.warn(`[Main] Webcam violation: ${v.type}${v.direction ? ' ' + v.direction : ''}`);
     if (socketClient && socketClient.connected) {
+      // Explicit field list: do not forward whatever the renderer sends.
       socketClient.emit('webcam_violation', {
-        ...violationData,
+        type: v.type,
+        direction: v.direction,
+        cause: v.cause,
+        detail: v.detail,
+        durationSeconds: v.durationSeconds,
+        snapshot: v.snapshot,
+        violationCount: v.violationCount,
         clientIP,
         systemNumber: getSystemNumber(),
         timestamp: Date.now()
@@ -772,11 +838,13 @@ function loadMockQuestions() {
 }
 
 // ═══════════════════════════════════════════════════════════
-//  6.  CSP (Content Security Policy)
+//  6.  Session policy (camera permission)
 // ═══════════════════════════════════════════════════════════
 
-function applyCSP() {
-  // Allow webcam/media access without permission popups
+function applySessionPolicy() {
+  // The proctor camera is allowed without a popup. Everything else is denied.
+  // (The Content-Security-Policy lives in a <meta> tag in index.html: response
+  // headers are never sent for file:// pages, so a header rewrite here would do nothing.)
   session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
     if (permission === 'media') return callback(true);
     callback(false);
@@ -785,21 +853,7 @@ function applyCSP() {
     if (permission === 'media') return true;
     return false;
   });
-
-  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-    callback({
-      responseHeaders: {
-        ...details.responseHeaders,
-        'Content-Security-Policy': [
-          "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;" +
-          "script-src * 'unsafe-inline' 'unsafe-eval' blob:;" +
-          "style-src * 'unsafe-inline';"
-        ],
-      },
-    });
-  });
 }
-
 // ═══════════════════════════════════════════════════════════
 //  7.  App Lifecycle
 // ═══════════════════════════════════════════════════════════
@@ -821,11 +875,10 @@ app.whenReady().then(async () => {
     }
   }
 
-  applyCSP();
+  applySessionPolicy();
   createMainWindow();
   registerIpcHandlers();
   registerKeyboardLocks();
-  startUsbDetection();
   startUSBDetector();
 
   // Show window when ready
@@ -837,37 +890,6 @@ app.whenReady().then(async () => {
     if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
   });
 });
-
-function startUsbDetection() {
-  if (isDevMode || process.platform !== 'win32') return;
-  const { spawn } = require('child_process');
-  const path = require('path');
-  
-  const exePath = app.isPackaged 
-    ? path.join(process.resourcesPath, 'DetectUSB.exe')
-    : path.join(__dirname, '..', '..', 'DetectUSB.exe');
-  
-  if (!fs.existsSync(exePath)) return;
-
-  usbDetectorProcess = spawn(exePath);
-  
-  usbDetectorProcess.stdout.on('data', (data) => {
-    const output = data.toString().trim();
-    if (output.includes('USB_INSERTED')) {
-      console.log('[Main] Event-driven USB insertion detected!');
-      if (mainWindow) {
-        mainWindow.webContents.send('exam-event', { type: 'USB_DETECTED' });
-      }
-      if (socketClient) {
-        socketClient.emit('usb_detected', { ip: clientIP });
-      }
-    }
-  });
-
-  usbDetectorProcess.on('error', (err) => {
-    console.error('Failed to start USB detector:', err);
-  });
-}
 
 // ═══════════════════════════════════════════════════════════
 //  LICENSE AND SETUP LOGIC
@@ -1009,9 +1031,21 @@ function startUSBDetector() {
       
       usbDetectorProcess.stdout.on('data', (data) => {
         const output = data.toString().trim();
-        if (output.includes('USB_INSERTED')) {
-          console.log('[AntiCheat] USB Insertion Detected via WMI Event');
+        if (!output.includes('USB_INSERTED')) return;
+        console.log('[AntiCheat] USB Insertion Detected via WMI Event');
+
+        if (!isLicenseValid) {
+          // Setup mode: a USB stick may carry the license token.
           handleUsbLicenseCheck();
+          return;
+        }
+        if (isDevMode) return; // the exam-time alarm is for kiosk mode only
+
+        if (mainWindow) {
+          mainWindow.webContents.send('exam-event', { type: 'USB_DETECTED' });
+        }
+        if (socketClient) {
+          socketClient.emit('usb_detected', { ip: clientIP });
         }
       });
 

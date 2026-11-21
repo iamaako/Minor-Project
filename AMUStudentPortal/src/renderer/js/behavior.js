@@ -129,6 +129,13 @@ const StudentBehavior = (() => {
     lastEditorChangeTime = now;
   }
 
+  // Called when the editor text is replaced by code (question switch, file open),
+  // so the next real keystroke is measured against the new text.
+  function syncEditorLength(newLength) {
+    lastEditorLength = newLength;
+    lastEditorChangeTime = Date.now();
+  }
+
   function _flagAnomaly(description, scorePenalty) {
     const timestamp = new Date().toLocaleTimeString();
     const entry = `[${timestamp}] ${description}`;
@@ -242,6 +249,7 @@ const StudentBehavior = (() => {
     activate,
     deactivate,
     notifyEditorChange,
+    syncEditorLength,
     getSuspicionScore: () => suspicionScore,
     getAnomalies: () => [...detectedAnomalies]
   };

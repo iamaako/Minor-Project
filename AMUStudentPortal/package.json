@@ -19,7 +19,7 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
-    "@vladmandic/face-api": "^1.7.15",
+    "@mediapipe/tasks-vision": "^1.2.3",
     "adm-zip": "^0.5.18",
     "archiver": "^8.0.0",
     "form-data": "^4.0.6",
@@ -31,7 +31,8 @@
     "electron": "^35.0.0",
     "electron-builder": "^24.13.3",
     "fs-extra": "^11.3.6",
-    "javascript-obfuscator": "^5.4.3"
+    "javascript-obfuscator": "^5.4.3",
+    "rcedit": "^5.0.2"
   },
   "build": {
     "appId": "com.amu.examportal",
@@ -40,14 +41,23 @@
     "files": [
       "src/**/*",
       "package.json",
-      "node_modules/**/*"
+      "node_modules/**/*",
+      "!node_modules/monaco-editor/dev/**",
+      "!node_modules/monaco-editor/esm/**",
+      "!node_modules/monaco-editor/min-maps/**",
+      "!node_modules/@mediapipe/tasks-vision/wasm/vision_wasm_module_internal.*",
+      "!node_modules/@mediapipe/tasks-vision/vision_bundle.js",
+      "!node_modules/@mediapipe/tasks-vision/vision_bundle.cjs",
+      "!node_modules/@mediapipe/tasks-vision/**/*.map",
+      "!node_modules/@mediapipe/tasks-vision/**/*.d.ts",
+      "!node_modules/**/*.md",
+      "!node_modules/**/*.map"
     ],
     "win": {
       "target": [
-        "portable",
-        "dir"
+        "nsis"
       ],
-      "icon": "build/icons/win/icon.ico",
+      "icon": "installer-assets/icon.ico",
       "extraResources": [
         {
           "from": "portable-tools/python-embed/",
@@ -60,7 +70,43 @@
           "from": "portable-tools/mingw/",
           "to": "mingw/",
           "filter": [
-            "**/*"
+            "**/*",
+            "!bin/cmake.exe",
+            "!bin/cmcldeps.exe",
+            "!bin/cpack.exe",
+            "!bin/ctest.exe",
+            "!bin/doxygen.exe",
+            "!bin/cppcheck.exe",
+            "!bin/gdb.exe",
+            "!bin/gdbserver.exe",
+            "!bin/gdb-add-index",
+            "!bin/gstack",
+            "!bin/lto-dump.exe",
+            "!bin/ccache.exe",
+            "!bin/ctags.exe",
+            "!bin/readtags.exe",
+            "!bin/optscript.exe",
+            "!bin/sarif-replay.exe",
+            "!bin/ninja.exe",
+            "!bin/nasm.exe",
+            "!bin/ndisasm.exe",
+            "!bin/yasm.exe",
+            "!bin/vsyasm.exe",
+            "!bin/ytasm.exe",
+            "!bin/jwasm.exe",
+            "!bin/premake5.exe",
+            "!bin/gfortran.exe",
+            "!bin/x86_64-w64-mingw32-gfortran.exe",
+            "!bin/libnettle-8.dll",
+            "!bin/libhogweed-6.dll",
+            "!bin/libpython3.9.dll",
+            "!bin/libgfortran-5.dll",
+            "!lib/python3.9/**",
+            "!libexec/gcc/x86_64-w64-mingw32/16.1.0/f951.exe",
+            "!libexec/gcc/x86_64-w64-mingw32/16.1.0/cc1obj.exe",
+            "!libexec/gcc/x86_64-w64-mingw32/16.1.0/cc1objplus.exe",
+            "!libexec/gcc/x86_64-w64-mingw32/16.1.0/lto1.exe",
+            "!bin/wl-*.exe"
           ]
         },
         {
@@ -71,7 +117,8 @@
           "from": "DetectUSB.exe",
           "to": "DetectUSB.exe"
         }
-      ]
+      ],
+      "signAndEditExecutable": false
     },
     "linux": {
       "target": [
@@ -87,6 +134,31 @@
     },
     "deb": {
       "priority": "optional"
-    }
+    },
+    "compression": "maximum",
+    "asarUnpack": [
+      "node_modules/@mediapipe/tasks-vision/**",
+      "src/renderer/assets/models/**"
+    ],
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "AMU Exam Portal",
+      "runAfterFinish": false,
+      "deleteAppDataOnUninstall": false,
+      "artifactName": "AMU-Exam-Portal-Setup-${version}.${ext}",
+      "installerIcon": "installer-assets/icon.ico",
+      "uninstallerIcon": "installer-assets/icon.ico",
+      "installerHeaderIcon": "installer-assets/icon.ico",
+      "installerSidebar": "installer-assets/installerSidebar.bmp",
+      "uninstallerSidebar": "installer-assets/uninstallerSidebar.bmp",
+      "installerHeader": "installer-assets/installerHeader.bmp",
+      "include": "installer-assets/installer.nsh"
+    },
+    "afterPack": "scripts/after-pack.js"
   }
 }

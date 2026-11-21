@@ -1,0 +1,1374 @@
+%% ============================================================
+%%  AMU Minor Project Report — LaTeX Source
+%%  Project : AI Enabled Coding Based Examination
+%%  Authors : Aarif Khan (24AIBEA142)  |  Arqam Ahmad (24AIBEA129)
+%%  Guide   : Dr. Junaid Ali Reshi
+%%  Dept    : Interdisciplinary Centre for Artificial Intelligence
+%%             Aligarh Muslim University, Aligarh
+%% ============================================================
+
+\documentclass[12pt, a4paper, oneside]{report}
+
+%% ── Packages ────────────────────────────────────────────────
+\usepackage[top=2.5cm, bottom=2.5cm, left=3.5cm, right=2.5cm]{geometry}
+\usepackage{times}            % Times New Roman font
+\usepackage{setspace}         % Line spacing
+\usepackage{graphicx}         % Images
+\usepackage{float}            % Figure placement [H]
+\usepackage{booktabs}         % Professional tables
+\usepackage{longtable}        % Multi-page tables
+\usepackage{array}            % Column formatting
+\usepackage{tabularx}         % Auto-width tables
+\usepackage{xcolor}           % Colors
+\usepackage{listings}         % Code listings
+\usepackage{fancyhdr}         % Headers & footers
+\usepackage{titlesec}         % Chapter/section formatting
+\usepackage{tocloft}          % TOC formatting
+\usepackage{hyperref}         % Clickable links (load last-ish)
+\usepackage{caption}          % Caption formatting
+\usepackage{enumitem}         % List formatting
+\usepackage{microtype}        % Better text justification
+\usepackage{amsmath}          % Math (if needed)
+\usepackage{parskip}          % Space between paragraphs
+\usepackage{mdframed}         % Framed boxes (placeholder)
+\usepackage{soul}             % Underlining
+
+%% ── Page Style ──────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small AI Enabled Coding Based Examination}
+\fancyhead[R]{\small Minor Project Report}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+%% ── Line Spacing ────────────────────────────────────────────
+\onehalfspacing
+
+%% ── Chapter Title Formatting ─────────────────────────────────
+\titleformat{\chapter}[display]
+  {\normalfont\Large\bfseries\centering}
+  {\chaptertitlename\ \thechapter}{10pt}{\Large}
+\titlespacing*{\chapter}{0pt}{-20pt}{20pt}
+
+%% ── Section Formatting ───────────────────────────────────────
+\titleformat{\section}
+  {\normalfont\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries}{\thesubsection}{1em}{}
+
+%% ── TOC Formatting ───────────────────────────────────────────
+\renewcommand{\cftchapfont}{\bfseries}
+\renewcommand{\cftsecfont}{}
+\renewcommand{\cftchappagefont}{\bfseries}
+\setlength{\cftbeforechapskip}{6pt}
+
+%% ── Hyperref Setup ───────────────────────────────────────────
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  urlcolor=blue!70!black,
+  citecolor=black,
+  pdfauthor={Aarif Khan, Arqam Ahmad},
+  pdftitle={AI Enabled Coding Based Examination — Minor Project Report},
+}
+
+%% ── Code Listing Style ───────────────────────────────────────
+\lstdefinestyle{jsstyle}{
+  language=Java,          % close enough for JS
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\color{blue!80!black}\bfseries,
+  commentstyle=\color{green!50!black}\itshape,
+  stringstyle=\color{orange!80!black},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=8pt,
+  stepnumber=1,
+  frame=single,
+  frameround=tttt,
+  backgroundcolor=\color{gray!8},
+  breaklines=true,
+  breakatwhitespace=true,
+  showstringspaces=false,
+  tabsize=2,
+  captionpos=b,
+  xleftmargin=1em,
+  aboveskip=8pt,
+  belowskip=8pt,
+}
+\lstset{style=jsstyle}
+
+%% ── Figure Placeholder Macro ─────────────────────────────────
+\newcommand{\imgplaceholder}[2]{%
+  \begin{figure}[H]
+    \centering
+    \begin{mdframed}[linecolor=gray!50, backgroundcolor=gray!5,
+                     innertopmargin=30pt, innerbottommargin=30pt,
+                     leftmargin=20pt, rightmargin=20pt]
+      \centering
+      \textcolor{gray}{\textit{[ Insert Screenshot / Diagram Here ]}}\\[6pt]
+      \textcolor{gray}{\small #2}
+    \end{mdframed}
+    \caption{#1}
+    \label{fig:#1}
+  \end{figure}
+}
+
+%% ── Table Column Types ───────────────────────────────────────
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+
+%% ============================================================
+\begin{document}
+%% ============================================================
+
+%% ── Suppress header on blank pages ──────────────────────────
+\fancypagestyle{plain}{%
+  \fancyhf{}
+  \fancyfoot[C]{\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+}
+
+%% ════════════════════════════════════════════════════════════
+%%  TITLE PAGE
+%% ════════════════════════════════════════════════════════════
+\begin{titlepage}
+  \centering
+  \vspace*{0.5cm}
+
+  %% University name
+  {\LARGE\bfseries ALIGARH MUSLIM UNIVERSITY}\\[6pt]
+  {\large\bfseries Aligarh -- 202002, Uttar Pradesh, India}\\[4pt]
+  \rule{\linewidth}{1.2pt}\\[4pt]
+  {\large Interdisciplinary Centre for Artificial Intelligence}\\[2pt]
+  \rule{\linewidth}{0.6pt}
+
+  \vspace{1cm}
+
+  %% AMU Logo placeholder
+  \begin{mdframed}[linecolor=gray!40, backgroundcolor=gray!5,
+                   innertopmargin=20pt, innerbottommargin=20pt,
+                   leftmargin=100pt, rightmargin=100pt]
+    \centering
+    \textcolor{gray}{\small [ AMU Logo ]}
+  \end{mdframed}
+
+  \vspace{1cm}
+
+  {\large A Report Submitted in Partial Fulfilment of the Requirements}\\[4pt]
+  {\large for the Degree of}\\[8pt]
+  {\Large\bfseries Bachelor of Technology}\\[4pt]
+  {\large in}\\[4pt]
+  {\Large\bfseries Artificial Intelligence \& Big Data Engineering}
+
+  \vspace{0.8cm}
+  \rule{0.6\linewidth}{0.4pt}
+
+  \vspace{0.5cm}
+  {\LARGE\bfseries AI Enabled Coding Based Examination}\\[6pt]
+  {\large\itshape A Secure, AI-Proctored Computer-Based Examination System}
+
+  \vspace{0.8cm}
+  \rule{0.6\linewidth}{0.4pt}
+
+  \vspace{0.6cm}
+
+  %% Authors + Guide side-by-side
+  \begin{minipage}[t]{0.45\linewidth}
+    \centering
+    {\large\bfseries Submitted By:}\\[8pt]
+    {\large AARIF KHAN}\\
+    {\normalsize (24AIBEA142)}\\[10pt]
+    {\large ARQAM AHMAD}\\
+    {\normalsize (24AIBEA129)}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.45\linewidth}
+    \centering
+    {\large\bfseries Under the Guidance of:}\\[8pt]
+    {\large Dr.\ Junaid Ali Reshi}\\
+    {\normalsize Assistant Professor}\\
+    {\normalsize Interdisciplinary Centre for AI}\\
+    {\normalsize AMU, Aligarh}
+  \end{minipage}
+
+  \vfill
+  \rule{\linewidth}{0.6pt}
+  {\large\bfseries Academic Year: 2024--2025}\\[4pt]
+  \rule{\linewidth}{1.2pt}
+\end{titlepage}
+
+%% ════════════════════════════════════════════════════════════
+%%  FRONT MATTER  (Roman numerals)
+%% ════════════════════════════════════════════════════════════
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+%% ── Certificate ──────────────────────────────────────────────
+\chapter*{Certificate}
+\addcontentsline{toc}{chapter}{Certificate}
+\thispagestyle{plain}
+
+This is to certify that the minor project entitled \textbf{``AI Enabled Coding Based Examination -- A Secure, AI-Proctored Computer-Based Examination System''} has been carried out by \textbf{Aarif Khan (24AIBEA142)} and \textbf{Arqam Ahmad (24AIBEA129)} under our supervision, in partial fulfilment of the requirements for the award of the degree of \textbf{Bachelor of Technology} from Aligarh Muslim University, Aligarh. The work is genuine, original, and has not been submitted elsewhere for the award of any degree or diploma.
+
+\vspace{3cm}
+
+\begin{minipage}[t]{0.45\linewidth}
+  \centering
+  \rule{6cm}{0.4pt}\\[4pt]
+  \textbf{Dr.\ Junaid Ali Reshi}\\
+  Assistant Professor\\
+  Interdisciplinary Centre for AI\\
+  AMU, Aligarh
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.45\linewidth}
+  \centering
+  \rule{6cm}{0.4pt}\\[4pt]
+  \textbf{Head of Department}\\
+  Interdisciplinary Centre for AI\\
+  AMU, Aligarh
+\end{minipage}
+
+\vspace{2cm}
+
+\noindent\textbf{Date:} \underline{\hspace{4cm}}
+\hfill
+\textbf{Place:} Aligarh
+
+\clearpage
+
+%% ── Declaration ──────────────────────────────────────────────
+\chapter*{Declaration}
+\addcontentsline{toc}{chapter}{Declaration}
+\thispagestyle{plain}
+
+We hereby declare that the project entitled \textbf{``AI Enabled Coding Based Examination''} submitted to Aligarh Muslim University is a record of original work done by us under the supervision of \textbf{Dr.\ Junaid Ali Reshi}. This project work has not been previously submitted for any other degree or diploma to any university or institution. All sources of information used in this project have been duly acknowledged.
+
+\vspace{3cm}
+
+\begin{minipage}[t]{0.45\linewidth}
+  \centering
+  \rule{6cm}{0.4pt}\\[4pt]
+  \textbf{Aarif Khan}\\
+  24AIBEA142
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.45\linewidth}
+  \centering
+  \rule{6cm}{0.4pt}\\[4pt]
+  \textbf{Arqam Ahmad}\\
+  24AIBEA129
+\end{minipage}
+
+\vspace{2cm}
+\noindent\textbf{Date:} \underline{\hspace{4cm}}
+\hfill
+\textbf{Place:} Aligarh
+
+\clearpage
+
+%% ── Acknowledgement ──────────────────────────────────────────
+\chapter*{Acknowledgement}
+\addcontentsline{toc}{chapter}{Acknowledgement}
+\thispagestyle{plain}
+
+We extend our sincere gratitude to our project supervisor, \textbf{Dr.\ Junaid Ali Reshi}, Assistant Professor, Interdisciplinary Centre for Artificial Intelligence, Aligarh Muslim University, for his invaluable guidance, constant encouragement, and constructive feedback throughout the entire duration of this project. His expertise and insights were instrumental in shaping the direction and quality of this work.
+
+We also thank the \textbf{Interdisciplinary Centre for Artificial Intelligence, AMU}, for providing the necessary resources, laboratory facilities, and a stimulating academic environment.
+
+Our gratitude is also due to our family and friends for their unwavering support and motivation throughout this endeavour.
+
+\vspace{2cm}
+\begin{flushright}
+  \textbf{Aarif Khan} \quad \& \quad \textbf{Arqam Ahmad}\\
+  B.Tech (AI \& Big Data Engineering) --- Batch 2024--2028\\
+  AMU Interdisciplinary Centre for AI
+\end{flushright}
+
+\clearpage
+
+%% ── Abstract ─────────────────────────────────────────────────
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+\thispagestyle{plain}
+
+The \textbf{AI Enabled Coding Based Examination} is a comprehensive, desktop-based, kiosk-locked examination platform designed specifically for the computer labs of Aligarh Muslim University. The system comprises two Electron-based desktop applications: an \textbf{Admin Server} (for invigilators and teachers) and a \textbf{Student Portal} (for exam candidates), communicating in real time over a local area network via Socket.io.
+
+The portal addresses critical shortcomings of traditional pen-and-paper and unproctored online exams. It enforces a secure, fullscreen kiosk mode, blocks all system shortcuts and task-switching attempts, and employs a real-time \textbf{AI-based webcam proctoring} engine built on MediaPipe's facial landmark technology. The system supports multi-language code execution (Python, C, C++) via sandboxed child processes using portable embedded runtimes, eliminating any dependency on a pre-configured system environment.
+
+Key security features include AES-256-CBC hardware-locked licensing, IP-based device binding, timing-safe upload token verification, and strict renderer-process isolation following Electron's security best practices.
+
+The result is an end-to-end, offline-capable examination platform that significantly reduces malpractice and administrative overhead in computer-science practical examinations. The system was tested with up to 30 simultaneous student connections, achieving stable performance with AI proctoring consuming less than 2\% CPU overhead.
+
+\vspace{0.5cm}
+\noindent\textbf{Keywords:} Electron, Kiosk Mode, AI Proctoring, MediaPipe, Socket.io, Secure Examination, Node.js, SQLite, Code Execution, AES Encryption.
+
+\clearpage
+
+%% ── Table of Contents ────────────────────────────────────────
+\tableofcontents
+\clearpage
+
+%% ── List of Figures ──────────────────────────────────────────
+\listoffigures
+\clearpage
+
+%% ── List of Tables ───────────────────────────────────────────
+\listoftables
+\clearpage
+
+%% ── List of Abbreviations ────────────────────────────────────
+\chapter*{List of Abbreviations}
+\addcontentsline{toc}{chapter}{List of Abbreviations}
+\thispagestyle{plain}
+
+\begin{longtable}{L{3cm} L{10cm}}
+  \toprule
+  \textbf{Abbreviation} & \textbf{Full Form} \\
+  \midrule
+  \endhead
+  AMU   & Aligarh Muslim University \\
+  AI    & Artificial Intelligence \\
+  API   & Application Programming Interface \\
+  CBT   & Computer-Based Test \\
+  CPU   & Central Processing Unit \\
+  CSS   & Cascading Style Sheets \\
+  FPS   & Frames Per Second \\
+  HTML  & HyperText Markup Language \\
+  IPC   & Inter-Process Communication \\
+  JS    & JavaScript \\
+  JSON  & JavaScript Object Notation \\
+  JWT   & JSON Web Token \\
+  LAN   & Local Area Network \\
+  OS    & Operating System \\
+  REST  & Representational State Transfer \\
+  SQL   & Structured Query Language \\
+  UI    & User Interface \\
+  URL   & Uniform Resource Locator \\
+  UUID  & Universally Unique Identifier \\
+  AES   & Advanced Encryption Standard \\
+  WPM   & Words Per Minute \\
+  \bottomrule
+\end{longtable}
+
+\clearpage
+
+%% ════════════════════════════════════════════════════════════
+%%  MAIN MATTER  (Arabic numerals)
+%% ════════════════════════════════════════════════════════════
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+%% ════════════════════════════════════════════════════════════
+\chapter{Introduction}
+%% ════════════════════════════════════════════════════════════
+
+\section{Background}
+
+Aligarh Muslim University (AMU) conducts numerous practical and theory examinations for its computer science and AI students every academic year. Traditionally, these examinations were conducted using pen-and-paper methods, which are unsuitable for assessing programming skills that require actual code writing and execution. With the advent of Computer-Based Testing (CBT), several new challenges emerged:
+
+\begin{itemize}[noitemsep]
+  \item Students switching between browser tabs to access reference material.
+  \item Use of external USB devices to copy pre-written code.
+  \item Collaboration via chat applications or screen-sharing tools during exams.
+  \item No real-time visibility for invigilators across multiple lab machines.
+  \item Manual, error-prone paper collection and evaluation.
+\end{itemize}
+
+The \textbf{AI Enabled Coding Based Examination} was designed to address all of these challenges within the university lab environment.
+
+\section{Problem Statement}
+
+Existing online examination tools such as Google Forms, Moodle quizzes, and HackerRank are not suitable for invigilated programming examinations because:
+
+\begin{enumerate}[noitemsep]
+  \item They run inside a browser that can be minimised or switched away from.
+  \item They do not support code compilation and execution in a controlled environment.
+  \item They offer no AI-based proctoring for head-pose or presence detection.
+  \item They are dependent on a stable internet connection.
+  \item They do not provide real-time monitoring of student activity to invigilators.
+\end{enumerate}
+
+There is a clear need for a dedicated, lockdown-capable desktop application that runs directly on lab machines, provides a fully integrated code editor, executes code securely, and streams live status to the invigilator's dashboard.
+
+\section{Objectives}
+
+The primary objectives of this project are:
+
+\begin{enumerate}[noitemsep]
+  \item Develop a \textbf{secure kiosk-mode student portal} that prevents access to any other application during the exam.
+  \item Implement a \textbf{real-time AI webcam proctoring} engine to detect when a student looks away or is absent.
+  \item Provide an \textbf{integrated Monaco code editor} supporting Python, C, and C++.
+  \item Build an \textbf{Admin Server} that allows teachers to manage students, questions, and monitor live activity.
+  \item Enable \textbf{hardware-locked licensing} to prevent unauthorised deployment of the portal.
+  \item Support \textbf{offline operation} with a local SQLite database and portable runtime tools.
+  \item Ensure \textbf{automatic workspace upload} upon exam submission for persistent record-keeping.
+\end{enumerate}
+
+\section{Scope of the Project}
+
+The project covers:
+\begin{itemize}[noitemsep]
+  \item Two desktop applications (Admin Server \& Student Portal) for Windows environments.
+  \item A local-area-network (LAN) based communication model --- no internet required.
+  \item Real-time exam management (start, schedule, pause, resume, force-submit).
+  \item Code execution for Python 3, C, and C++ using portable embedded runtimes.
+  \item AI-based proctoring using MediaPipe's Face Detector API.
+  \item Student submission storage and teacher-side code evaluation.
+\end{itemize}
+
+The project does \textit{not} include cloud hosting, online judge auto-grading, or mobile platforms.
+
+\section{Report Organisation}
+
+The rest of this report is organised as follows: Chapter~\ref{chap:lit} reviews related work. Chapter~\ref{chap:req} discusses system requirements. Chapter~\ref{chap:arch} covers system architecture. Chapter~\ref{chap:modules} describes each module in detail. Chapter~\ref{chap:db} covers the database design. Chapter~\ref{chap:sec} discusses security features. Chapter~\ref{chap:test} presents testing and results. Chapter~\ref{chap:conc} concludes with future work.
+
+%% ════════════════════════════════════════════════════════════
+\chapter{Literature Review}
+\label{chap:lit}
+%% ════════════════════════════════════════════════════════════
+
+\section{Existing Examination Systems}
+
+Several commercial and open-source examination systems have been studied and compared:
+
+\begin{table}[H]
+  \centering
+  \caption{Comparison of Existing Online Examination Systems}
+  \begin{tabularx}{\textwidth}{L{3.5cm} C{2cm} C{2.5cm} C{2.5cm} C{2cm}}
+    \toprule
+    \textbf{System} & \textbf{Type} & \textbf{Proctoring} & \textbf{Code Exec.} & \textbf{Offline} \\
+    \midrule
+    HackerRank     & Web      & Basic           & Yes & No \\
+    Moodle         & Web      & Plugin-based    & No  & No \\
+    Talview        & Web      & AI              & No  & No \\
+    Safe Exam Browser & Desktop & Lockdown Only  & No  & Partial \\
+    ExamSoft       & Desktop  & AI + Lockdown   & No  & Partial \\
+    \textbf{This Project} & \textbf{Desktop} & \textbf{AI + Lockdown} & \textbf{Yes} & \textbf{Yes} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+None of the above systems combines kiosk lockdown, AI proctoring, integrated code execution, and a fully local LAN-based deployment, which is exactly the gap this project fills.
+
+\section{Electron Framework for Desktop Applications}
+
+Electron~\cite{electron} (developed by GitHub/Microsoft) allows building cross-platform desktop applications using web technologies (HTML, CSS, JavaScript). It wraps a Chromium rendering engine and a Node.js runtime. Its IPC (Inter-Process Communication) bridge between the main process and renderer process makes it suitable for security-sensitive applications where the renderer should not have direct Node.js access.
+
+A key advantage for this project is Electron's \texttt{kiosk} mode and \texttt{globalShortcut} API, which allow complete lockdown of the system UI --- something impossible in a web browser alone.
+
+\section{MediaPipe for Real-Time Facial Analysis}
+
+MediaPipe~\cite{mediapipe} (Google) is an open-source framework for machine learning pipelines. Its \textit{FaceDetector} and \textit{FaceLandmarker} tasks can detect facial bounding boxes and 3D facial landmark coordinates at 30+ FPS on consumer hardware. In this project, the camera-proctor module uses MediaPipe's \textit{FaceLandmarker} task (via \texttt{@mediapipe/tasks-vision}) to detect head pose, face presence/absence, and camera obstruction.
+
+\section{Socket.io for Real-Time Communication}
+
+Socket.io~\cite{socketio} is a JavaScript library that enables real-time, event-based communication between servers and clients over WebSockets (with HTTP long-polling fallback). Its automatic reconnection logic is critical for maintaining exam sessions during transient LAN connectivity issues.
+
+\section{Monaco Editor}
+
+Monaco Editor~\cite{monaco} is the same code editor that powers Visual Studio Code. It provides syntax highlighting, IntelliSense, and line numbering for all major programming languages. Embedding it in the Student Portal offers students a familiar, professional coding environment.
+
+%% ════════════════════════════════════════════════════════════
+\chapter{System Requirements}
+\label{chap:req}
+%% ════════════════════════════════════════════════════════════
+
+\section{Hardware Requirements}
+
+\subsection{Admin Server Machine (Invigilator's PC)}
+
+\begin{table}[H]
+  \centering
+  \caption{Hardware Requirements --- Admin Server}
+  \begin{tabularx}{\textwidth}{L{3cm} L{4.5cm} L{5cm}}
+    \toprule
+    \textbf{Component} & \textbf{Minimum} & \textbf{Recommended} \\
+    \midrule
+    Processor & Intel Core i3        & Intel Core i5 / Ryzen 5 \\
+    RAM       & 4 GB                 & 8 GB \\
+    Storage   & 10 GB free           & 50 GB free \\
+    Network   & 100 Mbps LAN         & Gigabit LAN \\
+    OS        & Windows 10           & Windows 10 / 11 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Student Lab Machine}
+
+\begin{table}[H]
+  \centering
+  \caption{Hardware Requirements --- Student Portal}
+  \begin{tabularx}{\textwidth}{L{3cm} L{4.5cm} L{5cm}}
+    \toprule
+    \textbf{Component} & \textbf{Minimum} & \textbf{Recommended} \\
+    \midrule
+    Processor & Intel Core i3        & Intel Core i5 \\
+    RAM       & 4 GB                 & 8 GB \\
+    Storage   & 5 GB free            & 10 GB free \\
+    Camera    & 480p Webcam          & 720p HD Webcam \\
+    Network   & 100 Mbps LAN         & Gigabit LAN \\
+    OS        & Windows 10           & Windows 10 / 11 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Software Requirements}
+
+\subsection{Development Environment}
+
+\begin{table}[H]
+  \centering
+  \caption{Development Environment Software}
+  \begin{tabularx}{\textwidth}{L{3.5cm} C{2cm} L{7cm}}
+    \toprule
+    \textbf{Software} & \textbf{Version} & \textbf{Purpose} \\
+    \midrule
+    Node.js          & v20+   & JavaScript runtime \\
+    Electron         & v35.x  & Desktop application framework \\
+    Bun              & v1.x   & Package manager (Admin Server) \\
+    npm              & v9+    & Package manager (Student Portal) \\
+    electron-builder & v24.x  & Packaging \& installer generation \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Student Portal --- Runtime Dependencies}
+
+\begin{table}[H]
+  \centering
+  \caption{Student Portal Runtime Dependencies}
+  \begin{tabularx}{\textwidth}{L{4.5cm} C{2cm} L{6cm}}
+    \toprule
+    \textbf{Package} & \textbf{Version} & \textbf{Purpose} \\
+    \midrule
+    socket.io-client          & 4.8.0  & Server communication \\
+    @mediapipe/tasks-vision   & 1.2.3  & AI face detection \\
+    monaco-editor             & 0.52.2 & Code editor \\
+    archiver / adm-zip        & ---    & Workspace compression \\
+    uuid                      & 11.1.0 & Unique token generation \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Admin Server --- Runtime Dependencies}
+
+\begin{table}[H]
+  \centering
+  \caption{Admin Server Runtime Dependencies}
+  \begin{tabularx}{\textwidth}{L{4.5cm} C{2cm} L{6cm}}
+    \toprule
+    \textbf{Package} & \textbf{Version} & \textbf{Purpose} \\
+    \midrule
+    express          & 4.21.2 & HTTP server \& REST API \\
+    socket.io        & 4.8.1  & Real-time server \\
+    sql.js           & 1.14.1 & SQLite in pure JavaScript \\
+    jsonwebtoken     & 9.0.3  & Admin authentication tokens \\
+    multer           & 2.2.0  & File upload handling \\
+    csv-parse        & 7.0.0  & Bulk student CSV import \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Portable Tools Bundled with Installer}
+
+\begin{table}[H]
+  \centering
+  \caption{Portable Tools Bundled in Installer}
+  \begin{tabularx}{\textwidth}{L{4cm} L{9cm}}
+    \toprule
+    \textbf{Tool} & \textbf{Purpose} \\
+    \midrule
+    Python 3 Embedded  & Python code execution (no system Python needed) \\
+    MinGW-w64 (GCC/G++) & C and C++ compilation \& execution \\
+    BlockKeys.exe      & Low-level keyboard hook to block system keys \\
+    DetectUSB.exe      & USB device insertion monitor \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+%% ════════════════════════════════════════════════════════════
+\chapter{System Architecture \& Design}
+\label{chap:arch}
+%% ════════════════════════════════════════════════════════════
+
+\section{High-Level Architecture}
+
+The system follows a \textbf{Client-Server architecture} operating over a local area network. The Admin Server acts as the single point of authority. All student portals connect to it via Socket.io over the LAN. No internet connection is required at any point during the examination.
+
+\imgplaceholder{System Architecture Diagram}{%
+  Show: Admin Server machine $\longleftrightarrow$ LAN $\longleftrightarrow$ N Student Portal machines}
+
+\section{Two-Application Design}
+
+\subsection{AMU Admin Server}
+
+A standalone Electron desktop application that:
+\begin{itemize}[noitemsep]
+  \item Embeds an Express.js + Socket.io server listening on port 3000.
+  \item Provides a web-based Admin Dashboard at \texttt{http://<ip>:3000/admin}.
+  \item Stores all data in a SQLite database (\texttt{AMU\_Exam\_Database.sqlite}).
+  \item Receives live data from all connected student clients.
+\end{itemize}
+
+\subsection{AMU Student Portal}
+
+A standalone Electron desktop application that:
+\begin{itemize}[noitemsep]
+  \item Runs in fullscreen \textbf{kiosk mode} on each student machine.
+  \item Connects to the Admin Server via Socket.io.
+  \item Presents the exam interface after hardware license verification and student authentication.
+  \item Executes code using bundled Python and GCC runtimes.
+\end{itemize}
+
+\section{Electron Process Architecture}
+
+Both applications follow Electron's \textbf{main process / renderer process} separation:
+
+\begin{table}[H]
+  \centering
+  \caption{Electron Process Architecture}
+  \begin{tabularx}{\textwidth}{L{4.5cm} L{8cm}}
+    \toprule
+    \textbf{Process} & \textbf{Responsibilities} \\
+    \midrule
+    Main Process (Node.js) & Window creation, keyboard lockdown, Socket.io, code execution (child processes), file system, IPC handlers \\
+    Renderer Process (Chromium) & HTML/CSS/JS UI, Monaco Editor, webcam proctoring via WebRTC + MediaPipe \\
+    Preload Script (Bridge) & Secure contextBridge exposing only allowed APIs to the renderer \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Communication Flow}
+
+\begin{table}[H]
+  \centering
+  \caption{Key Socket.io Events}
+  \begin{tabularx}{\textwidth}{L{4cm} L{3.5cm} L{5.5cm}}
+    \toprule
+    \textbf{Event} & \textbf{Direction} & \textbf{Description} \\
+    \midrule
+    \texttt{auth}             & Student $\to$ Server & Login with roll number \& password \\
+    \texttt{auth\_success}    & Server $\to$ Student & Auth confirmed, questions dispatched \\
+    \texttt{questions\_load}  & Server $\to$ Student & Exam questions pushed \\
+    \texttt{exam\_started}    & Server $\to$ All     & Invigilator starts the exam globally \\
+    \texttt{exam\_scheduled}  & Server $\to$ All     & Countdown timer dispatched \\
+    \texttt{submit\_exam}     & Student $\to$ Server & Final submission \\
+    \texttt{webcam\_violation}& Student $\to$ Server & Proctoring alert with snapshot \\
+    \texttt{student\_behavior}& Student $\to$ Server & Keystroke analytics stream \\
+    \texttt{screen\_frame}    & Student $\to$ Server & 1-FPS JPEG screenshot \\
+    \texttt{warning}          & Server $\to$ Student & Invigilator warning message \\
+    \texttt{force\_lock}      & Server $\to$ Student & Lock student's screen \\
+    \texttt{emergency\_kill}  & Server $\to$ Student & Force-terminate the portal \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+%% ════════════════════════════════════════════════════════════
+\chapter{Modules \& Implementation}
+\label{chap:modules}
+%% ════════════════════════════════════════════════════════════
+
+\section{Module Overview}
+
+The project is divided into the following major modules:
+
+\begin{enumerate}[noitemsep]
+  \item License \& Setup System
+  \item Student Authentication
+  \item Exam Interface (Monaco Editor)
+  \item Code Execution Engine
+  \item AI Webcam Proctoring
+  \item Anti-Cheat \& Behaviour Analytics
+  \item Workspace Management \& Submission
+  \item Admin Server \& Dashboard
+\end{enumerate}
+
+\section{Module 1: License \& Setup System}
+
+The portal must only run on machines that have been explicitly authorised by the examination authority. The license is bound to the machine's \textbf{BIOS UUID} queried via \texttt{Win32\_ComputerSystemProduct} on Windows. The UUID is \textbf{AES-256-CBC} encrypted using a master secret key and stored at \texttt{C:\textbackslash ProgramData\textbackslash AMUExamPortal\textbackslash sys\_lock.dat}. On every launch, the app decrypts this file and compares it to the current machine UUID. A mismatch redirects to the setup screen.
+
+\begin{lstlisting}[caption={License Verification --- main.js},label={lst:license}]
+function checkLicense() {
+  if (!fs.existsSync(LICENSE_FILE)) return false;
+  try {
+    const encryptedData = fs.readFileSync(LICENSE_FILE, 'utf8');
+    const parts = encryptedData.split(':');
+    if (parts.length !== 2) return false;
+    const iv = Buffer.from(parts[0], 'hex');
+    const encryptedText = Buffer.from(parts[1], 'hex');
+    const decipher = crypto.createDecipheriv(
+      'aes-256-cbc',
+      Buffer.from(MASTER_SECRET.padEnd(32, '0')), iv
+    );
+    let decrypted = Buffer.concat([
+      decipher.update(encryptedText), decipher.final()
+    ]);
+    return decrypted.toString() === getMachineUUID();
+  } catch (err) { return false; }
+}
+\end{lstlisting}
+
+\imgplaceholder{Setup / License Screen (Fig. 5.1)}{%
+  Screenshot of the license import screen shown on first run}
+
+\section{Module 2: Student Authentication}
+
+After license verification, students enter their \textbf{Roll Number} and \textbf{Exam Password} via a login dialog. The credentials are sent over Socket.io to the Admin Server for validation. On first login, the student's IP address is permanently \textbf{bound} to their roll number (device binding), preventing login from multiple machines simultaneously.
+
+\imgplaceholder{Student Login Screen (Fig. 5.2)}{%
+  Windows XP-themed login dialog with AMU branding and roll number / password fields}
+
+\section{Module 3: Exam Interface (Monaco Editor)}
+
+The exam interface uses a \textbf{Windows XP-inspired} aesthetic with a split layout:
+\begin{itemize}[noitemsep]
+  \item \textbf{Left Panel:} Question text (title, difficulty, description, constraints, sample I/O).
+  \item \textbf{Right Panel:} Monaco code editor with syntax highlighting.
+  \item \textbf{Bottom Panel:} Terminal output (stdout, stderr, exit code).
+  \item \textbf{Top Bar:} Synchronised countdown timer, student info, language selector.
+  \item \textbf{Webcam Widget:} Minimisable proctoring camera feed with status badge.
+\end{itemize}
+
+\imgplaceholder{Exam Interface --- Code Editor View (Fig. 5.3)}{%
+  Full exam screen: question panel (left), Monaco editor (right), terminal (bottom), timer (top)}
+
+\section{Module 4: Code Execution Engine}
+
+The code execution engine (\texttt{codeExecutor.js}) spawns child processes using \textbf{portable embedded runtimes}, avoiding any dependency on system-installed tools.
+
+\begin{table}[H]
+  \centering
+  \caption{Supported Programming Languages}
+  \begin{tabularx}{\textwidth}{L{3cm} L{5cm} C{2.5cm} C{2.5cm}}
+    \toprule
+    \textbf{Language} & \textbf{Runtime} & \textbf{Extension} & \textbf{Timeout} \\
+    \midrule
+    Python 3 & Portable Python Embed 3.x & \texttt{.py}  & 10 s \\
+    C        & MinGW GCC 16.x            & \texttt{.c}   & 10 s \\
+    C++      & MinGW G++ 16.x            & \texttt{.cpp} & 10 s \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Each student has an isolated workspace directory. Processes that exceed the timeout are forcefully terminated via \texttt{taskkill} on Windows.
+
+\section{Module 5: AI Webcam Proctoring}
+
+This is one of the most technically sophisticated modules of the project.
+
+\subsection{Architecture}
+
+The proctoring engine runs in the renderer process and uses:
+\begin{enumerate}[noitemsep]
+  \item \textbf{WebRTC} (\texttt{getUserMedia}) to access the student's webcam.
+  \item \textbf{MediaPipe FaceLandmarker} for 3D facial landmark estimation.
+  \item \textbf{Custom luminance-based fallback} for environments where native detection is unavailable.
+\end{enumerate}
+
+\subsection{Detection States}
+
+\begin{table}[H]
+  \centering
+  \caption{AI Proctoring Detection States}
+  \begin{tabularx}{\textwidth}{L{4cm} L{5cm} L{4cm}}
+    \toprule
+    \textbf{State} & \textbf{Meaning} & \textbf{Action} \\
+    \midrule
+    LOOKING\_AT\_SCREEN & Face centred, looking forward & None \\
+    LOOKING\_LEFT       & Head turned left              & Violation timer starts \\
+    LOOKING\_RIGHT      & Head turned right             & Violation timer starts \\
+    FACE\_ABSENT        & No face detected              & Violation timer starts \\
+    CAMERA\_COVERED     & Camera image is uniform       & Immediate alert \\
+    CAMERA\_LOST        & Camera stream ended           & Alert sent \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Performance Characteristics}
+\begin{itemize}[noitemsep]
+  \item \textbf{Sampling Rate:} $\approx$6 FPS (160 ms interval).
+  \item \textbf{Processing Resolution:} 80$\times$80 pixel crop.
+  \item \textbf{CPU Usage:} $<$2\% on a typical Intel Core i5.
+  \item \textbf{Network:} Snapshots sent \textit{only} on violation events.
+\end{itemize}
+
+\begin{lstlisting}[caption={Violation Debounce Logic --- camera-proctor.js},label={lst:proctor}]
+const WARN_POSE_TICKS = 12;   // 12 x 160ms = ~2.0 seconds
+
+if (consecutiveLeftCount >= WARN_POSE_TICKS) {
+  reportViolation({
+    type: 'LOOKING_BESIDE',
+    direction: 'left',
+    durationSeconds: 2,
+    snapshot: captureSnapshot()   // base64 JPEG
+  });
+  consecutiveLeftCount = 0;
+}
+\end{lstlisting}
+
+\imgplaceholder{Webcam Proctoring Widget (Fig. 5.4)}{%
+  Camera feed with face bounding box, eye landmarks, and green "Looking at Screen" badge}
+
+\section{Module 6: Anti-Cheat \& Behaviour Analytics}
+
+\subsection{Keyboard Lockdown}
+
+The following shortcuts are blocked globally during the exam:
+
+\begin{table}[H]
+  \centering
+  \caption{Blocked Keyboard Shortcuts}
+  \begin{tabularx}{\textwidth}{L{4cm} L{9cm}}
+    \toprule
+    \textbf{Category} & \textbf{Keys Blocked} \\
+    \midrule
+    Task Switching   & Alt+Tab, Meta+Tab \\
+    App Close        & Alt+F4, Ctrl+W \\
+    Developer Tools  & Ctrl+Shift+I, Ctrl+Shift+J, F12 \\
+    Refresh          & Ctrl+R, Ctrl+Shift+R, F5 \\
+    System UI        & Escape, F1--F4, F6, F8--F11 \\
+    Windows Key      & Meta+D, Meta+Tab \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+A master exit shortcut (\texttt{Ctrl+Shift+Alt+O}), known only to the invigilator, allows emergency closure.
+
+\subsection{Keystroke Behaviour Analytics}
+
+\begin{table}[H]
+  \centering
+  \caption{Behaviour Analytics Metrics}
+  \begin{tabularx}{\textwidth}{L{4cm} L{9cm}}
+    \toprule
+    \textbf{Metric} & \textbf{Description} \\
+    \midrule
+    WPM               & Words per minute (typing speed) \\
+    Idle Seconds      & Duration of no keyboard activity \\
+    Backspace Ratio   & Proportion of keystrokes that are deletions \\
+    Keystroke Variance& Standard deviation of inter-key timing \\
+    Suspicion Score   & Composite risk indicator (0--100) \\
+    Risk Level        & NORMAL / MODERATE / HIGH \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\imgplaceholder{Admin Screen Viewer --- Live Screenshots (Fig. 5.5)}{%
+  1-FPS thumbnail screenshots of all connected student screens displayed in Admin Dashboard}
+
+\section{Module 7: Workspace Management \& Submission}
+
+On Final Submit:
+\begin{enumerate}[noitemsep]
+  \item All question code buffers are saved to the student's workspace directory.
+  \item The workspace is \textbf{compressed into a \texttt{.zip} file}.
+  \item The zip is uploaded via HTTP POST to \texttt{/api/admin/submit-workspace}, authenticated with a \textbf{48-character hex upload token} issued at login.
+  \item The server verifies the token using \texttt{crypto.timingSafeEqual()} before extracting with path-traversal protection.
+  \item The student's DB record is marked \texttt{has\_submitted = 1}.
+\end{enumerate}
+
+\begin{lstlisting}[caption={Secure Upload Token Verification --- server.js},label={lst:upload}]
+const expected = uploadTokens.get(String(rollNumber));
+const tokenOk  = expected && typeof token === 'string'
+  && token.length === expected.length
+  && crypto.timingSafeEqual(
+       Buffer.from(token), Buffer.from(expected));
+
+if (!tokenOk)
+  return res.status(403).json({ success: false, error: 'Unauthorised' });
+\end{lstlisting}
+
+\section{Module 8: Admin Server \& Dashboard}
+
+\imgplaceholder{Admin Dashboard Overview (Fig. 5.6)}{%
+  Main admin panel: server status, connected student count, exam state controls}
+
+\begin{table}[H]
+  \centering
+  \caption{Admin Dashboard Features}
+  \begin{tabularx}{\textwidth}{L{4.5cm} L{8.5cm}}
+    \toprule
+    \textbf{Feature} & \textbf{Description} \\
+    \midrule
+    Student Management   & Add, view, delete students; set passwords \\
+    CSV Bulk Import      & Upload a CSV to register many students at once \\
+    Question Management  & Add/delete coding questions with constraints and test cases \\
+    Question Assignment  & Assign specific questions to specific students \\
+    Exam Control         & Start now / schedule / reset exam state \\
+    Live Monitoring      & All connected students with risk levels and status \\
+    Screen Viewer        & Trigger and view 1-FPS screenshots of any student \\
+    Webcam Alerts        & View proctoring violations with snapshot images \\
+    Submission Viewer    & Browse and read submitted code files per student \\
+    Code Runner          & Compile and run a student's submitted code server-side \\
+    Lock / Unlock        & Lock a specific student's screen or account \\
+    Force Submit         & Force-submit and close a specific student's portal \\
+    System Logging       & Persistent event log stored in SQLite \\
+    Database Backup      & Download the full SQLite database \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\imgplaceholder{Live Student Monitoring Dashboard (Fig. 5.7)}{%
+  Table: Roll No., Name, Status, Risk Level, WPM, Anomalies, Actions}
+
+%% ════════════════════════════════════════════════════════════
+\chapter{Database Design}
+\label{chap:db}
+%% ════════════════════════════════════════════════════════════
+
+\section{Overview}
+
+The Admin Server uses a \textbf{SQLite database} (\texttt{AMU\_Exam\_Database.sqlite}) managed via the \texttt{sql.js} pure-JavaScript library. This eliminates any native binary dependency and makes the application fully portable. The database file is stored at:
+\begin{center}
+  \texttt{\%USERPROFILE\%\textbackslash Documents\textbackslash AMU\_Exam\_Database.sqlite}
+\end{center}
+
+A periodic flush saves the in-memory database to disk every 5 seconds. An explicit \texttt{flushDB()} call is made before critical operations (backup download, app quit).
+
+\section{Entity-Relationship Diagram}
+
+\imgplaceholder{Entity-Relationship Diagram (Fig. 6.1)}{%
+  Entities: admins, students, questions, submissions, logs.
+  students (1) $\longrightarrow$ submissions (N);
+  questions (1) $\longrightarrow$ submissions (N)}
+
+\section{Table Schemas}
+
+\subsection{Table: students}
+
+\begin{table}[H]
+  \centering
+  \caption{Database Table --- \texttt{students}}
+  \begin{tabularx}{\textwidth}{L{3.5cm} C{2cm} C{2cm} L{5cm}}
+    \toprule
+    \textbf{Column} & \textbf{Type} & \textbf{Default} & \textbf{Description} \\
+    \midrule
+    roll\_number       & TEXT    & PK      & Student's unique roll number \\
+    name               & TEXT    & ---     & Full name \\
+    password           & TEXT    & ---     & Exam password \\
+    bound\_ip          & TEXT    & NULL    & IP bound on first login \\
+    is\_locked         & INTEGER & 0       & 1 if account is locked \\
+    assigned\_questions& TEXT    & {[]}    & JSON array of question IDs \\
+    has\_submitted     & INTEGER & 0       & 1 if student has submitted \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Table: questions}
+
+\begin{table}[H]
+  \centering
+  \caption{Database Table --- \texttt{questions}}
+  \begin{tabularx}{\textwidth}{L{3.5cm} C{2cm} L{7cm}}
+    \toprule
+    \textbf{Column} & \textbf{Type} & \textbf{Description} \\
+    \midrule
+    id           & TEXT    & Unique question identifier \\
+    title        & TEXT    & Question title \\
+    description  & TEXT    & Full problem statement \\
+    time\_limit  & INTEGER & Per-question time limit (seconds) \\
+    difficulty   & TEXT    & Easy / Medium / Hard \\
+    constraints  & TEXT    & Problem constraints \\
+    sampleInput  & TEXT    & Example input \\
+    sampleOutput & TEXT    & Expected output \\
+    testCases    & TEXT    & JSON array of test cases \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Table: submissions}
+
+\begin{table}[H]
+  \centering
+  \caption{Database Table --- \texttt{submissions}}
+  \begin{tabularx}{\textwidth}{L{3.5cm} C{2cm} L{7cm}}
+    \toprule
+    \textbf{Column} & \textbf{Type} & \textbf{Description} \\
+    \midrule
+    id          & INTEGER & Auto-increment primary key \\
+    roll\_number& TEXT    & FK $\to$ students.roll\_number \\
+    question\_id& TEXT    & FK $\to$ questions.id \\
+    code        & TEXT    & Submitted source code \\
+    language    & TEXT    & python / c / cpp \\
+    status      & TEXT    & Submission status \\
+    timestamp   & INTEGER & Unix timestamp of submission \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+%% ════════════════════════════════════════════════════════════
+\chapter{Security Features}
+\label{chap:sec}
+%% ════════════════════════════════════════════════════════════
+
+\section{Security Overview}
+
+Security is the central design pillar of this project. The table below summarises all implemented security controls:
+
+\begin{longtable}{L{5cm} L{8cm}}
+  \caption{Security Threat Mitigation Table} \\
+  \toprule
+  \textbf{Attack Vector} & \textbf{Mitigation} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{Attack Vector} & \textbf{Mitigation} \\
+  \midrule
+  \endhead
+  Switching to other apps     & Kiosk mode + globalShortcut blocking \\
+  Opening DevTools            & \texttt{devTools: false} in production \\
+  Navigating away             & \texttt{will-navigate} event intercepted \\
+  Opening new windows         & \texttt{setWindowOpenHandler} returns deny \\
+  Node.js injection           & \texttt{nodeIntegration: false}, \texttt{contextIsolation: true}, \texttt{sandbox: true} \\
+  USB device usage            & \texttt{DetectUSB.exe} monitors insertion \\
+  Login from two machines     & IP-based device binding per roll number \\
+  Impersonating uploads       & Per-login 48-char hex upload token \\
+  Timing attacks on tokens    & \texttt{crypto.timingSafeEqual()} \\
+  Zip path traversal          & \texttt{path.basename()} on all extracted names \\
+  XSS via student data        & \texttt{cleanText()} strips control chars \& \texttt{<>} \\
+  Unauthorised admin access   & Session cookie + JWT; \texttt{requireAdmin} middleware \\
+  \bottomrule
+\end{longtable}
+
+\section{Renderer Process Isolation}
+
+\begin{lstlisting}[caption={Electron Security Configuration --- main.js}]
+webPreferences: {
+  nodeIntegration:  false,     // No Node.js in renderer
+  contextIsolation: true,      // Isolated execution worlds
+  sandbox:          true,      // Chromium sandbox enabled
+  webviewTag:       false,     // No <webview> attack surface
+  devTools:         isDevMode, // DevTools only in --dev mode
+}
+\end{lstlisting}
+
+The \texttt{preload.js} script exposes only a tightly defined API to the renderer via \texttt{contextBridge.exposeInMainWorld()}, following the \textbf{principle of least privilege}.
+
+\section{AES-256-CBC License Security}
+
+The hardware lock encrypts the machine UUID using AES-256-CBC with a master secret key. The encrypted blob is stored at \texttt{C:\textbackslash ProgramData\textbackslash AMUExamPortal\textbackslash sys\_lock.dat}, requiring administrator privileges to modify.
+
+\section{Input Sanitisation}
+
+All student-provided inputs that reach the server are sanitised:
+\begin{itemize}[noitemsep]
+  \item \textbf{Roll numbers} (used as folder names): only \texttt{[A-Za-z0-9\_-]}, max 64 characters.
+  \item \textbf{File names:} only \texttt{[A-Za-z0-9\_.--]}, max 80 characters.
+  \item \textbf{Display text:} control characters and \texttt{<>} stripped; length capped.
+\end{itemize}
+
+%% ════════════════════════════════════════════════════════════
+\chapter{Testing \& Results}
+\label{chap:test}
+%% ════════════════════════════════════════════════════════════
+
+\section{Testing Approach}
+
+\begin{table}[H]
+  \centering
+  \caption{Testing Strategy}
+  \begin{tabularx}{\textwidth}{L{4cm} L{9cm}}
+    \toprule
+    \textbf{Test Type} & \textbf{Scope} \\
+    \midrule
+    Unit Testing        & Individual functions (license check, sanitisation, DB operations) \\
+    Integration Testing & Socket.io event flow between Admin Server and Student Portal \\
+    System Testing      & End-to-end exam simulation with multiple concurrent students \\
+    Security Testing    & Attempting kiosk escape; USB insertion; shortcut testing \\
+    Proctoring Testing  & AI head-pose detection accuracy at different angles \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Functional Test Cases}
+
+\begin{longtable}{C{1.5cm} L{5.5cm} L{4.5cm} C{1.5cm}}
+  \caption{Functional Test Cases} \\
+  \toprule
+  \textbf{TC ID} & \textbf{Test Description} & \textbf{Expected Result} & \textbf{Status} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{TC ID} & \textbf{Test Description} & \textbf{Expected Result} & \textbf{Status} \\
+  \midrule
+  \endhead
+  TC-01 & Student login with valid credentials          & Exam screen loads, timer starts               & PASS \\
+  TC-02 & Student login with wrong password             & Error message shown                           & PASS \\
+  TC-03 & Student logs in from a second machine         & ``Bound to another device'' error             & PASS \\
+  TC-04 & Alt+Tab pressed during exam                   & Shortcut swallowed, focus kept                & PASS \\
+  TC-05 & Python code execution (Hello World)           & Correct output in terminal                    & PASS \\
+  TC-06 & C++ code with compilation error               & Error message displayed                       & PASS \\
+  TC-07 & Invigilator starts exam from Admin            & All clients receive \texttt{exam\_started}    & PASS \\
+  TC-08 & Student submits; workspace zip uploaded       & Files in \texttt{AMU\_Exam\_Submissions}      & PASS \\
+  TC-09 & AI proctoring: student looks left for 2s      & Violation reported to Admin                   & PASS \\
+  TC-10 & Camera covered (uniform dark frame)           & CAMERA\_COVERED violation reported            & PASS \\
+  TC-11 & USB device inserted during exam               & USB alert on Admin dashboard                  & PASS \\
+  TC-12 & Invigilator sends warning message             & Toast notification on student screen          & PASS \\
+  TC-13 & Invigilator locks student screen              & Lock overlay shown on student screen          & PASS \\
+  TC-14 & Network disconnection during exam             & Portal waits, re-authenticates on reconnect   & PASS \\
+  TC-15 & Admin downloads database backup               & SQLite file downloaded correctly              & PASS \\
+  \bottomrule
+\end{longtable}
+
+\section{Performance Results}
+
+\begin{table}[H]
+  \centering
+  \caption{System Performance Benchmarks}
+  \begin{tabularx}{\textwidth}{L{8cm} C{5cm}}
+    \toprule
+    \textbf{Metric} & \textbf{Measured Value} \\
+    \midrule
+    Portal startup time (after license verified)     & $\approx$2.5 seconds \\
+    Student login to Questions loaded                & $<$500 ms \\
+    Python code execution (simple script)            & $\approx$300 ms \\
+    C++ compile + run                                & $\approx$1.2 seconds \\
+    Proctoring CPU usage (Intel Core i5)             & $<$2\% \\
+    Screen capture bandwidth per student             & $\sim$15--25 KB/s \\
+    Workspace zip upload (100 Mbps LAN)              & $<$2 seconds \\
+    Max simultaneous students tested                 & 30 clients \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\imgplaceholder{Student Portal --- Active Exam (Fig. 8.1)}{%
+  Student writing Python code in Monaco, timer running, webcam widget active, question visible}
+
+\imgplaceholder{Admin Dashboard During Live Exam (Fig. 8.2)}{%
+  20+ students connected, risk levels, submission status, webcam violation count}
+
+%% ════════════════════════════════════════════════════════════
+\chapter{Conclusion \& Future Work}
+\label{chap:conc}
+%% ════════════════════════════════════════════════════════════
+
+\section{Conclusion}
+
+The \textbf{AI Enabled Coding Based Examination} successfully demonstrates that a secure, fully offline, AI-proctored computer-based examination platform can be built for university computer labs using modern open-source web technologies packaged as a native desktop application. The system achieves all of its stated objectives:
+
+\begin{itemize}[noitemsep]
+  \item Kiosk lockdown prevents all system access during the exam.
+  \item AI webcam proctoring detects and reports malpractice in real time.
+  \item Integrated Monaco editor provides a professional, familiar coding environment.
+  \item Admin Server provides comprehensive real-time visibility and control.
+  \item Hardware-locked licensing restricts deployment to authorised machines only.
+  \item LAN-local communication eliminates any internet dependency.
+\end{itemize}
+
+The portal was tested with up to \textbf{30 simultaneous student connections} with stable performance. The AI proctoring engine achieved reliable head-pose detection at less than \textbf{2\% CPU overhead}, making it practical for all standard lab machines.
+
+\section{Limitations}
+
+\begin{table}[H]
+  \centering
+  \caption{Current System Limitations}
+  \begin{tabularx}{\textwidth}{L{4cm} L{9cm}}
+    \toprule
+    \textbf{Limitation} & \textbf{Description} \\
+    \midrule
+    Windows Only            & Current build primarily targets Windows; Linux support is partial. \\
+    No Auto-Grading         & Test cases are stored but automated evaluation is not yet implemented. \\
+    Plain-text Passwords    & Student passwords in DB are not hashed (suitable for internal use only). \\
+    No Question Shuffle     & All students in the same group see the same question set in the same order. \\
+    Camera Required         & AI proctoring requires a webcam; fallback degrades effectiveness. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Future Work}
+
+\begin{table}[H]
+  \centering
+  \caption{Proposed Future Enhancements}
+  \begin{tabularx}{\textwidth}{L{4cm} L{9cm}}
+    \toprule
+    \textbf{Enhancement} & \textbf{Description} \\
+    \midrule
+    Auto-Grading          & Automatically run test cases against submitted code and compute scores. \\
+    Password Hashing      & Implement bcrypt hashing for student passwords. \\
+    Question Randomisation& Shuffle question order per student to reduce copying. \\
+    Cross-Platform Support& Full Linux and macOS deployment. \\
+    Deeper AI Proctoring  & MediaPipe Holistic for body-pose analysis (phone use, leaning). \\
+    Cloud Backup          & Optional encrypted backup of submissions to cloud storage. \\
+    Multi-Subject Support & Allow multiple exam papers to be loaded simultaneously. \\
+    Result Generation     & Automated PDF result sheet generation per student. \\
+    Plagiarism Detection  & Moss/JPLAG integration for submission similarity analysis. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+%% ════════════════════════════════════════════════════════════
+%%  REFERENCES
+%% ════════════════════════════════════════════════════════════
+\begin{thebibliography}{10}
+\addcontentsline{toc}{chapter}{References}
+
+\bibitem{electron}
+Electron Documentation --- Security Best Practices.
+\textit{Electron.js}, 2024.
+Available: \url{https://www.electronjs.org/docs/latest/tutorial/security}
+
+\bibitem{mediapipe}
+Google MediaPipe --- Face Landmarker Task.
+\textit{Google Developers}, 2024.
+Available: \url{https://developers.google.com/mediapipe/solutions/vision/face_landmarker}
+
+\bibitem{socketio}
+Socket.io --- Server API Documentation.
+\textit{Socket.io}, 2024.
+Available: \url{https://socket.io/docs/v4/server-api/}
+
+\bibitem{monaco}
+Monaco Editor --- API Reference.
+\textit{Microsoft}, 2024.
+Available: \url{https://microsoft.github.io/monaco-editor/}
+
+\bibitem{sqljs}
+sql.js --- SQLite Compiled to WebAssembly.
+\textit{sql-js}, 2024.
+Available: \url{https://sql.js.org/}
+
+\bibitem{express}
+Express.js Documentation.
+\textit{OpenJS Foundation}, 2024.
+Available: \url{https://expressjs.com/en/4x/api.html}
+
+\bibitem{nodecrypto}
+Node.js Crypto Module Documentation.
+\textit{Node.js Foundation}, 2024.
+Available: \url{https://nodejs.org/api/crypto.html}
+
+\bibitem{nist}
+NIST Special Publication 800-38A --- Recommendation for Block Cipher Modes of Operation.
+\textit{National Institute of Standards and Technology}, 2001.
+Available: \url{https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf}
+
+\bibitem{floratos}
+S. Floratos,
+``AI-based Proctoring Systems for Online Examinations: A Review,''
+\textit{International Journal of Educational Technology in Higher Education},
+vol. 17, no. 1, pp. 1--18, 2020.
+
+\bibitem{ebuilder}
+electron-builder Documentation --- NSIS Target.
+\textit{electron-builder}, 2024.
+Available: \url{https://www.electron.build/configuration/nsis}
+
+\end{thebibliography}
+
+%% ════════════════════════════════════════════════════════════
+%%  APPENDIX
+%% ════════════════════════════════════════════════════════════
+\appendix
+\chapter{Key Source Code Listing}
+
+\section{License Verification --- main.js}
+
+\begin{lstlisting}[caption={AES-256-CBC Hardware License Verification}]
+function checkLicense() {
+  if (!fs.existsSync(LICENSE_FILE)) return false;
+  try {
+    const encryptedData = fs.readFileSync(LICENSE_FILE, 'utf8');
+    const parts = encryptedData.split(':');
+    if (parts.length !== 2) return false;
+    const iv            = Buffer.from(parts[0], 'hex');
+    const encryptedText = Buffer.from(parts[1], 'hex');
+    const decipher = crypto.createDecipheriv(
+      'aes-256-cbc',
+      Buffer.from(MASTER_SECRET.padEnd(32, '0')), iv
+    );
+    let decrypted = Buffer.concat([
+      decipher.update(encryptedText), decipher.final()
+    ]);
+    return decrypted.toString() === getMachineUUID();
+  } catch (err) { return false; }
+}
+\end{lstlisting}
+
+\section{AI Proctoring Violation Logic --- camera-proctor.js}
+
+\begin{lstlisting}[caption={Consecutive-Tick Violation Debounce}]
+const WARN_POSE_TICKS   = 12;   // 12 x 160ms = 1.92 s
+const ALERT_ABSENT_TICKS = 14;  // 14 x 160ms = 2.24 s
+
+// Called every 160 ms from the analysis loop
+if (consecutiveLeftCount >= WARN_POSE_TICKS) {
+  reportViolation({
+    type: 'LOOKING_BESIDE', direction: 'left',
+    durationSeconds: 2, snapshot: captureSnapshot()
+  });
+  consecutiveLeftCount = 0;
+}
+
+if (consecutiveAbsentCount >= ALERT_ABSENT_TICKS) {
+  reportViolation({
+    type: 'FACE_ABSENT', durationSeconds: 2.3,
+    snapshot: captureSnapshot()
+  });
+  consecutiveAbsentCount = 0;
+}
+\end{lstlisting}
+
+\section{Database Schema --- db.js}
+
+\begin{lstlisting}[caption={SQLite Database Schema Creation}]
+db.run(`
+  CREATE TABLE IF NOT EXISTS students (
+    roll_number       TEXT PRIMARY KEY,
+    name              TEXT,
+    password          TEXT,
+    bound_ip          TEXT DEFAULT NULL,
+    is_locked         INTEGER DEFAULT 0,
+    assigned_questions TEXT DEFAULT '[]',
+    has_submitted     INTEGER DEFAULT 0
+  );
+  CREATE TABLE IF NOT EXISTS questions (
+    id          TEXT PRIMARY KEY,
+    title       TEXT, description TEXT,
+    time_limit  INTEGER, difficulty TEXT,
+    constraints TEXT, sampleInput TEXT,
+    sampleOutput TEXT, explanation TEXT,
+    testCases   TEXT
+  );
+  CREATE TABLE IF NOT EXISTS submissions (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    roll_number TEXT, question_id TEXT,
+    code TEXT, language TEXT, status TEXT,
+    timestamp   INTEGER,
+    FOREIGN KEY(roll_number) REFERENCES students(roll_number),
+    FOREIGN KEY(question_id) REFERENCES questions(id)
+  );
+`);
+\end{lstlisting}
+
+\section{Secure Workspace Upload --- server.js}
+
+\begin{lstlisting}[caption={Token-Authenticated Zip Upload with Path-Traversal Protection}]
+// 1. Token verification (timing-safe)
+const expected = uploadTokens.get(String(rollNumber));
+const tokenOk  = expected && typeof token === 'string'
+  && token.length === expected.length
+  && crypto.timingSafeEqual(
+       Buffer.from(token), Buffer.from(expected));
+
+if (!tokenOk)
+  return res.status(403).json({ success: false, error: 'Unauthorised' });
+
+// 2. Extract zip with path-traversal protection
+const zip     = new AdmZip(zipPath);
+const entries = zip.getEntries().filter(e => !e.isDirectory);
+if (entries.length > 100) throw new Error('Too many files in zip');
+
+for (const entry of entries) {
+  const name = safeFileName(path.basename(entry.entryName));
+  if (!name || entry.header.size > 2 * 1024 * 1024) continue;
+  fs.writeFileSync(path.join(studentDir, name), entry.getData());
+}
+\end{lstlisting}
+
+%% ════════════════════════════════════════════════════════════
+\end{document}
+%% ============================================================

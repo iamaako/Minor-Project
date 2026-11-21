@@ -28,7 +28,8 @@
     "electron": "^34.0.0",
     "electron-builder": "^24.13.3",
     "fs-extra": "^11.3.6",
-    "javascript-obfuscator": "^5.4.3"
+    "javascript-obfuscator": "^5.4.3",
+    "rcedit": "^5.0.2"
   },
   "build": {
     "appId": "com.amu.adminserver",
@@ -45,14 +46,15 @@
       "css/**/*",
       "assets/**/*",
       "package.json",
-      "node_modules/**/*"
+      "node_modules/**/*",
+      "installer-assets/app_icon.png"
     ],
     "win": {
       "target": [
-        "portable",
-        "dir"
+        "nsis"
       ],
-      "icon": "build/icons/win/icon.ico"
+      "icon": "installer-assets/icon.ico",
+      "signAndEditExecutable": false
     },
     "linux": {
       "target": [
@@ -61,13 +63,34 @@
       ],
       "maintainer": "iamaakoji@gmail.com",
       "category": "Education",
-      "icon": "app_icon.png",
+      "icon": "installer-assets/app_icon.png",
       "executableArgs": [
         "--no-sandbox"
       ]
     },
     "deb": {
       "priority": "optional"
-    }
+    },
+    "compression": "maximum",
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "AMU Admin Server",
+      "runAfterFinish": false,
+      "deleteAppDataOnUninstall": false,
+      "artifactName": "AMU-Admin-Server-Setup-${version}.${ext}",
+      "installerIcon": "installer-assets/icon.ico",
+      "uninstallerIcon": "installer-assets/icon.ico",
+      "installerHeaderIcon": "installer-assets/icon.ico",
+      "installerSidebar": "installer-assets/installerSidebar.bmp",
+      "uninstallerSidebar": "installer-assets/uninstallerSidebar.bmp",
+      "installerHeader": "installer-assets/installerHeader.bmp",
+      "include": "installer-assets/installer.nsh"
+    },
+    "afterPack": "scripts/after-pack.js"
   }
 }
