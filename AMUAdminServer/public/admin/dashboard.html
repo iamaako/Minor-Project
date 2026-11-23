@@ -2386,7 +2386,9 @@
     });
 
     socket.on('student_alert', (data) => {
-      if (!isAlertVisible && data && data.name) {
+      // This pop-up is the USB alarm ("workstation has been locked"). Webcam alerts use the same
+      // event so the lab map can highlight the seat, but they must not show the USB dialog.
+      if (!isAlertVisible && data && data.name && data.type !== 'WEBCAM_VIOLATION') {
         document.getElementById('xp-alert-name').textContent = data.name;
         document.getElementById('xp-alert-roll').textContent = data.roll;
         document.getElementById('xp-alert-ip').textContent = data.ip;

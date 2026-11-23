@@ -1,0 +1,298 @@
+**
+(Project_Screenshots.tex
+LaTeX2e <2021-11-15> patch level 1
+L3 programming layer <2022-02-24> (article.cls
+Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
+(size11.clo
+File: size11.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count181
+\c@section=\count182
+\c@subsection=\count183
+\c@subsubsection=\count184
+\c@paragraph=\count185
+\c@subparagraph=\count186
+\c@figure=\count187
+\c@table=\count188
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen138
+) (geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+ (keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks16
+) (ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+ (iftex.sty
+Package: iftex 2022/02/03 v1.0f TeX engine tests
+))
+\Gm@cnth=\count189
+\Gm@cntv=\count190
+\c@Gm@tempcnt=\count191
+\Gm@bindingoffset=\dimen139
+\Gm@wd@mp=\dimen140
+\Gm@odd@mp=\dimen141
+\Gm@even@mp=\dimen142
+\Gm@layoutwidth=\dimen143
+\Gm@layoutheight=\dimen144
+\Gm@layouthoffset=\dimen145
+\Gm@layoutvoffset=\dimen146
+\Gm@dimlist=\toks17
+) (fontenc.sty
+Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 11
+2.
+(t1lmr.fd
+File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)) (tgtermes.sty
+Package: tgtermes 2009/09/27 v1.2 TeX Gyre Termes as default roman family
+ (kvoptions.sty
+Package: kvoptions 2020-10-07 v3.14 Key value format for package options (HO)
+ (ltxcmds.sty
+Package: ltxcmds 2020-05-10 v1.25 LaTeX kernel commands for general use (HO)
+) (kvsetkeys.sty
+Package: kvsetkeys 2019/12/15 v1.18 Key value parser (HO)
+)))
+(graphicx.sty
+Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
+ (graphics.sty
+Package: graphics 2021/03/04 v1.4d Standard LaTeX Graphics (DPC,SPQR)
+ (trig.sty
+Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
+) (graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: xetex.def on input line 107.
+ (xetex.def
+File: xetex.def 2021/03/18 v5.0k Graphics/color driver for xetex
+))
+\Gin@req@height=\dimen147
+\Gin@req@width=\dimen148
+) (float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count192
+\float@exts=\toks18
+\float@box=\box50
+\@float@everytoks=\toks19
+\@floatcapt=\box51
+) (caption.sty
+Package: caption 2022/03/01 v3.6b Customizing captions (AR)
+ (caption3.sty
+Package: caption3 2022/03/17 v2.3b caption3 kernel (AR)
+\caption@tempdima=\dimen149
+\captionmargin=\dimen150
+\caption@leftmargin=\dimen151
+\caption@rightmargin=\dimen152
+\caption@width=\dimen153
+\caption@indent=\dimen154
+\caption@parindent=\dimen155
+\caption@hangindent=\dimen156
+Package caption Info: Standard document class detected.
+)
+\c@caption@flags=\count193
+\c@continuedfloat=\count194
+Package caption Info: float package is loaded.
+) (xcolor.sty
+Package: xcolor 2021/10/31 v2.13 LaTeX color extensions (UK)
+ (color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: xetex.def on input line 227.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1352.
+Package xcolor Info: Model `RGB' extended on input line 1368.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1370.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1371.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1372.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1373.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1374.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1375.
+)
+LaTeX Font Info:    Trying to load font information for T1+qtm on input line 17
+.
+ (t1qtm.fd
+File: t1qtm.fd 2009/09/25 v1.2 font definition file for T1/qtm
+)
+(l3backend-xetex.def
+File: l3backend-xetex.def 2022-02-07 L3 backend support: XeTeX
+\c__kernel_sys_dvipdfmx_version_int=\count195
+\l__color_backend_stack_int=\count196
+\g__color_backend_stack_int=\count197
+\g__graphics_track_int=\count198
+\l__pdf_internal_box=\box52
+\g__pdf_backend_object_int=\count199
+\g__pdf_backend_annotation_int=\count266
+\g__pdf_backend_link_int=\count267
+) (Project_Screenshots.aux)
+\openout1 = `Project_Screenshots.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 17.
+LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 1
+7.
+ (ts1cmr.fd
+File: ts1cmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
+)
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: xetex
+*geometry* verbose mode - [ preamble ] result:
+* driver: xetex
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(42.67912pt, 512.14963pt, 42.67912pt)
+* v-part:(T,H,B)=(42.67912pt, 759.6886pt, 42.67912pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=512.14963pt
+* \textheight=759.6886pt
+* \oddsidemargin=-29.59087pt
+* \evensidemargin=-29.59087pt
+* \topmargin=-66.59087pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=11.0pt
+* \footskip=30.0pt
+* \marginparwidth=50.0pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: End \AtBeginDocument code.
+File: report_images/student_setup.png Graphic file (type bmp)
+<report_images/student_setup.png>
+
+Overfull \hbox (0.78952pt too wide) in paragraph at lines 20--20
+ [][] 
+ []
+
+File: report_images/student_login.png Graphic file (type bmp)
+<report_images/student_login.png>
+
+Overfull \hbox (0.78952pt too wide) in paragraph at lines 21--21
+ [][] 
+ []
+
+File: report_images/student_instructions.png Graphic file (type bmp)
+<report_images/student_instructions.png>
+
+Overfull \hbox (0.78952pt too wide) in paragraph at lines 22--22
+ [][] 
+ []
+
+File: report_images/student_waiting.png Graphic file (type bmp)
+<report_images/student_waiting.png>
+
+Overfull \hbox (0.78952pt too wide) in paragraph at lines 23--23
+ [][] 
+ []
+
+[1
+
+]
+File: report_images/student_exam.png Graphic file (type bmp)
+<report_images/student_exam.png>
+
+Overfull \hbox (0.78952pt too wide) in paragraph at lines 24--24
+ [][] 
+ []
+
+File: report_images/student_proctor_alert.png Graphic file (type bmp)
+<report_images/student_proctor_alert.png>
+
+Overfull \hbox (0.78952pt too wide) in paragraph at lines 25--25
+ [][] 
+ []
+
+[2]
+File: report_images/student_submit_confirm.png Graphic file (type bmp)
+<report_images/student_submit_confirm.png>
+
+Overfull \hbox (0.78952pt too wide) in paragraph at lines 26--26
+ [][] 
+ []
+
+[3]
+File: report_images/admin_launcher_setup.png Graphic file (type bmp)
+<report_images/admin_launcher_setup.png>
+File: report_images/admin_launcher_running.png Graphic file (type bmp)
+<report_images/admin_launcher_running.png>
+File: report_images/admin_web_login.png Graphic file (type bmp)
+<report_images/admin_web_login.png>
+
+Overfull \hbox (0.79105pt too wide) in paragraph at lines 30--30
+ [][] 
+ []
+
+[4]
+File: report_images/admin_web_monitor.png Graphic file (type bmp)
+<report_images/admin_web_monitor.png>
+
+Overfull \hbox (0.79105pt too wide) in paragraph at lines 31--31
+ [][] 
+ []
+
+File: report_images/admin_web_live_analysis.png Graphic file (type bmp)
+<report_images/admin_web_live_analysis.png>
+
+Overfull \hbox (0.79105pt too wide) in paragraph at lines 32--32
+ [][] 
+ []
+
+[5]
+File: report_images/admin_web_webcam_alerts.png Graphic file (type bmp)
+<report_images/admin_web_webcam_alerts.png>
+
+Overfull \hbox (0.79105pt too wide) in paragraph at lines 33--33
+ [][] 
+ []
+
+File: report_images/admin_web_students.png Graphic file (type bmp)
+<report_images/admin_web_students.png>
+
+Overfull \hbox (0.79105pt too wide) in paragraph at lines 34--34
+ [][] 
+ []
+
+[6]
+File: report_images/admin_web_questions.png Graphic file (type bmp)
+<report_images/admin_web_questions.png>
+
+Overfull \hbox (0.79105pt too wide) in paragraph at lines 35--35
+ [][] 
+ []
+
+File: report_images/admin_web_logs.png Graphic file (type bmp)
+<report_images/admin_web_logs.png>
+
+Overfull \hbox (0.79105pt too wide) in paragraph at lines 36--36
+ [][] 
+ []
+
+[7] [8] (Project_Screenshots.aux) )
+Output written on Project_Screenshots.xdv (8 pages, 8536 bytes).

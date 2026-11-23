@@ -1,0 +1,37 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[a4paper,margin=1.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{tgtermes}
+\usepackage{graphicx,float,caption}
+\usepackage{xcolor}
+\captionsetup{font=footnotesize,labelfont=bf,labelsep=colon}
+\renewcommand{\thefigure}{\arabic{figure}}
+\pagestyle{plain}
+\newcommand{\shot}[2]{%
+  \begin{figure}[H]
+  \centering
+  \setlength{\fboxsep}{0pt}\setlength{\fboxrule}{0.4pt}
+  \fbox{\includegraphics[width=\textwidth,height=11.5cm,keepaspectratio]{report_images/#1}}
+  \caption{#2}
+  \end{figure}}
+\begin{document}
+\begin{center}{\Large\bfseries AI Enabled Coding Examination}\\[2pt]{\large Screenshots of the Project}\end{center}
+\section{Student Portal}
+\shot{student_setup.png}{Student Portal: server address screen}
+\shot{student_login.png}{Student Portal: login window}
+\shot{student_instructions.png}{Student Portal: instructions}
+\shot{student_waiting.png}{Student Portal: waiting for the start of the examination}
+\shot{student_exam.png}{Student Portal: examination screen with question, editor, terminal and proctor window}
+\shot{student_proctor_alert.png}{Student Portal: warning when the face is not visible}
+\shot{student_submit_confirm.png}{Student Portal: confirmation of the final submission}
+\section{Admin Server}
+\shot{admin_launcher_setup.png}{Admin Server: launcher with the usable network addresses}
+\shot{admin_launcher_running.png}{Admin Server: control panel while the server runs}
+\shot{admin_web_login.png}{Web dashboard: login}
+\shot{admin_web_monitor.png}{Web dashboard: live monitor}
+\shot{admin_web_live_analysis.png}{Web dashboard: test analysis and live code}
+\shot{admin_web_webcam_alerts.png}{Web dashboard: webcam proctoring alerts}
+\shot{admin_web_students.png}{Web dashboard: student management}
+\shot{admin_web_questions.png}{Web dashboard: question bank}
+\shot{admin_web_logs.png}{Web dashboard: system logs}
+\end{document}

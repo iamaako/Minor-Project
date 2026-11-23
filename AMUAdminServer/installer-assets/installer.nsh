@@ -5,7 +5,7 @@
 ; page and the Finish page are created, so this define is seen by MUI_PAGE_FINISH.
 ; (customHeader is NOT usable for this: it is expanded after the pages already exist.)
 !macro customPageAfterChangeDir
-  !define MUI_FINISHPAGE_TEXT "${PRODUCT_NAME} has been installed on your computer.$\r$\n$\r$\nClick Finish to close Setup.$\r$\n$\r$\n$\r$\nDeveloped in$\r$\nInterdisciplinary Centre for Artificial Intelligence$\r$\n$\r$\nby  Aarif Khan (24AIBEA142)$\r$\n      Arqam Ahmad (24AIBEA129)$\r$\n$\r$\nUnder: Dr. Junaid Ali Reshi"
+  !define MUI_FINISHPAGE_TEXT "${PRODUCT_NAME} has been installed on your computer.$\r$\n$\r$\nClick Finish to close Setup.$\r$\n$\r$\n$\r$\nDeveloped in$\r$\nInterdisciplinary Centre for Artificial Intelligence$\r$\n$\r$\nDeveloped by$\r$\nAARIF KHAN (24AIBEA142)$\r$\nARQAM AHMAD (24AIBEA129)$\r$\n$\r$\nUnder: Dr. Junaid Ali Reshi"
 !macroend
 
 ; ── Windows Firewall ──
