@@ -1,0 +1,1285 @@
+%% ======================================================================
+%%  AI Enabled Coding Examination : B.Tech Project Report
+%%  Interdisciplinary Centre for Artificial Intelligence, ZHCET, AMU
+%%
+%%  Build:  pdflatex Project_Report.tex   (run twice for the contents)
+%%      or  tectonic Project_Report.tex
+%%  Images are read from the folder  report_images/
+%% ======================================================================
+\documentclass[12pt,a4paper]{report}
+
+%% ---------- fonts (Times-like text, Arial-like headings of the cover) ----------
+\usepackage[T1]{fontenc}
+\usepackage{tgtermes}
+\usepackage[scale=.92]{tgheros}
+
+%% ---------- page: 1.5 inch on all four sides ----------
+\usepackage[a4paper,top=1in,bottom=1in,left=1in,right=1in]{geometry}
+
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{eso-pic}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage[font=footnotesize,labelfont=bf,labelsep=colon,skip=6pt]{caption}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,arrows.meta,positioning,calc,fit,backgrounds}
+\usepackage[hidelinks]{hyperref}
+
+%% ---------- values used on the front pages ----------
+\newcommand{\ProjectTitle}{AI Enabled Coding Examination}
+\newcommand{\SubmissionMonth}{November 2026}
+\newcommand{\Session}{2026-27}
+\newcommand{\DegreeBranch}{Artificial Intelligence}
+\newcommand{\SupervisorName}{Dr. Junaid Ali Reshi}
+\newcommand{\SupervisorDesignation}{Assistant Professor}
+
+%% ---------- text layout ----------
+\setlength{\parindent}{1cm}
+\setlength{\parskip}{0pt}
+\onehalfspacing
+\setlist{leftmargin=1.2cm,itemsep=2pt,topsep=4pt,parsep=0pt}
+\renewcommand{\arraystretch}{1.25}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+%% ---------- headings ----------
+\titleformat{\chapter}[display]
+  {\centering\bfseries\fontsize{16}{20}\selectfont}
+  {\MakeUppercase{\chaptertitlename}\ \thechapter}{8pt}
+  {\fontsize{16}{20}\selectfont\MakeUppercase}
+\titleformat{name=\chapter,numberless}[block]
+  {\centering\bfseries\fontsize{16}{20}\selectfont}{}{0pt}
+  {\fontsize{16}{20}\selectfont\MakeUppercase}
+\titlespacing*{\chapter}{0pt}{0pt}{22pt}
+\titleformat{\section}{\bfseries\fontsize{14}{18}\selectfont}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\bfseries\fontsize{12}{16}\selectfont}{\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}{\bfseries\itshape\fontsize{12}{16}\selectfont}{\thesubsubsection}{0.7em}{}
+\titlespacing*{\section}{0pt}{16pt}{6pt}
+\titlespacing*{\subsection}{1cm}{12pt}{4pt}
+\titlespacing*{\subsubsection}{2cm}{10pt}{3pt}
+\newcommand{\frontchapter}[1]{\chapter*{#1}\addcontentsline{toc}{chapter}{#1}}
+
+%% ---------- footer: page number only, no lines ----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\thepage}%
+  \renewcommand{\headrulewidth}{0pt}\renewcommand{\footrulewidth}{0pt}}
+
+%% ---------- table of contents and lists (titles, dotted leaders, hierarchy) ----------
+\renewcommand{\contentsname}{\hfill TABLE OF CONTENTS\hfill\mbox{}}
+\renewcommand{\listfigurename}{\hfill LIST OF FIGURES\hfill\mbox{}}
+\renewcommand{\listtablename}{\hfill LIST OF TABLES\hfill\mbox{}}
+\renewcommand{\cfttoctitlefont}{\bfseries\fontsize{16}{20}\selectfont}
+\renewcommand{\cftaftertoctitle}{\par\vspace{10pt}}
+\renewcommand{\cftlottitlefont}{\bfseries\fontsize{16}{20}\selectfont}
+\renewcommand{\cftafterlottitle}{\par\vspace{10pt}}
+\renewcommand{\cftloftitlefont}{\bfseries\fontsize{16}{20}\selectfont}
+\renewcommand{\cftafterloftitle}{\par\vspace{10pt}}
+\setlength{\cftbeforetoctitleskip}{-40pt}
+\setlength{\cftbeforeloftitleskip}{-40pt}
+\setlength{\cftbeforelottitleskip}{-40pt}
+\renewcommand{\cftdotsep}{1.2}
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftchapfont}{\bfseries}
+\renewcommand{\cftchappagefont}{\bfseries}
+\setlength{\cftbeforechapskip}{8pt}
+\setlength{\cftchapindent}{0em}
+\setlength{\cftchapnumwidth}{2em}
+\setlength{\cftsecindent}{2em}
+\setlength{\cftsecnumwidth}{2.6em}
+\setlength{\cftsubsecindent}{4.6em}
+\setlength{\cftsubsecnumwidth}{3.4em}
+\setlength{\cftfigindent}{0em}
+\setlength{\cftfignumwidth}{3.6em}
+\setlength{\cfttabindent}{0em}
+\setlength{\cfttabnumwidth}{3.6em}
+\renewcommand{\cftfigpresnum}{Figure~}
+\renewcommand{\cfttabpresnum}{Table~}
+\setlength{\cftfigindent}{0em}
+\setlength{\cfttabindent}{0em}
+\setlength{\cftfignumwidth}{5.4em}
+\setlength{\cfttabnumwidth}{4.8em}
+\renewcommand{\cftbeforetabskip}{3pt}
+\renewcommand{\cftbeforefigskip}{3pt}
+
+%% ---------- faint AMU seal behind the first three pages ----------
+\newcommand{\amuwatermark}{%
+  \AddToShipoutPictureBG*{\AtPageCenter{%
+    \begin{tikzpicture}[overlay]
+      \node at (0,0) {\includegraphics[width=0.66\paperwidth]{report_images/amu_seal_light.jpg}};
+    \end{tikzpicture}}}}
+
+%% ---------- drawing styles used by the figures ----------
+\tikzset{
+  >=Stealth,
+  every node/.append style={font=\footnotesize},
+  block/.style={draw,rounded corners=2pt,align=center,fill=white,minimum height=7mm,inner sep=3pt},
+  group/.style={draw,rounded corners=3pt,inner sep=7pt,fill=green!5},
+  ext/.style={draw,align=center,fill=blue!6,minimum height=8mm,inner sep=4pt},
+  proc/.style={draw,rounded corners=4pt,align=center,fill=green!8,minimum height=11mm,inner sep=3pt},
+  term/.style={draw,rounded corners=8pt,align=center,fill=green!14,minimum height=7mm,inner sep=3pt},
+  stp/.style={draw,align=center,fill=white,minimum height=7mm,inner sep=3pt,text width=4.6cm},
+  dec/.style={draw,diamond,aspect=2.6,align=center,fill=yellow!14,inner sep=1pt,text width=3.0cm},
+  flow/.style={->,thick},
+  lab/.style={font=\scriptsize,align=center,inner sep=1pt},
+  entt/.style={draw,fill=green!22,align=center,text width=3.5cm,font=\footnotesize\bfseries,inner sep=2pt},
+  ent/.style={draw,align=left,text width=3.5cm,inner sep=3pt,fill=white},
+  rel/.style={draw,diamond,aspect=2.2,fill=yellow!16,inner sep=1pt,align=center}
+}
+
+%% ---------- extra drawing styles for the UML and block diagrams ----------
+\usetikzlibrary{shapes.multipart}
+\tikzset{
+  bb/.style={draw,rounded corners=2pt,align=center,fill=green!6,minimum height=1.1cm,text width=2.25cm,inner sep=3pt},
+  uc/.style={draw,ellipse,align=center,fill=green!6,text width=3.0cm,minimum height=1.0cm,inner sep=2pt},
+  act/.style={draw,rounded corners=6pt,align=center,fill=green!6,text width=3.2cm,minimum height=1cm,inner sep=3pt},
+  cls/.style={draw,rectangle split,rectangle split parts=3,rectangle split part align={center,left,left},font=\scriptsize,text width=3.7cm,fill=white,inner sep=3pt},
+  clsd/.style={draw,rectangle split,rectangle split parts=2,rectangle split part align={center,left},font=\scriptsize,text width=3.7cm,fill=green!6,inner sep=3pt}
+}
+\newcommand{\actor}[3]{\begin{scope}[shift={(#2)}]%
+  \draw[thick](0,0.62)circle(0.16);\draw[thick](0,0.46)--(0,-0.1);\draw[thick](-0.28,0.3)--(0.28,0.3);%
+  \draw[thick](0,-0.1)--(-0.2,-0.55);\draw[thick](0,-0.1)--(0.2,-0.55);%
+  \node[font=\footnotesize\bfseries,below,align=center] at (0,-0.55){#3};\coordinate(#1)at(0,0.2);\end{scope}}
+\newcommand{\msg}[5]{\draw[#1](#2,#3)--(#4,#3)node[midway,above,font=\scriptsize]{#5};}
+
+
+\begin{document}
+\pagenumbering{roman}
+
+%% ======================================================================
+%%  COVER PAGE
+%% ======================================================================
+\begin{titlepage}
+\thispagestyle{empty}
+\amuwatermark
+\centering
+\singlespacing
+\vspace*{0.4cm}
+{\sffamily\bfseries\fontsize{24}{28}\selectfont A Project Report\par}
+\vspace{0.4cm}
+{\sffamily\bfseries\fontsize{16}{20}\selectfont on\par}
+\vspace{0.5cm}
+{\sffamily\bfseries\fontsize{20}{24}\selectfont \ProjectTitle\par}
+\vspace{1.0cm}
+{\bfseries\fontsize{16}{20}\selectfont Bachelor of Technology\par}
+\vspace{0.2cm}
+{\bfseries\fontsize{14}{18}\selectfont in\par}
+\vspace{0.2cm}
+{\bfseries\fontsize{16}{20}\selectfont \DegreeBranch\par}
+\vspace{0.2cm}
+{\bfseries\fontsize{14}{18}\selectfont by\par}
+\vfill
+\noindent\begin{minipage}[t]{0.49\textwidth}
+\raggedright\bfseries\fontsize{14}{18}\selectfont Aarif Khan\\ Faculty No.: 24AIBEA142\\ Enrolment No.: GQ0103
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\textwidth}
+\raggedleft\bfseries\fontsize{14}{18}\selectfont Arqam Ahmad\\ Faculty No.: 24AIBEA129\\ Enrolment No.: GQ0179
+\end{minipage}
+\vfill
+{\sffamily\bfseries\fontsize{16}{20}\selectfont Under the Guidance of\par}
+\vspace{0.3cm}
+{\bfseries\fontsize{14}{18}\selectfont \SupervisorName\par}
+\vfill
+{\bfseries\fontsize{14}{18}\selectfont Interdisciplinary Centre for Artificial Intelligence\\
+Zakir Husain College of Engineering \& Technology\\
+Aligarh Muslim University\\
+Aligarh (India)-202002\\
+\SubmissionMonth\par}
+\end{titlepage}
+\setcounter{page}{2}
+
+%% ======================================================================
+%%  DECLARATION
+%% ======================================================================
+\clearpage
+\thispagestyle{plain}
+\amuwatermark
+\singlespacing
+\noindent\hfill Dated\,.\,.\,.\,.\,.\,.\,.\,.\,.\,.\\[0.8cm]
+\begin{center}
+\phantomsection\addcontentsline{toc}{chapter}{Declaration}{\bfseries\fontsize{16}{20}\selectfont\underline{Declaration}}
+\end{center}
+\vspace{0.3cm}
+\begin{singlespace}
+\fontsize{14}{21}\selectfont\noindent\hspace{1cm}The work presented in the project entitled ``\ProjectTitle'', submitted to the Interdisciplinary Centre for Artificial Intelligence, Zakir Husain College of Engineering and Technology, Aligarh Muslim University, Aligarh, in partial fulfillment for the award of the degree of Bachelor of Technology in \DegreeBranch, during the session \Session, is our original work. We have neither plagiarized nor submitted the same work for the award of any degree.\par
+\end{singlespace}
+\vspace{1.0cm}
+\fontsize{14}{20}\selectfont\noindent\begin{tabular}{@{}p{0.5\textwidth}@{}p{0.5\textwidth}@{}}
+Date: & \hfill (Signature)\\
+Place: Aligarh & \hfill Aarif Khan (24AIBEA142)\\[1.4cm]
+ & \hfill (Signature)\\
+ & \hfill Arqam Ahmad (24AIBEA129)
+\end{tabular}
+\clearpage
+
+%% ======================================================================
+%%  CERTIFICATE
+%% ======================================================================
+\thispagestyle{plain}
+\amuwatermark
+\singlespacing
+\noindent\hfill Dated\,.\,.\,.\,.\,.\,.\,.\,.\,.\,.\\[0.8cm]
+\begin{center}
+\phantomsection\addcontentsline{toc}{chapter}{Certificate}{\bfseries\fontsize{16}{20}\selectfont\underline{Certificate}}
+\end{center}
+\vspace{0.3cm}
+\begin{singlespace}
+\fontsize{14}{21}\selectfont\noindent\hspace{1cm}On the basis of the declaration given by the candidates, this is to certify that the project report entitled ``\ProjectTitle'', submitted by Aarif Khan and Arqam Ahmad to the Interdisciplinary Centre for Artificial Intelligence, Zakir Husain College of Engineering and Technology, Aligarh Muslim University, Aligarh, in partial fulfillment of the requirements for the award of the degree of Bachelor of Technology in \DegreeBranch, during the session \Session, is a record of the candidates' own work carried out by them under my supervision and guidance.\par
+\end{singlespace}
+\vspace{1.0cm}
+\begin{flushright}
+\fontsize{14}{18}\selectfont(Signature)\\
+\SupervisorName\\
+\SupervisorDesignation\\
+Interdisciplinary Centre for Artificial Intelligence\\
+ZHCET, AMU, Aligarh
+\end{flushright}
+\clearpage
+
+%% ======================================================================
+%%  FRONT MATTER (roman numerals)
+%% ======================================================================
+\onehalfspacing
+
+\frontchapter{Acknowledgement}
+We express our sincere gratitude to our supervisor, \SupervisorName, for his guidance, patience and constructive criticism throughout this project. His suggestions shaped the design of the examination system and the way it was tested.
+
+We thank the Interdisciplinary Centre for Artificial Intelligence, Zakir Husain College of Engineering and Technology, Aligarh Muslim University, for providing the laboratory and the environment in which the system could be developed and tried out. We also thank our families and friends for their support.
+
+\vspace{1.2cm}
+\begin{flushright}
+Aarif Khan (24AIBEA142)\\
+Arqam Ahmad (24AIBEA129)
+\end{flushright}
+\clearpage
+
+\frontchapter{Abstract}
+\setlength{\parindent}{0pt}\setlength{\parskip}{8pt}
+Practical programming examinations need a locked computer, a working compiler and an invigilator who can see what every candidate is doing. Browser-based tests do not give all three, and they need the internet. This project presents \ProjectTitle, a desktop examination system for a local network, made of two Windows applications. The Student Portal runs in a locked full-screen mode, shows the assigned questions, lets the candidate write, compile and run Python, C and C++ programs with bundled compilers, blocks other applications, shortcuts and removable drives, and submits the work. The Admin Server stores students, questions and submissions in a SQLite database, starts or schedules the examination, and shows the live status of every candidate in a web dashboard.
+
+Misuse is checked by a licence token that binds the software to authorised computers, by binding every candidate to one computer, by a suspicion score from the typing behaviour, and by an on-device camera proctor based on the MediaPipe Face Landmarker. The proctor reports looking aside, looking down, absence of the face and a covered camera with a snapshot, and no video leaves the candidate's computer. The design is documented with data flow, entity relationship, flowchart, block and UML diagrams. The system passed 30 test cases and 36 automated server checks, needs about 19 ms per camera frame, and has installers of 191 MB (student) and 86 MB (admin). The head-turn rules still have to be tuned with real candidates.
+
+\vspace{0.6cm}
+\noindent\textbf{Keywords: online examination, kiosk mode, code execution, face landmarks, gaze estimation, Electron, Socket.IO.}
+\setlength{\parindent}{1cm}
+\clearpage
+
+%% ---------- contents and lists ----------
+\begingroup
+\singlespacing
+\tableofcontents
+\clearpage
+\phantomsection\addcontentsline{toc}{chapter}{List of Figures}
+\listoffigures
+\clearpage
+\phantomsection\addcontentsline{toc}{chapter}{List of Tables}
+\listoftables
+\clearpage
+\endgroup
+
+\frontchapter{List of Abbreviations}
+\begingroup
+\singlespacing
+\noindent\begin{tabular}{@{}p{3.2cm}p{9cm}@{}}
+\textbf{Abbreviation} & \textbf{Full form}\\[4pt]
+AES & Advanced Encryption Standard\\
+AI & Artificial Intelligence\\
+AMU & Aligarh Muslim University\\
+API & Application Programming Interface\\
+CPU & Central Processing Unit\\
+DFD & Data Flow Diagram\\
+ER & Entity Relationship\\
+FPS & Frames Per Second\\
+GCC & GNU Compiler Collection\\
+GPU & Graphics Processing Unit\\
+HTTP & Hypertext Transfer Protocol\\
+IPC & Inter-Process Communication\\
+JSON & JavaScript Object Notation\\
+JWT & JSON Web Token\\
+LAN & Local Area Network\\
+NSIS & Nullsoft Scriptable Install System\\
+REST & Representational State Transfer\\
+SQL & Structured Query Language\\
+UI & User Interface\\
+USB & Universal Serial Bus\\
+WPM & Words Per Minute\\
+\end{tabular}
+\endgroup
+\clearpage
+
+%% ======================================================================
+%%  MAIN MATTER
+%% ======================================================================
+\pagenumbering{arabic}
+
+%% ----------------------------------------------------------------------
+\chapter{Introduction}
+%% ----------------------------------------------------------------------
+
+\section{Background and Context}
+Practical examinations in programming courses require the candidate to write a program, compile it and observe its output. Paper-based examinations cannot test this, and unsupervised computer-based tests make it easy to look up answers, to copy code from a neighbour, to bring prepared code on a pen drive, or to ask another person for help. In a university laboratory the invigilator can see the room, but cannot see what is on thirty screens at the same time.
+
+A computer-based examination for programming therefore has to do three things together. It has to restrict what the candidate's computer can do during the examination, it has to give the candidate a working programming environment, and it has to give the invigilator a live view of what every candidate is doing. This project builds such a system for the computer laboratories of the Interdisciplinary Centre for Artificial Intelligence.
+
+\section{Existing Systems and Their Limitations}
+General-purpose quiz and coding platforms run in a web browser, need a stable internet connection and cannot stop the candidate from switching to another window. Browser lockdown tools restrict the computer but do not provide a place to compile and run programs, and cloud proctoring services upload the candidate's video to a remote server. A laboratory needs a single system that works on its own network, locks the computer, runs the candidate's code locally and monitors the candidate without sending video elsewhere.
+
+\section{Objectives}
+The objectives of the project are:
+\begin{enumerate}
+  \item To restrict the computer of the student to the examination application in full-screen mode, with other applications, system shortcuts and removable drives blocked until the examination ends.
+  \item To provide inside the same application an environment in which Python, C and C++ programs can be written, compiled and run, without installing any software on the computer beforehand.
+  \item To let the administrator register students, create and assign questions, start or schedule the examination and watch the live status of every student from one dashboard.
+  \item To detect looking aside, looking down, absence of the candidate and a covered or disconnected camera, using only processing on the candidate's computer, and to report each case to the administrator with a snapshot.
+  \item To bind the software to authorised computers with a licence token, and to bind every student to one computer.
+  \item To work completely on a local network, without an internet connection.
+  \item To package both applications as Windows installers that can be deployed on laboratory computers.
+\end{enumerate}
+
+\section{Organisation of the Report}
+Chapter~2 describes the existing systems and the literature. Chapter~3 states the requirements and the technologies chosen. Chapter~4 describes the design with the architecture, data flow diagrams, the database design, flowcharts, block diagrams and UML diagrams. Chapter~5 explains the implementation of each module. Chapter~6 lists the test cases and the measurements. Chapter~7 concludes the report and suggests future work. Screenshots of both applications are collected in Appendix~A.
+
+%% ----------------------------------------------------------------------
+\chapter{Existing Systems and Literature}
+%% ----------------------------------------------------------------------
+
+\section{Online Judges and Coding-Assessment Platforms}
+Online judges and coding-assessment platforms such as HackerRank, CodeChef and LeetCode send the program of the candidate to a remote server, compile it there and compare the output with the expected output~\cite{kurnia,wasik}. They are built for a large number of candidates in different places and need a stable internet connection. The candidate works inside an ordinary browser, so the computer is not restricted: other windows, search engines and messaging applications stay available, and the platform has no view of the room. After the test, a similarity checker such as MOSS can compare the submitted programs. It is based on document fingerprinting by winnowing~\cite{winnowing} and finds copied code only after the examination, when the damage is already done.
+
+\section{Learning-Management Systems and Programming Plug-ins}
+Learning-management systems such as Moodle provide quizzes with timers and question banks. Plug-ins such as CodeRunner and the Virtual Programming Lab add programming questions that are evaluated on the server of the institution. This suits a laboratory network, because the server is local, but the examination still runs in a normal browser. The browser can be left at any moment, there is no built-in camera supervision, and the programs of all candidates are executed on the one server, which has to be secured against hostile code.
+
+\section{Lockdown Browsers and Kiosk Applications}
+Safe Exam Browser~\cite{seb} opens an examination web page in a locked browser window, blocks other applications and disables shortcuts. Commercial lockdown browsers for learning-management systems work in the same way. They protect web-based quizzes well, but they offer no compiler, so a program cannot be compiled and run inside them, and they do not watch the candidate. Building a locked application with a desktop framework such as Electron~\cite{electron} makes it possible to combine the lock with a local code runner, because the application can reach the operating system through a controlled bridge.
+
+\section{Remote Proctoring Services}
+Cloud proctoring services use the webcam and the microphone of the candidate, record the session and let a person or an automatic system review it afterwards~\cite{atoum}. They are made for candidates at home. The video of the candidate is uploaded to a server of the provider, which raises questions of privacy and needs a good network connection. In a laboratory the invigilator is in the room, so what is needed is not a recording but a prompt, private warning that something is wrong.
+
+\section{Face, Head and Gaze Analysis}
+Camera-based proctoring estimates whether the candidate is looking at the screen. The two common signals are the direction of the head and the direction of the eyes; surveys of the two topics are given in~\cite{murphy,hansen}. Learning-based methods estimate the gaze from an image of the eye~\cite{mpiigaze}, but they need a trained model for gaze and are sensitive to the conditions of the camera. MediaPipe~\cite{mediapipe} provides a framework for running perception models on the device. Its face mesh model estimates 468 three-dimensional landmarks of the face in real time on ordinary hardware~\cite{kartynnik}, and a later model adds the tracking of the iris~\cite{iris}. The Face Landmarker task~\cite{landmarker} combines these outputs with blendshape scores that describe, for example, the eyelids and the direction of the eyes. These values are enough to compute head yaw and pitch and an iris position inside the eye without training a new model, which is the basis of the proctor in this project.
+
+\section{Behaviour-Based Detection}
+Besides the picture of the candidate, the way of working can be observed. Typing rhythm has been studied for a long time as a property of a person~\cite{keystroke}, and sudden insertion of a large block of text, a very high typing speed or long idle periods followed by a burst are signs that code may have been pasted or typed by someone else. Such signs do not prove misuse, so the system in this project turns them into a score that the invigilator can read, and the decision stays with the invigilator.
+
+\section{Comparison with the Proposed System}
+Table~\ref{tab:compare} compares the approaches that were studied with the system developed here.
+
+\begin{table}[H]
+\centering
+\caption{Comparison of examination approaches}\label{tab:compare}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}Y c c c c@{}}
+\toprule
+\textbf{Approach} & \textbf{Locks PC} & \textbf{Runs code locally} & \textbf{Camera proctoring} & \textbf{Works on LAN only}\\
+\midrule
+Online judges & No & No & No & No\\
+Moodle quiz with plug-ins & No & No & No & Yes\\
+Lockdown browser & Yes & No & No & Partly\\
+Cloud proctoring service & Partly & No & Yes & No\\
+\textbf{This project} & \textbf{Yes} & \textbf{Yes} & \textbf{Yes} & \textbf{Yes}\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+None of the systems studied combines a locked computer, local compilation of programs, camera proctoring that is done on the computer of the candidate, an analysis of the typing behaviour, and operation on a local network without the internet. The present work takes the lock from kiosk applications, the local server from learning-management systems, and the face landmarks from the research on face analysis, and joins them in one system.
+
+%% ----------------------------------------------------------------------
+\chapter{System Analysis}
+%% ----------------------------------------------------------------------
+
+\section{Functional Requirements}
+The functions that the system must provide are listed in Table~\ref{tab:fr}.
+
+\begin{table}[H]
+\centering
+\caption{Functional requirements}\label{tab:fr}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}c Y@{}}
+\toprule
+\textbf{No.} & \textbf{Requirement}\\
+\midrule
+FR1 & The administrator registers students one by one or from a CSV file, creates questions and assigns questions to students.\\
+FR2 & The administrator starts the examination at once or at a scheduled time, and the timer of every student follows the examination duration.\\
+FR3 & A student logs in with a roll number and a password. A roll number is bound to the first computer that is used.\\
+FR4 & The student reads the assigned questions and writes, saves, runs and submits programs in Python, C and C++.\\
+FR5 & The portal blocks other applications, system shortcuts, developer tools and removable drives while the examination is in progress.\\
+FR6 & The portal detects looking aside, looking down, absence of the face and tampering with the camera, and reports it with a snapshot.\\
+FR7 & The portal measures typing behaviour and reports a suspicion score and the code being written.\\
+FR8 & The administrator can warn, lock, unlock, unbind, force-submit and un-submit a student, and can send an announcement to all.\\
+FR9 & The administrator can open, read and run the submitted programs and can download a copy of the database.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Non-Functional Requirements}
+\begin{table}[H]
+\centering
+\caption{Non-functional requirements}\label{tab:nfr}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}L{2.6cm} Y@{}}
+\toprule
+\textbf{Attribute} & \textbf{Requirement}\\
+\midrule
+Offline operation & All functions work on a local network without the internet. Models, compilers and interpreters are part of the installers.\\
+Privacy & Camera frames are analysed on the candidate's computer. Only a small snapshot is sent when a violation is recorded.\\
+Security & The renderer of the portal has no direct access to the operating system. Data sent by a student is never trusted by the server.\\
+Reliability & A short loss of the network must not end the examination, and the work must be kept on the computer until it is submitted.\\
+Performance & Proctoring must not slow down the editor and the compiler on a normal laboratory computer.\\
+Deployability & Both applications are installed with a normal Windows setup program.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Hardware and Software Requirements}
+\begin{table}[H]
+\centering
+\caption{Hardware and software requirements}\label{tab:hwsw}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}L{2.8cm} Y Y@{}}
+\toprule
+\textbf{Item} & \textbf{Admin PC} & \textbf{Student PC}\\
+\midrule
+Processor & Dual-core, 2 GHz or better & Dual-core, 2 GHz or better\\
+Memory & 4 GB & 4 GB\\
+Disk space & 1 GB for the program and the database & 1 GB for the program and the compilers\\
+Camera & Not needed & Webcam, 640$\times$480 or better\\
+Network & Wired or wireless LAN, or a hotspot & Same network as the Admin PC\\
+Operating system & Windows 10 or 11 & Windows 10 or 11\\
+Installed software & None & None\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Technologies Used}
+\begin{table}[H]
+\centering
+\caption{Technologies used}\label{tab:tech}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}L{3.6cm} L{3.4cm} Y@{}}
+\toprule
+\textbf{Part} & \textbf{Technology} & \textbf{Purpose}\\
+\midrule
+Desktop shell & Electron 35 & Windows, locked mode, bridge to the operating system\\
+Network & Socket.IO 4~\cite{socketio}, Express 4~\cite{express} & Real-time events and HTTP interface\\
+Database & SQLite~\cite{sqlite} through sql.js & Students, questions, submissions and logs\\
+Face analysis & MediaPipe Face Landmarker & Landmarks, iris position and blendshapes\\
+Interpreters and compilers & Python (embedded), GCC and G++ 16.1.0 & Running candidate programs\\
+Keyboard lock and USB watch & Two small Windows helper programs & Low-level key blocking and USB detection\\
+Security & AES-256-CBC~\cite{nodecrypto}, JSON Web Token & Licence, machine lock and administrator sessions\\
+Installers & electron-builder~\cite{builder} with NSIS & Setup programs for both applications\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+%% ----------------------------------------------------------------------
+\chapter{System Design}
+%% ----------------------------------------------------------------------
+
+\section{System Architecture}
+The system follows a client--server design on a single local network, as shown in Figure~\ref{fig:arch}. The Admin Server is the only authority. It holds the database, decides which student may log in and which questions the student receives, and relays commands to students. Every Student Portal connects to it through a WebSocket connection on one TCP port. The dashboard is an ordinary web page served by the same server, so the invigilator can also supervise from a laptop or a phone.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\node[block,text width=3.2cm] (srv) at (0,0) {Express HTTP server and Socket.IO server};
+\node[block,text width=3.2cm,below=5mm of srv] (db) {SQLite database (sql.js)};
+\node[block,text width=3.2cm,below=5mm of db] (dash) {Web admin dashboard (any browser)};
+\begin{scope}[on background layer]
+\node[group,fit=(srv)(db)(dash),label={[font=\footnotesize\bfseries]above:Admin PC}] (admin) {};
+\end{scope}
+\node[block,text width=2.1cm,fill=blue!6] (lan) at (4.7,-1.9) {LAN or hotspot\\TCP port 3000};
+\node[block,text width=4.0cm] (m) at (9.0,0) {Main process: locked window, socket client, code runner};
+\node[block,text width=4.0cm,below=5mm of m] (r) {Renderer: exam screen, editor, AI proctor};
+\node[block,text width=4.0cm,below=5mm of r] (t) {Bundled tools: Python, GCC/G++, helpers};
+\begin{scope}[on background layer]
+\node[group,fit=(m)(r)(t),label={[font=\footnotesize\bfseries]above:Student PC (one per candidate)}] (stud) {};
+\end{scope}
+\draw[<->,thick] (admin.east |- lan) -- (lan.west);
+\draw[<->,thick] (lan.east) -- (stud.west |- lan);
+\end{tikzpicture}
+\caption{Overall architecture of the system}\label{fig:arch}
+\end{figure}
+
+The Student Portal is built from three layers (Figure~\ref{fig:modules}). The renderer displays the pages and runs the camera analysis, but it is sandboxed and cannot touch the operating system. The main process performs everything that needs privileges, such as the locked window, the keyboard lock, compiling and running programs, and the network connection. A small preload bridge exposes only a fixed list of functions from the main process to the renderer.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\node[block,text width=2.15cm] (r1) at (0,0) {Login and instructions};
+\node[block,text width=2.15cm] (r2) at (2.6,0) {Exam screen and editor};
+\node[block,text width=2.15cm] (r3) at (5.2,0) {Terminal};
+\node[block,text width=2.15cm] (r4) at (7.8,0) {AI proctor};
+\node[block,text width=2.15cm] (r5) at (10.4,0) {Anti-cheat and behaviour};
+\begin{scope}[on background layer]
+\node[group,fit=(r1)(r2)(r3)(r4)(r5),label={[font=\footnotesize\bfseries]above:Renderer process (sandboxed)}] (rend) {};
+\end{scope}
+\node[block,text width=11.6cm,fill=blue!6] (bridge) at (5.2,-2.6) {Preload bridge: a fixed list of functions (contextBridge)};
+\node[block,text width=2.15cm] (m1) at (0,-5.4) {Licence manager};
+\node[block,text width=2.15cm] (m2) at (2.6,-5.4) {Kiosk window and key lock};
+\node[block,text width=2.15cm] (m3) at (5.2,-5.4) {Code executor};
+\node[block,text width=2.15cm] (m4) at (7.8,-5.4) {Socket.IO client};
+\node[block,text width=2.15cm] (m5) at (10.4,-5.4) {USB watch and screen capture};
+\begin{scope}[on background layer]
+\node[group,fit=(m1)(m2)(m3)(m4)(m5),label={[font=\footnotesize\bfseries]below:Main process (Node.js)}] (main) {};
+\end{scope}
+\draw[<->,thick] (bridge.north) -- (bridge.north |- rend.south) node[midway,right,font=\scriptsize,inner sep=3pt] {IPC};
+\draw[<->,thick] (bridge.south) -- (bridge.south |- main.north) node[midway,right,font=\scriptsize,inner sep=3pt] {IPC};
+\end{tikzpicture}
+\caption{Internal structure of the Student Portal}\label{fig:modules}
+\end{figure}
+
+\section{Data Flow Diagrams}
+The context diagram in Figure~\ref{fig:dfd0} shows the system as one process with two external entities. The student sends login details and source code and receives the questions, the output of the programs and warnings. The administrator sends students, questions and commands and receives the live status, alerts with snapshots and the submissions.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\node[ext,minimum height=2.2cm,text width=1.8cm] (st) at (0,0) {Student};
+\node[ext,minimum height=2.2cm,text width=2.3cm] (ad) at (14.1,0) {Administrator};
+\node[draw,circle,fill=green!8,align=center,text width=2.7cm,inner sep=2pt] (sys) at (7.1,0) {AI Enabled Coding Examination};
+\draw[flow] ([yshift=0.5cm]st.east) -- node[lab,above,text width=3.6cm] {login details, source code} ([yshift=0.5cm]sys.west |- st.east);
+\draw[flow] ([yshift=-0.5cm]sys.west |- st.east) -- node[lab,below,text width=3.6cm] {questions, output, warnings} ([yshift=-0.5cm]st.east);
+\draw[flow] ([yshift=0.5cm]ad.west) -- node[lab,above,text width=3.6cm] {students, questions, commands} ([yshift=0.5cm]sys.east |- ad.west);
+\draw[flow] ([yshift=-0.5cm]sys.east |- ad.west) -- node[lab,below,text width=3.6cm] {live status, alerts, submissions} ([yshift=-0.5cm]ad.west);
+\end{tikzpicture}
+\caption{Data flow diagram, level 0 (context diagram)}\label{fig:dfd0}
+\end{figure}
+
+The level 1 diagram in Figure~\ref{fig:dfd1} divides the system into five processes and four data stores. Camera frames are processed inside process 4.0 on the student's computer, so only violation events and snapshots appear as data flows.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+% entities
+\node[ext,minimum width=1.5cm,minimum height=9.8cm,text width=1.3cm] (st) at (0.75,4.5) {};
+\node[rotate=90,font=\footnotesize\bfseries] at (0.75,4.5) {Student};
+\node[ext,minimum width=1.5cm,minimum height=9.8cm,text width=1.3cm] (ad) at (12.5,4.5) {};
+\node[rotate=90,font=\footnotesize\bfseries] at (12.5,4.5) {Administrator};
+% processes
+\node[proc,text width=3.4cm] (p1) at (5.9,9.0) {1.0 Login and licence check};
+\node[proc,text width=3.4cm] (p2) at (5.9,6.8) {2.0 Exam management};
+\node[proc,text width=3.4cm] (p3) at (5.9,4.6) {3.0 Code execution};
+\node[proc,text width=3.4cm] (p4) at (5.9,2.4) {4.0 Proctoring and behaviour monitoring};
+\node[proc,text width=3.4cm] (p5) at (5.9,0.2) {5.0 Submission and review};
+% stores (open ended)
+\foreach \n/\y/\t in {d1/8.65/{D1 Students},d2/6.45/{D2 Questions},d4/2.05/{D4 Logs},d3/-0.15/{D3 Submissions}} {
+  \node[draw=none,minimum width=2.2cm,minimum height=6mm,align=center] (\n) at (9.9,\y) {\t};
+  \draw ($(\n.north west)$) -- ($(\n.north east)$);
+  \draw ($(\n.south west)$) -- ($(\n.south east)$);
+}
+\foreach \p/\d in {p1/d1,p2/d2,p4/d4,p5/d3} { \draw[<->] (\p.east |- \d.west) -- (\d.west); }
+% student flows
+\draw[flow] ([yshift=.2cm]st.east |- p1.west) -- node[lab,above,text width=2.5cm] {roll no., password} ([yshift=.2cm]p1.west);
+\draw[flow] ([yshift=-.2cm]p1.west) -- node[lab,below,text width=2.5cm] {login result} ([yshift=-.2cm]st.east |- p1.west);
+\draw[flow] (p2.west) -- node[lab,above,text width=2.5cm] {questions, timer} (st.east |- p2.west);
+\draw[flow] ([yshift=.2cm]st.east |- p3.west) -- node[lab,above,text width=2.5cm] {source code} ([yshift=.2cm]p3.west);
+\draw[flow] ([yshift=-.2cm]p3.west) -- node[lab,below,text width=2.5cm] {program output} ([yshift=-.2cm]st.east |- p3.west);
+\draw[flow] (st.east |- p4.west) -- node[lab,above,text width=2.5cm] {keystrokes, camera events} (p4.west);
+\draw[flow] (st.east |- p5.west) -- node[lab,above,text width=2.5cm] {final submission} (p5.west);
+% admin flows
+\draw[flow] ([yshift=.3cm]ad.west |- p2.east) -- node[lab,above,pos=.62,text width=2.3cm] {students, questions, exam commands} ([yshift=.3cm]p2.east);
+\draw[flow] ([yshift=.3cm]p4.east) -- node[lab,above,pos=.62,text width=2.3cm] {alerts, snapshots} ([yshift=.3cm]ad.west |- p4.east);
+\draw[flow] ([yshift=.3cm]p5.east) -- node[lab,above,pos=.62,text width=2.3cm] {submitted code} ([yshift=.3cm]ad.west |- p5.east);
+\end{tikzpicture}
+\caption{Data flow diagram, level 1}\label{fig:dfd1}
+\end{figure}
+
+\section{Database Design}
+The Admin Server keeps its data in one SQLite file. The entity relationship diagram is given in Figure~\ref{fig:er}. A student can make many submissions, and a question can appear in many submissions, so the table \texttt{submissions} holds a foreign key to each of them. The assignment of questions to students is a many-to-many relationship that is stored as a JSON list in the column \texttt{assigned\_questions} of the student; it is shown with a dashed line because no foreign key enforces it. The tables \texttt{admins} and \texttt{logs} have no relationship with the others.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\node[entt] (stuH) at (1.75,0) {STUDENTS};
+\node[ent,below=0pt of stuH] (stu) {\underline{\textbf{roll\_number}}\\ name\\ password\\ bound\_ip\\ is\_locked\\ assigned\_questions\\ has\_submitted};
+\node[rel] (assign) at ($(stu.east)+(3.1,0)$) {is assigned};
+\node[ent,anchor=west] (que) at ($(assign.east)+(1.0,0)$) {\underline{\textbf{id}}\\ title\\ description\\ time\_limit\\ difficulty\\ constraints\\ sampleInput\\ sampleOutput\\ explanation\\ testCases};
+\node[entt,above=0pt of que] (queH) {QUESTIONS};
+\draw[dashed,thick] (stu.east) -- (assign.west);
+\draw[dashed,thick] (assign.east) -- (que.west);
+\node[font=\scriptsize,fill=white,inner sep=1pt] at ($(stu.east)+(0.25,0.22)$) {N};
+\node[font=\scriptsize,fill=white,inner sep=1pt] at ($(que.west)+(-0.25,0.22)$) {M};
+\node[entt] (subH) at (6.65,-7.7) {SUBMISSIONS};
+\node[ent,below=0pt of subH,text width=3.5cm] (sub) {\underline{\textbf{id}}\\ \textit{roll\_number (FK)}\\ \textit{question\_id (FK)}\\ code\\ language\\ status\\ timestamp};
+\node[rel] (r1) at (1.75,-6.0) {submits};
+\node[rel] (r2) at (que.south |- r1) {answered in};
+\draw[thick] (stu.south) -- (r1.north) node[pos=.5,left,font=\scriptsize] {1};
+\draw[thick] (r1.south) |- (subH.west) node[pos=.78,above,font=\scriptsize] {N};
+\draw[thick] (que.south) -- (r2.north) node[pos=.5,right,font=\scriptsize] {1};
+\draw[thick] (r2.south) |- (subH.east) node[pos=.78,above,font=\scriptsize] {N};
+\node[entt] (admH) at (1.75,-9.4) {ADMINS};
+\node[ent,below=0pt of admH] (adm) {\underline{\textbf{id}}\\ password};
+\node[entt] (logH) at (11.45,-9.4) {LOGS};
+\node[ent,below=0pt of logH] (log) {\underline{\textbf{id}}\\ timestamp\\ message};
+\end{tikzpicture}
+\caption{Entity relationship diagram}\label{fig:er}
+\end{figure}
+
+The attributes and their data types are listed in Table~\ref{tab:dict}.
+
+{\footnotesize\begin{longtable}{@{}L{2.4cm} L{3.2cm} L{2.5cm} L{3.7cm}@{}}
+\caption{Data dictionary}\label{tab:dict}\\
+\toprule
+\textbf{Table} & \textbf{Attribute} & \textbf{Type} & \textbf{Description}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Table} & \textbf{Attribute} & \textbf{Type} & \textbf{Description}\\
+\midrule
+\endhead
+students & roll\_number & TEXT, primary key & Unique roll number\\
+ & name & TEXT & Full name\\
+ & password & TEXT & Examination password\\
+ & bound\_ip & TEXT & Address of the bound computer\\
+ & is\_locked & INTEGER & 1 when locked\\
+ & assigned\_questions & TEXT (JSON) & List of question identifiers\\
+ & has\_submitted & INTEGER & 1 after final submission\\
+\midrule
+questions & id & TEXT, primary key & Question identifier\\
+ & title, description & TEXT & Statement of the problem\\
+ & time\_limit & INTEGER & Suggested time in seconds\\
+ & difficulty & TEXT & Easy, Medium or Hard\\
+ & constraints & TEXT & Limits on the input\\
+ & sampleInput, sampleOutput & TEXT & Example shown to the student\\
+ & explanation & TEXT & Explanation of the example\\
+ & testCases & TEXT (JSON) & Input and expected output pairs\\
+\midrule
+submissions & id & INTEGER, primary key & Automatic number\\
+ & roll\_number & TEXT, foreign key & References students\\
+ & question\_id & TEXT, foreign key & References questions\\
+ & code, language & TEXT & Source code and its language\\
+ & status & TEXT & SAVED or FINAL\\
+ & timestamp & INTEGER & Time of the submission\\
+\midrule
+admins & id, password & TEXT & Administrator account\\
+\midrule
+logs & id & INTEGER, primary key & Automatic number\\
+ & timestamp, message & INTEGER, TEXT & Event of the server\\
+\bottomrule
+\end{longtable}}
+
+\section{Communication Design}
+All real-time communication uses Socket.IO events over one WebSocket connection per client. The most important events are listed in Table~\ref{tab:events}. Files are too large for events, so the final workspace is uploaded with an HTTP request that carries a token issued at login.
+
+\begin{table}[H]
+\centering
+\caption{Main events between the Student Portal and the Admin Server}\label{tab:events}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}L{3.4cm} L{2.8cm} Y@{}}
+\toprule
+\textbf{Event} & \textbf{Direction} & \textbf{Meaning}\\
+\midrule
+auth & Student to server & Login with roll number and password; the reply carries the exam settings and an upload token\\
+questions-load & Server to student & Questions assigned to the student\\
+exam\_started, exam\_scheduled & Server to all & Start now, or the time at which the examination starts\\
+student\_behavior & Student to server & Typing metrics, suspicion score and current code\\
+webcam\_violation & Student to server & Violation type, direction, duration and snapshot\\
+focus-loss, usb\_detected & Student to server & Window left, or removable drive inserted\\
+submit-code, final-submit & Student to server & Saved code, and all code buffers at the end\\
+warning, screen\_lock, force submit & Server to student & Invigilator actions\\
+start\_screen\_capture, screen\_frame & Both ways & Optional live view of a student's screen at one frame per second\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Flowcharts}
+Figure~\ref{fig:fsession} shows the life of an examination session on the student's computer. The portal first checks the licence of the machine, then connects to the server, logs the student in, waits for the start and finally submits the work.
+
+\begin{figure}[p]
+\centering
+\begin{tikzpicture}[node distance=7mm]
+\node[term] (s) {Start portal};
+\node[dec,below=of s] (lic) {Machine licensed?};
+\node[stp,right=22mm of lic,text width=3.6cm] (act) {Show activation screen; read licence token from USB};
+\node[stp,below=of lic] (con) {Enter server address; connect};
+\node[dec,below=of con] (ok1) {Connected?};
+\node[stp,right=22mm of ok1,text width=3.6cm] (err1) {Show the reason and ask again};
+\node[stp,below=of ok1] (log) {Login with roll number and password};
+\node[dec,below=of log] (ok2) {Valid and bound to this PC?};
+\node[stp,right=22mm of ok2,text width=3.6cm] (err2) {Show error};
+\node[stp,below=of ok2] (wait) {Receive questions; wait for the start};
+\node[stp,below=of wait] (exam) {Exam screen: write, run and save code; proctor and lock active};
+\node[dec,below=of exam] (fin) {Final submit or time over?};
+\node[stp,below=of fin] (up) {Upload workspace and code; stop camera};
+\node[term,below=of up] (e) {End};
+\draw[flow] (s) -- (lic);
+\draw[flow] (lic) -- node[lab,left] {Yes} (con);
+\draw[flow] (lic) -- node[lab,above] {No} (act);
+\draw[flow] (act.north) -- ++(0,4mm) -| (lic.north east);
+\draw[flow] (con) -- (ok1);
+\draw[flow] (ok1) -- node[lab,left] {Yes} (log);
+\draw[flow] (ok1) -- node[lab,above] {No} (err1);
+\draw[flow] (err1) |- (con.east);
+\draw[flow] (log) -- (ok2);
+\draw[flow] (ok2) -- node[lab,left] {Yes} (wait);
+\draw[flow] (ok2) -- node[lab,above] {No} (err2);
+\draw[flow] (err2) |- (log.east);
+\draw[flow] (wait) -- (exam);
+\draw[flow] (exam) -- (fin);
+\draw[flow] (fin) -- node[lab,left] {Yes} (up);
+\draw[flow] (fin.west) -- ++(-1.3,0) |- node[lab,near start,left] {No} (exam.west);
+\draw[flow] (up) -- (e);
+\end{tikzpicture}
+\caption{Flowchart of an examination session on the student's computer}\label{fig:fsession}
+\end{figure}
+
+Figure~\ref{fig:fproctor} shows how one camera frame is handled by the proctor. A face that disappears after being turned far to one side is still counted as looking aside, because the detector often loses the face when the head turns to profile.
+
+\begin{figure}[p]
+\centering
+\begin{tikzpicture}[node distance=7mm]
+\node[term] (s) {Next camera frame};
+\node[stp,below=of s] (det) {Detect face landmarks};
+\node[dec,below=of det] (face) {Face found?};
+\node[stp,below=of face] (calc) {Compute head angle, pitch and iris position; subtract calibration};
+\node[dec,below=of calc] (away) {Angle $>30^\circ$ or looking down?};
+\node[stp,below=of away] (timer) {Run the aside timer};
+\node[dec,below=of timer] (lim) {Limit reached?};
+\node[stp,below=of lim] (rep) {Take snapshot; report violation to the server};
+\node[stp,right=22mm of away,text width=3.6cm] (norm) {Facing screen: clear timers after a 0.7 s grace period};
+\node[dec,right=22mm of face,text width=2.6cm] (prof) {Turned $>20^\circ$ in the last 3 s?};
+\node[stp,right=18mm of prof,text width=2.6cm] (asd) {Count as looking aside};
+\node[stp,above=of asd,text width=2.6cm] (abs) {Absence timer; after 3 s report absence or covered camera};
+\draw[flow] (s) -- (det);
+\draw[flow] (det) -- (face);
+\draw[flow] (face) -- node[lab,left] {Yes} (calc);
+\draw[flow] (face) -- node[lab,above] {No} (prof);
+\draw[flow] (prof) -- node[lab,above] {Yes} (asd);
+\draw[flow] (prof) |- node[lab,near end,above] {No} (abs);
+\draw[flow] (asd) |- (timer.east);
+\draw[flow] (calc) -- (away);
+\draw[flow] (away) -- node[lab,left] {Yes} (timer);
+\draw[flow] (away) -- node[lab,above] {No} (norm);
+\draw[flow] (timer) -- (lim);
+\draw[flow] (lim) -- node[lab,left] {Yes} (rep);
+\draw[flow] (lim.west) -- ++(-1.2,0) |- node[lab,near start,left] {No} (s.west);
+\end{tikzpicture}
+\caption{Flowchart of the camera proctor for one frame}\label{fig:fproctor}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=7mm]
+\node[term] (s) {Run pressed};
+\node[stp,below=of s] (sv) {Save the open file in the workspace};
+\node[dec,below=of sv] (chk) {Allowed language and no blocked call?};
+\node[stp,right=22mm of chk,text width=3.4cm] (sec) {Show security error};
+\node[dec,below=of chk] (cc) {C or C++?};
+\node[stp,below=of cc] (comp) {Compile with gcc or g++};
+\node[dec,below=of comp] (okc) {Compiled?};
+\node[stp,left=22mm of okc,text width=3.4cm] (cerr) {Show compiler messages and return to the editor};
+\node[stp,right=22mm of cc,text width=3.4cm] (py) {Start python with unbuffered output};
+\node[stp,below=of okc] (run) {Run the program; send keyboard input to it};
+\node[dec,below=of run] (end) {Exited, 120 s or 300 KB reached?};
+\node[stp,below=of end] (res) {Stop the process; show exit code and time};
+\node[term,below=of res] (e) {End};
+\draw[flow] (s) -- (sv);
+\draw[flow] (sv) -- (chk);
+\draw[flow] (chk) -- node[lab,left] {Yes} (cc);
+\draw[flow] (chk) -- node[lab,above] {No} (sec);
+\draw[flow] (cc) -- node[lab,left] {Yes} (comp);
+\draw[flow] (cc) -- node[lab,above] {No} (py);
+\draw[flow] (comp) -- (okc);
+\draw[flow] (okc) -- node[lab,left] {Yes} (run);
+\draw[flow] (okc) -- node[lab,above] {No} (cerr);
+\draw[flow] (py) |- (run.east);
+\draw[flow] (run) -- (end);
+\draw[flow] (end.west) -- ++(-1.2,0) |- node[lab,near start,left] {No} (run.west);
+\draw[flow] (end) -- node[lab,left] {Yes} (res);
+\draw[flow] (res) -- (e);
+\end{tikzpicture}
+\caption{Flowchart of the code execution module}\label{fig:fexec}
+\end{figure}
+
+Figure~\ref{fig:fserver} shows the checks that the Admin Server makes when a student logs in. The first login of a roll number binds it to the computer from which it was made, and a later login from another computer is refused.
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[node distance=7mm]
+\node[term] (s) {Receive login event};
+\node[dec,below=of s] (d1) {Roll number found and password correct?};
+\node[stp,right=22mm of d1,text width=3.8cm] (r1) {Refuse the login and reply with an error};
+\node[dec,below=of d1] (d2) {Bound to another computer?};
+\node[stp,right=22mm of d2,text width=3.8cm] (r2) {Refuse the login: roll number is bound to another computer};
+\node[stp,below=of d2] (b) {Bind the roll number to this computer (first login)};
+\node[stp,below=of b] (t) {Create the session and the upload token};
+\node[stp,below=of t] (q) {Send exam settings and assigned questions};
+\node[term,below=of q] (e) {End};
+\draw[flow] (s) -- (d1);
+\draw[flow] (d1) -- node[lab,left] {Yes} (d2);
+\draw[flow] (d1) -- node[lab,above,yshift=2pt] {No} (r1);
+\draw[flow] (d2) -- node[lab,left] {No} (b);
+\draw[flow] (d2) -- node[lab,above,yshift=2pt] {Yes} (r2);
+\draw[flow] (b) -- (t);
+\draw[flow] (t) -- (q);
+\draw[flow] (q) -- (e);
+\end{tikzpicture}
+\caption{Flowchart of the login check on the Admin Server}\label{fig:fserver}
+\end{figure}
+
+\section{Block Diagrams}
+The block diagrams in this section show how data moves through three of the main functions of the system. Figure~\ref{fig:blklic} shows the steps of licence activation. The administrator creates a token file, the token is carried on a USB drive, and the portal decrypts it and stores a machine lock that is checked at every start.
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[node distance=7mm]
+\node[bb] (a) {Admin Server creates the licence token};
+\node[bb,right=of a] (b) {Token file is copied to a USB drive};
+\node[bb,right=of b] (c) {Portal finds and decrypts the token (AES-256-CBC)};
+\node[bb,right=of c] (d) {Hardware identifier of the computer is read};
+\node[bb,right=of d] (e) {Machine lock file is written and checked at every start};
+\foreach \x/\y in {a/b,b/c,c/d,d/e}{\draw[flow] (\x) -- (\y);}
+\end{tikzpicture}
+\caption{Block diagram of licence activation}\label{fig:blklic}
+\end{figure}
+
+Figure~\ref{fig:blkproc} shows the path of one camera frame through the AI proctor. The frame is analysed on the candidate's computer, and only the result of a violation and a small snapshot are sent to the server.
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+\node[bb,text width=3.4cm] (b1) at (0,0) {Camera frame, about ten per second};
+\node[bb,text width=3.4cm] (b2) at (5.6,0) {Face Landmarker: landmarks, iris and blendshapes};
+\node[bb,text width=3.4cm] (b3) at (11.2,0) {Head yaw, head pitch and iris position};
+\node[bb,text width=3.4cm] (b4) at (0,-2.4) {Subtract the calibration of the candidate};
+\node[bb,text width=3.4cm] (b5) at (5.6,-2.4) {Violation rules and timers};
+\node[bb,text width=3.4cm] (b6) at (11.2,-2.4) {Snapshot and violation sent to the server};
+\draw[flow] (b1) -- (b2);
+\draw[flow] (b2) -- (b3);
+\draw[flow] (b3.south) -- ++(0,-0.6) -| (b4.north);
+\draw[flow] (b4) -- (b5);
+\draw[flow] (b5) -- (b6);
+\end{tikzpicture}
+\caption{Block diagram of the camera proctor}\label{fig:blkproc}
+\end{figure}
+
+Figure~\ref{fig:blkexec} shows how a program of the candidate is run. The text is scanned before it is run, the compiler or interpreter is started as a separate process, and the output is limited in time and size before it is shown in the terminal of the portal.
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[node distance=7mm]
+\node[bb] (a) {Run pressed; file saved in the workspace};
+\node[bb,right=of a] (b) {Text scanned for blocked calls};
+\node[bb,right=of b] (c) {Compiled with GCC or G++, or started with Python};
+\node[bb,right=of c] (d) {Process runs; limit of 120 s and 300 KB of output};
+\node[bb,right=of d] (e) {Output and keyboard input in the terminal};
+\foreach \x/\y in {a/b,b/c,c/d,d/e}{\draw[flow] (\x) -- (\y);}
+\end{tikzpicture}
+\caption{Block diagram of the code execution module}\label{fig:blkexec}
+\end{figure}
+
+\section{UML Diagrams}
+The following diagrams use the notation of the Unified Modelling Language to describe the users of the system, the order of messages between its parts, the activities of the two roles and the main classes.
+
+\subsection{Use Case Diagram}
+Figure~\ref{fig:usecase} shows the two actors of the system and the functions that each one uses.
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+\actor{stu}{0.75,3.5}{Student}
+\actor{adm}{14.45,3.5}{Administrator}
+\node[uc] (u1) at (4.4,7.5) {Activate licence};
+\node[uc] (u2) at (4.4,6) {Log in};
+\node[uc] (u3) at (4.4,4.5) {Read assigned questions};
+\node[uc] (u4) at (4.4,3) {Write, compile and run code};
+\node[uc] (u5) at (4.4,1.5) {Submit final work};
+\node[uc] (u6) at (4.4,0) {Be monitored by the AI proctor};
+\node[uc] (v1) at (10.0,7.5) {Manage students};
+\node[uc] (v2) at (10.0,6) {Manage questions};
+\node[uc] (v3) at (10.0,4.5) {Start or schedule the examination};
+\node[uc] (v4) at (10.0,3) {Monitor live status};
+\node[uc] (v5) at (10.0,1.5) {View alerts and snapshots};
+\node[uc] (v6) at (10.0,0) {Review submitted code};
+\draw (-0.1,-1.0) rectangle (15.65,8.5);
+\node[font=\footnotesize\bfseries,above] at (7.78,8.5) {AI Enabled Coding Examination};
+\foreach \u in {u1,u2,u3,u4,u5,u6}{\draw (stu) -- (\u.west);}
+\foreach \v in {v1,v2,v3,v4,v5,v6}{\draw (adm) -- (\v.east);}
+\end{tikzpicture}
+\caption{Use case diagram}\label{fig:usecase}
+\end{figure}
+
+\subsection{Sequence Diagram}
+Figure~\ref{fig:sequence} shows the messages that are exchanged during an examination, from the login of a student to the storage of the final submission.
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+\foreach \x/\n in {0/Student,3.4/Student Portal,6.8/Admin Server,10.2/SQLite database,13.6/Web dashboard}{
+  \node[draw,fill=green!10,minimum width=2.6cm,minimum height=0.7cm,font=\footnotesize\bfseries,align=center] at (\x,0) {\n};
+  \draw[dashed] (\x,-0.35) -- (\x,-14);}
+\msg{->,thick}{0}{-1.2}{3.4}{roll number, password}
+\msg{->,thick}{3.4}{-2.2}{6.8}{login event}
+\msg{->,thick}{6.8}{-3.2}{10.2}{check, bind computer}
+\msg{->,dashed}{10.2}{-4.2}{6.8}{student record}
+\msg{->,dashed}{6.8}{-5.2}{3.4}{settings, questions}
+\msg{->,thick}{13.6}{-6.2}{6.8}{start examination}
+\msg{->,thick}{6.8}{-7.2}{3.4}{exam\_started}
+\msg{->,dashed}{3.4}{-8.2}{0}{exam screen}
+\msg{->,thick}{3.4}{-9.2}{6.8}{violation, snapshot}
+\msg{->,thick}{6.8}{-10.2}{13.6}{student\_alert}
+\msg{->,thick}{0}{-11.2}{3.4}{final submit}
+\msg{->,thick}{3.4}{-12.2}{6.8}{upload (HTTP, token)}
+\msg{->,thick}{6.8}{-13.2}{10.2}{store submission}
+\end{tikzpicture}
+\caption{Sequence diagram of an examination}\label{fig:sequence}
+\end{figure}
+
+\subsection{Activity Diagram}
+Figure~\ref{fig:activity} shows the activities of the administrator and of the student in two lanes. The dashed arrows are the points at which one role depends on the other. The camera proctor and the code editor of the student work at the same time between the start signal and the final submission.
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+\draw (0,0) rectangle (7.6,-14);
+\draw (7.6,0) rectangle (15.2,-14);
+\draw (0,-0.8) -- (15.2,-0.8);
+\node[font=\footnotesize\bfseries] at (3.8,-0.4) {Administrator};
+\node[font=\footnotesize\bfseries] at (11.4,-0.4) {Student Portal};
+\node[circle,fill=black,inner sep=2.5pt] (st) at (3.8,-1.4) {};
+\node[act] (a1) at (3.8,-2.8) {Create students and questions};
+\node[act] (s1) at (11.4,-2.8) {Log in with roll number and password};
+\node[act] (a2) at (3.8,-5.0) {Start or schedule the examination};
+\node[act] (s2) at (11.4,-5.0) {Wait for the start signal};
+\fill (8.3,-6.55) rectangle (14.5,-6.7);
+\node[act] (s4) at (9.6,-8.2) {Camera proctor and behaviour analytics};
+\node[act] (s3) at (13.2,-8.2) {Write, run and save code};
+\fill (8.3,-9.7) rectangle (14.5,-9.85);
+\node[act] (s5) at (11.4,-11.2) {Final submit};
+\node[act] (a3) at (3.8,-8.2) {Monitor live status and alerts};
+\node[act] (a4) at (3.8,-11.2) {Review and run submitted code};
+\node[circle,draw,inner sep=3pt] (en) at (3.8,-13.0) {};
+\node[circle,fill=black,inner sep=1.6pt] at (3.8,-13.0) {};
+\draw[flow] (st) -- (a1);
+\draw[flow] (a1) -- (a2);
+\draw[flow,dashed] (a1) -- node[lab,above,yshift=2pt] {student list} (s1);
+\draw[flow] (s1) -- (s2);
+\draw[flow,dashed] (a2) -- node[lab,above,yshift=2pt] {start signal} (s2);
+\draw[flow] (s2.south) -- (11.4,-6.55);
+\draw[flow] (9.6,-6.7) -- (s4.north);
+\draw[flow] (13.2,-6.7) -- (s3.north);
+\draw[flow] (s4.south) -- (9.6,-9.7);
+\draw[flow] (s3.south) -- (13.2,-9.7);
+\draw[flow] (11.4,-9.85) -- (s5.north);
+\draw[flow] (a2) -- (a3);
+\draw[flow,dashed] (s4) -- node[lab,above,yshift=2pt] {alerts} (a3);
+\draw[flow] (a3) -- (a4);
+\draw[flow,dashed] (s5) -- node[lab,above,yshift=2pt] {submission} (a4);
+\draw[flow] (a4) -- (en);
+\end{tikzpicture}
+\caption{Activity diagram of the examination}\label{fig:activity}
+\end{figure}
+
+\subsection{Class Diagram}
+Figure~\ref{fig:class} shows the main classes. The Student Portal contains the code executor, the camera proctor and the behaviour analyser. The Admin Server keeps the students, and every student can make several submissions to the questions. The data classes correspond to the tables of the database.
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+\node[cls] (cx) at (0,0) {\textbf{CodeExecutor}\nodepart{second}timeLimit: 120 s\\outputLimit: 300 KB\nodepart{third}compile()\\run()\\stop()};
+\node[cls] (sp) at (5.6,0) {\textbf{StudentPortal}\nodepart{second}serverAddress\\licenceToken\\uploadToken\nodepart{third}activateLicence()\\login()\\lockKiosk()\\finalSubmit()};
+\node[cls] (as) at (11.2,0) {\textbf{AdminServer}\nodepart{second}port: 3000\\adminPassword\nodepart{third}authenticate()\\startExam()\\receiveViolation()\\storeSubmission()};
+\node[cls] (wp) at (0,-4.7) {\textbf{WebcamProctor}\nodepart{second}calibration\\asideTimer\\absenceTimer\nodepart{third}processFrame()\\calibrate()\\reportViolation()};
+\node[cls] (ba) at (5.6,-4.7) {\textbf{BehaviourAnalyzer}\nodepart{second}wordsPerMinute\\keyVariance\\idleTime\\score: 0 to 100\nodepart{third}analyse()\\reportScore()};
+\node[clsd] (stu) at (11.2,-4.7) {\textbf{Student}\nodepart{second}roll\_number: TEXT\\name: TEXT\\bound\_ip: TEXT\\is\_locked: INTEGER\\has\_submitted: INTEGER};
+\node[clsd] (que) at (5.6,-9.6) {\textbf{Question}\nodepart{second}id: INTEGER\\title: TEXT\\description: TEXT\\time\_limit: INTEGER\\testCases: TEXT};
+\node[clsd] (sub) at (11.2,-9.6) {\textbf{Submission}\nodepart{second}id: INTEGER\\roll\_number (FK)\\question\_id (FK)\\code: TEXT\\language: TEXT\\timestamp: TEXT};
+\draw[{Diamond[fill=black,length=7pt]}-] (cx.east) -- (sp.west);
+\draw[{Diamond[fill=black,length=7pt]}-] (wp.north east) -- (sp.south west);
+\draw[{Diamond[fill=black,length=7pt]}-] (ba.north) -- (sp.south);
+\draw (sp.east) -- node[above,font=\scriptsize] {Socket.IO} (as.west);
+\draw (as.south) -- node[near start,right,font=\scriptsize] {1} node[near end,right,font=\scriptsize] {*} (stu.north);
+\draw (stu.south) -- node[near start,right,font=\scriptsize] {1} node[near end,right,font=\scriptsize] {*} (sub.north);
+\draw (que.east) -- node[near start,above,font=\scriptsize] {1} node[near end,above,font=\scriptsize] {*} (sub.west);
+\end{tikzpicture}
+\caption{Class diagram}\label{fig:class}
+\end{figure}
+
+\section{Deployment Diagram}
+Figure~\ref{fig:deploy} shows the infrastructure on which the system runs. All computers are on one local network that is formed by a router or a mobile hotspot. The Admin PC listens on TCP port 3000 for both the web dashboard and the socket connections of the students, and the firewall rule for this port is created by the installer. Every Student PC runs the same software, and the licence token is carried on a USB drive.
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+\node[block,fill=blue!6,text width=4.2cm,minimum height=1.1cm] (rt) at (7.6,0) {Wi-Fi router or mobile hotspot (local network, no internet needed)};
+\node[block,text width=3.6cm] (a1) at (1.9,-3.6) {Admin Server\\(Electron, Express, Socket.IO)};
+\node[block,text width=3.6cm] (a2) at (1.9,-5.6) {SQLite database file};
+\node[block,text width=3.6cm] (a3) at (1.9,-7.6) {Firewall rule for TCP port 3000};
+\begin{scope}[on background layer]
+\node[group,fit=(a1)(a2)(a3),label={[font=\footnotesize\bfseries]above:Admin PC (Windows)}] (apc) {};
+\end{scope}
+\node[block,text width=3.6cm] (s1) at (13.1,-3.6) {Student Portal\\(Electron, locked window)};
+\node[block,text width=3.6cm] (s2) at (13.1,-5.6) {Webcam and AI proctor};
+\node[block,text width=3.6cm] (s3) at (13.1,-7.6) {Bundled Python, GCC and G++};
+\begin{scope}[on background layer]
+\node[group,fit=(s1)(s2)(s3),label={[font=\footnotesize\bfseries]above:Student PC 1 (Windows)}] (spc) {};
+\end{scope}
+\node[block,text width=3.6cm,fill=gray!10] (sn) at (13.1,-10.2) {Student PC 2 to N: the same software};
+\node[block,text width=3.6cm] (br) at (5.0,-10.2) {Browser on any device: web dashboard};
+\node[block,text width=3.2cm] (usb) at (9.3,-10.2) {USB drive with the licence token};
+\draw[flow,<->] (rt.west) -| node[lab,pos=0.2,above] {TCP 3000} ([xshift=1.9cm]apc.north);
+\draw[flow,<->] (rt.east) -| node[lab,pos=0.2,above] {TCP 3000} ([xshift=-1.9cm]spc.north);
+\draw[flow,<->] (br.north) -- node[lab,near end,right] {HTTP} (rt.south);
+\draw[dashed] (usb.east) -- (sn.west);
+\draw[dashed] (spc.south) -- (sn.north);
+\end{tikzpicture}
+\caption{Deployment diagram of the examination network}\label{fig:deploy}
+\end{figure}
+
+%% ----------------------------------------------------------------------
+\chapter{Implementation}
+%% ----------------------------------------------------------------------
+
+\section{Licensing and Device Binding}
+The portal refuses to start the examination on a computer that has not been authorised. The administrator creates a licence token file with the Admin Server and copies it to a USB drive. When the drive is inserted the portal finds the token, decrypts it with AES-256-CBC and, if it is valid, writes a machine lock file. The lock stores the hardware identifier of the computer, which is read from the system, encrypted with AES-256-CBC, and is checked at every start. Copying the installed program to another computer therefore does not work.
+
+A second binding is made at the server. The first time a student logs in, the address of the computer is stored with the roll number. A login from another address is rejected until the administrator removes the binding, which is needed when a computer fails and the student has to move to another one.
+
+\section{Examination Lockdown}
+The main window is created in full-screen kiosk mode, always on top and without a frame. The renderer runs with context isolation and the Chromium sandbox switched on and with Node.js disabled, and the page carries a content security policy that allows nothing from the network. The only permission granted to the page is the camera.
+
+Shortcuts such as Alt+Tab, Alt+F4, the Windows key, the function keys and the developer tool shortcuts are registered and swallowed by the application. A small helper program installs a low-level keyboard hook for the keys that Windows does not hand to an application. Whenever the window loses focus, it is brought back and the event is counted and sent to the server. A second helper listens to the Windows management events for a new removable drive. If a drive is inserted during the examination the server locks that student and shows an alarm on the dashboard. The invigilator can leave the locked application with a secret key combination.
+
+\section{Code Execution Module}
+Every student has a workspace folder named after the roll number. The program that is open in the editor is written to a file in this folder, so helper files and several source files can be used together. For C and C++ the file is compiled with the bundled GCC 16.1.0 using static linking, and the result is started as a separate process. Python programs are started with the embedded interpreter in unbuffered mode, so that output appears while the program is still running. The standard input of the process is connected to the terminal of the portal, which makes interactive programs possible.
+
+A process is stopped after 120 seconds or after 300 KB of output. Before a program is started, its text is scanned for calls that give access to the operating system, for example the \texttt{os} and \texttt{subprocess} modules in Python and \texttt{system()} in C. File names that arrive from the page are checked against a strict pattern so that a name cannot point outside the workspace. The scan is a first barrier and not a complete sandbox. It is mentioned again among the limitations in Chapter~6.
+
+\section{AI Proctoring Module}
+
+\subsection{Frame Capture and Landmark Detection}
+The camera is opened at 640$\times$480 and about ten frames per second are analysed. The MediaPipe Face Landmarker returns 478 landmarks for the face, of which ten belong to the irises, and a set of blendshape scores. The model file and the WebAssembly runtime are part of the installer, so nothing is downloaded. The detector uses the graphics processor when it is available and the processor otherwise.
+
+\subsection{Head Direction and Eye Direction}
+The head yaw $\psi$ is estimated from the position of the nose tip $x_n$ between the two edges of the face $x_L$ and $x_R$. Because the nose projects about half a face width in front of the face contour, the offset of the nose is $0.5\tan\psi$, which gives
+\begin{equation}
+\psi = \arctan\!\left(\frac{2\,\bigl(x_n-\tfrac{x_L+x_R}{2}\bigr)}{x_R-x_L}\right).
+\end{equation}
+For each eye the position of the iris centre $x_i$ between the outer corner $x_o$ and the inner corner $x_c$ of the eye is
+\begin{equation}
+r = \frac{x_i-x_o}{x_c-x_o},
+\end{equation}
+and $\bar r$ is the mean of both eyes. The pitch ratio $\rho$ compares the vertical position of the nose tip $y_n$ with the brow $y_b$ and the chin $y_c$:
+\begin{equation}
+\rho = \frac{y_n-y_b}{y_c-y_b}.
+\end{equation}
+A student who looks at the screen has some values $\psi_0$, $\bar r_0$ and $\rho_0$ that depend on the seat and on the position of the camera. The direction of gaze is therefore measured relative to these values:
+\begin{equation}
+\theta = (\psi-\psi_0) + 150\,(\bar r-\bar r_0).
+\end{equation}
+The factor 150 converts the shift of the iris inside the eye into degrees and was chosen from the geometry of the eyeball. The student is treated as looking aside when $|\theta|$ exceeds $30^\circ$. Looking down is detected when $\rho-\rho_0$ exceeds 0.10 or when the blendshape for eyes looking down rises by more than 0.35 above its calibrated value. All angles are signed so that left and right refer to the student's own left and right.
+
+\subsection{Calibration and Violation Rules}
+When the examination starts, the portal asks the student to look at the screen for about two seconds. The median of 15 suitable frames gives $\psi_0$, $\bar r_0$ and $\rho_0$. Frames in which the head is already turned or the eyes are closed are ignored. If the student does not look at the screen, neutral values are used.
+
+Values of a single frame are noisy, so they are smoothed and a violation needs a condition to hold for some time. The rules are given in Table~\ref{tab:rules}. A short return to the centre of less than 0.7 s, as with a blink, does not reset the timer, and changing from left to right keeps the same episode, so that quickly turning from one side to the other does not hide the violation.
+
+\begin{table}[H]
+\centering
+\caption{Violation types and rules of the proctor}\label{tab:rules}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}L{4.0cm} Y L{1.9cm}@{}}
+\toprule
+\textbf{Type} & \textbf{Condition} & \textbf{Reported after}\\
+\midrule
+LOOKING\_BESIDE & $|\theta|>30^\circ$ to the left or right, by head, by eyes or by both & 2 s\\
+LOOKING\_DOWN & Head or eyes pointing down & 8 s\\
+FACE\_ABSENT & No face in the picture, unless the face was lost while turned more than $20^\circ$ & 3 s\\
+CAMERA\_COVERED & No face and a mean brightness below 20 out of 255 & 3 s\\
+CAMERA\_LOST & The video track ends or no new frame arrives; the portal tries again every 5 s & 3 s\\
+CAMERA\_UNAVAILABLE & The camera cannot be opened (permission, missing or in use) & at once\\
+ENGINE\_FAILED & The model cannot be loaded & at once\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+When a violation is recorded, a snapshot of 320$\times$240 pixels is taken from the video and sent with the type, direction and duration. The student sees a warning banner and a counter in the status bar. The same violation type is not reported again for 4.5 s, and absence is not reported again for 15 s, to keep the dashboard readable.
+
+\section{Behaviour Analytics}
+The portal observes the keyboard events of the editor. It computes the typing speed in words per minute, the variance of the time between key presses, the share of deleting keys, the idle time, and large insertions of text that appear in an instant. The rules compare these values with limits: a speed above 140 words per minute, a long idle period followed by a burst of typing, a variance below 12 ms, or an insertion of 40 characters or more within 50 ms. Each rule adds points to a suspicion score between 0 and 100, which falls slowly while the student types normally. Scores below 25 are shown as normal, from 25 to 59 as unusual, and 60 or more as high risk. The values and the current code are sent to the server every five seconds, and at once when a rule fires. Replacing the text of the editor by the program itself, for example when changing the question, is not counted as typing.
+
+\section{Admin Server and Web Dashboard}
+The Admin Server is an Electron application that starts an Express server and a Socket.IO server in the same process. On every start it generates a new six-digit password for the administrator. The dashboard in the browser asks for this password, receives a session and a signed token, and uses the token for every command sent through the socket.
+
+The dashboard has seven pages. The live monitor shows the examination settings and all connected students. The analysis page shows the typing metrics and the current code of every student. The webcam alerts page lists the violations with their snapshots. The students page registers students, imports a CSV file and assigns questions. The questions page adds, edits and previews questions. The log page shows the events recorded by the server, and the database page downloads a backup of the database. From these pages the invigilator can warn, lock or unlock a student, remove the binding of a computer, force a submission or cancel it, send an announcement to everyone, and open the submitted programs and run them. The screenshots are in Appendix~A.
+
+\section{Submission and Review}
+The button Save sends the code of the open question to the server, where it is stored in the database and in a file. At the end, either by the student or when the time is over or on a command of the invigilator, the portal sends all code buffers and then uploads a compressed copy of the workspace with an HTTP request. The request carries a token that the server created at login, so only the logged-in student can upload for that roll number. The server writes the files into a folder of the student, keeps only the plain file names from the archive and ignores anything else, so an archive cannot place files outside the folder. After the upload the student is marked as submitted.
+
+If the network is lost during the examination, the portal keeps the examination on the screen, shows a banner, reconnects by itself and logs the student in again without any action. The code is also kept on the computer under the roll number, so that a restart does not lose it.
+
+\section{Network Address Discovery and Firewall}
+On a laptop that has virtualisation software installed there are several network adapters, and the first one in the list is often a virtual adapter whose address cannot be reached by other computers. The Admin Server therefore classifies every adapter. It recognises virtual adapters by the first bytes of their hardware address and by their names, ignores addresses that Windows gives when no network exists, and ranks the rest: the hotspot of the laptop first, then wired and then wireless networks. All usable addresses are shown in the application and are refreshed every three seconds, so a hotspot that is switched on later appears at once. On the student side the portal asks the operating system which adapter would be used to reach the server and reports that address.
+
+Windows blocks incoming connections by default. The installer of the Admin Server runs with administrator rights and therefore creates two firewall rules, one for the program and one for port 3000, valid on all network types, and removes them when the program is uninstalled.
+
+\section{Packaging and Installation}
+Both applications are packaged with electron-builder into a setup program for all users of the computer. The setup shows a side panel with the university seal, installs the program to Program Files, creates the shortcuts and an entry for uninstalling, and keeps the licence and the database when the program is removed. The Student Portal setup contains the embedded Python and the GCC compiler. Tools that the examination never uses, such as the debugger, are left out, which reduced the compiler folder from 868 MB to 508 MB.
+
+%% ----------------------------------------------------------------------
+\chapter{Testing and Results}
+%% ----------------------------------------------------------------------
+
+\section{Test Approach and Environment}
+The server and the code runner were tested with scripts that exercise the real code, and the proctor was tested with a real camera pipeline that is fed by a video file, so that the same input can be repeated. The tests were run on a Windows 11 laptop with the Electron runtime that is used in the installers. Table~\ref{tab:cases} lists the test cases and their results. The results of the test cases that involve a head turned to the left or right are for the decision logic of the proctor with a forced classification, because a person turning the head was not available during the automated runs; the measurement of real head turns on candidates remains to be done.
+
+\section{Test Cases}
+{\footnotesize\begin{longtable}{@{}C{0.8cm} L{5.5cm} L{4.2cm} C{1.1cm}@{}}
+\caption{Test cases and results}\label{tab:cases}\\
+\toprule
+\textbf{No.} & \textbf{Test case} & \textbf{Expected result} & \textbf{Result}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{No.} & \textbf{Test case} & \textbf{Expected result} & \textbf{Result}\\
+\midrule
+\endhead
+1 & Administrator logs in with the correct password & Session and token are issued & Pass\\
+2 & Student logs in with a valid roll number and password & Login succeeds, questions are delivered & Pass\\
+3 & Login with HTML text as the roll number & Rejected, no raw HTML in the log & Pass\\
+4 & Login with a non-text roll number & Rejected, server keeps running & Pass\\
+5 & Same student logs in again after a reconnect & Login succeeds, same upload token & Pass\\
+6 & Workspace upload with a wrong token & Refused with status 403 & Pass\\
+7 & Upload for the roll number of another student & Refused with status 403 & Pass\\
+8 & Archive that contains a file name with \texttt{../} (path traversal~\cite{owasp}) and a nested folder & Files are placed flat inside the student's folder only & Pass\\
+9 & Final submit of the code buffers & Code stored in the database and as files, listed in the dashboard & Pass\\
+10 & Violation message from a socket that is not logged in & Ignored & Pass\\
+11 & Violation with an unknown type or an invalid snapshot & Type ignored, snapshot dropped & Pass\\
+12 & Registering an existing student again & Name and password change, binding and flags stay & Pass\\
+13 & Student logs in after the examination was started by hand & Remaining time is shown, not the full duration & Pass\\
+14 & Delete a question & Request answered and deletion saved & Pass\\
+15 & Clear a table with an injected table name & Rejected & Pass\\
+16 & Administrator interface without login & Status 401 & Pass\\
+17 & C program with the maths library, compiled statically and given input & Correct output & Pass\\
+18 & C++ program using the standard containers and algorithms & Correct output & Pass\\
+19 & Program with a compile error & Compiler message is shown, nothing runs & Pass\\
+20 & Python program that prints and then waits & First output appears before the program ends & Pass\\
+21 & File name with \texttt{..} or a drive letter & Refused & Pass\\
+22 & Run a helper file while \texttt{main.py} exists & \texttt{main.py} is not overwritten & Pass\\
+23 & Upload to a server that never answers & Gives up after the time limit & Pass\\
+24 & Three simultaneous requests to start the proctor & One camera stream is opened & Pass\\
+25 & Camera shows a picture without a face for 3 s & FACE\_ABSENT is reported with a snapshot & Pass\\
+26 & Forced looking-left state for 3 s (decision logic) & Warning after 1 s, violation after 2 s & Pass\\
+27 & Forced change from left to right, and a 0.3 s return to the centre & The same episode continues & Pass\\
+28 & Proctor is stopped & Camera is released at once & Pass\\
+29 & Laptop with a virtual adapter and a Wi-Fi adapter & The Wi-Fi address is shown and used & Pass\\
+30 & Server reached through the Wi-Fi address (HTTP and socket) & Both connect & Pass\\
+\bottomrule
+\end{longtable}}
+
+\section{Measurements}
+\begin{table}[H]
+\centering
+\caption{Measured values}\label{tab:meas}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}Y L{3.4cm}@{}}
+\toprule
+\textbf{Quantity} & \textbf{Value}\\
+\midrule
+Time of the face landmark model per frame (640$\times$480, graphics processor) & about 19 ms\\
+Time to create the face landmark model & about 0.3 s\\
+Frames used for calibration & 15\\
+Size of the student setup program & 191 MB\\
+Size of the admin setup program & 86 MB\\
+Compiler folder before and after removing unused tools & 868 MB and 508 MB\\
+Automated checks of the server (all passed) & 36\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+At about ten frames per second and 19 ms per frame the proctor needs roughly a fifth of the time of one processor core on the test laptop, which left the editor and the compiler responsive.
+
+\section{Observations and Limitations}
+The camera proctor depends on the light and on the position of the camera. A face that is very small in the picture gives an unreliable iris position, so the iris is ignored when the face is narrower than one tenth of the picture and only the head direction is used. The thresholds of 30 degrees and of 2, 3 and 8 seconds were chosen from the geometry of a laboratory seat and are not final; they should be tuned with real candidates before the system is used for a formal examination.
+
+The scan of the program text before running is a text pattern check. It stops direct calls, but a determined candidate may find a way around it, so the examination still relies on the lock of the computer and on the invigilator. The examination password of a student is stored as plain text in the database of the administrator, as the invigilator has to be able to read it out; the database file therefore has to be protected. The system was tested with one student client at a time and with simulated clients; a load test with a full laboratory remains to be done.
+
+%% ----------------------------------------------------------------------
+\chapter{Conclusion and Future Work}
+%% ----------------------------------------------------------------------
+
+\section{Conclusion}
+This project produced an examination system for programming tests in a computer laboratory. It combines a locked student application, an integrated code runner with Python, C and C++, an administrator application with a live dashboard, and an on-device camera proctor, and it works on a local network without the internet. The proctor estimates head direction and iris position from face landmarks, calibrates itself for every student and reports violations with a snapshot, and no video is sent from the student's computer. The system is delivered as two installers with the compilers included. The tests show that the server, the code runner and the decision logic of the proctor behave as intended.
+
+\section{Future Work}
+The first step is to tune the thresholds of the proctor with recordings of real candidates in different light and seating, and to measure how often it gives false alarms. The system should then be tried with a complete laboratory to measure the load on the server and the network. Further work can add an automatic comparison of the output of a program with the test cases of the question and a similarity check of submitted programs, stronger isolation of the candidate's programs, for example with a restricted account or a container, and storing the examination passwords in a hashed form with a separate way to hand them to the candidates.
+
+%% ----------------------------------------------------------------------
+%%  REFERENCES
+%% ----------------------------------------------------------------------
+\clearpage
+\renewcommand{\bibname}{References}
+\addcontentsline{toc}{chapter}{References}
+\begin{thebibliography}{9}
+\singlespacing
+\bibitem{kurnia} A. Kurnia, A. Lim, and B. Cheang, ``Online judge,'' \textit{Comput. Educ.}, vol. 36, no. 4, pp. 299--315, 2001.
+\bibitem{wasik} S. Wasik, M. Antczak, J. Badura, A. Laskowski, and T. Sternal, ``A survey on online judge systems and their applications,'' \textit{ACM Comput. Surv.}, vol. 51, no. 1, Art. no. 3, Jan. 2018.
+\bibitem{winnowing} S. Schleimer, D. S. Wilkerson, and A. Aiken, ``Winnowing: Local algorithms for document fingerprinting,'' in \textit{Proc. ACM SIGMOD Int. Conf. Manage. Data}, 2003, pp. 76--85.
+\bibitem{seb} Safe Exam Browser Project, ``Safe Exam Browser.'' safeexambrowser.org. Accessed: Nov. 3, 2026. [Online]. Available: \url{https://safeexambrowser.org}
+\bibitem{electron} OpenJS Foundation, ``Electron documentation.'' electronjs.org. Accessed: Nov. 3, 2026. [Online]. Available: \url{https://www.electronjs.org/docs/latest}
+\bibitem{atoum} Y. Atoum, L. Chen, A. X. Liu, S. D. H. Hsu, and X. Liu, ``Automated online exam proctoring,'' \textit{IEEE Trans. Multimedia}, vol. 19, no. 7, pp. 1609--1624, Jul. 2017.
+\bibitem{murphy} E. Murphy-Chutorian and M. M. Trivedi, ``Head pose estimation in computer vision: A survey,'' \textit{IEEE Trans. Pattern Anal. Mach. Intell.}, vol. 31, no. 4, pp. 607--626, Apr. 2009.
+\bibitem{hansen} D. W. Hansen and Q. Ji, ``In the eye of the beholder: A survey of models for eyes and gaze,'' \textit{IEEE Trans. Pattern Anal. Mach. Intell.}, vol. 32, no. 3, pp. 478--500, Mar. 2010.
+\bibitem{mpiigaze} X. Zhang, Y. Sugano, M. Fritz, and A. Bulling, ``Appearance-based gaze estimation in the wild,'' in \textit{Proc. IEEE Conf. Comput. Vis. Pattern Recognit. (CVPR)}, 2015, pp. 4511--4520.
+\bibitem{mediapipe} C. Lugaresi \textit{et al.}, ``MediaPipe: A framework for building perception pipelines,'' 2019, \textit{arXiv:1906.08172}.
+\bibitem{kartynnik} Y. Kartynnik, A. Ablavatski, I. Grishchenko, and M. Grundmann, ``Real-time facial surface geometry from monocular video on mobile GPUs,'' 2019, \textit{arXiv:1907.06724}.
+\bibitem{iris} A. Ablavatski, A. Vakunov, I. Grishchenko, K. Raveendran, and M. Zhdanovich, ``Real-time pupil tracking from monocular video for digital puppetry,'' 2020, \textit{arXiv:2006.11341}.
+\bibitem{landmarker} Google, ``Face landmark detection guide.'' ai.google.dev. Accessed: Nov. 3, 2026. [Online]. Available: \url{https://ai.google.dev/edge/mediapipe/solutions/vision/face_landmarker}
+\bibitem{keystroke} F. Monrose and A. D. Rubin, ``Authentication via keystroke dynamics,'' in \textit{Proc. 4th ACM Conf. Comput. Commun. Secur. (CCS)}, 1997, pp. 48--56.
+\bibitem{socketio} Socket.IO, ``Socket.IO documentation (v4).'' socket.io. Accessed: Nov. 3, 2026. [Online]. Available: \url{https://socket.io/docs/v4/}
+\bibitem{express} OpenJS Foundation, ``Express documentation.'' expressjs.com. Accessed: Nov. 3, 2026. [Online]. Available: \url{https://expressjs.com}
+\bibitem{sqlite} SQLite Consortium, ``SQLite documentation.'' sqlite.org. Accessed: Nov. 3, 2026. [Online]. Available: \url{https://www.sqlite.org/docs.html}
+\bibitem{nodecrypto} OpenJS Foundation, ``Crypto,'' Node.js documentation. nodejs.org. Accessed: Nov. 3, 2026. [Online]. Available: \url{https://nodejs.org/api/crypto.html}
+\bibitem{builder} electron-builder, `electron-builder documentation.'' electron.build. Accessed: Nov. 3, 2026. [Online]. Available: \url{https://www.electron.build}
+\bibitem{owasp} OWASP Foundation, ``Path traversal.'' owasp.org. Accessed: Nov. 3, 2026. [Online]. Available: \url{https://owasp.org/www-community/attacks/Path_Traversal}
+\end{thebibliography}
+
+%% ======================================================================
+%%  APPENDIX A : SCREENSHOTS (at the end, as requested)
+%% ======================================================================
+\appendix
+\chapter[Appendix]{Screenshots of the Project}
+
+\section{Student Portal}
+\newcommand{\shot}[2]{%
+  \begin{figure}[H]
+  \centering
+  \setlength{\fboxsep}{0pt}\setlength{\fboxrule}{0.4pt}
+  \fbox{\includegraphics[width=\textwidth]{report_images/#1}}
+  \caption{#2}
+  \end{figure}}
+\shot{student_setup.png}{Student Portal: server address screen}
+\shot{student_login.png}{Student Portal: login window}
+\shot{student_instructions.png}{Student Portal: instructions}
+\shot{student_waiting.png}{Student Portal: waiting for the start of the examination}
+\shot{student_exam.png}{Student Portal: examination screen with question, editor, terminal and proctor window}
+\shot{student_proctor_alert.png}{Student Portal: warning when the face is not visible}
+\shot{student_submit_confirm.png}{Student Portal: confirmation of the final submission}
+
+\section{Admin Server}
+\shot{admin_launcher_setup.png}{Admin Server: launcher with the usable network addresses}
+\shot{admin_launcher_running.png}{Admin Server: control panel while the server runs}
+\shot{admin_web_login.png}{Web dashboard: login}
+\shot{admin_web_monitor.png}{Web dashboard: live monitor}
+\shot{admin_web_live_analysis.png}{Web dashboard: test analysis and live code}
+\shot{admin_web_webcam_alerts.png}{Web dashboard: webcam proctoring alerts}
+\shot{admin_web_students.png}{Web dashboard: student management}
+\shot{admin_web_questions.png}{Web dashboard: question bank}
+\shot{admin_web_logs.png}{Web dashboard: system logs}
+
+\end{document}
