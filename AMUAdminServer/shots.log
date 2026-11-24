@@ -26,37 +26,37 @@ saved admin_launcher_setup.png 1108x797
 [Server] Assigned questions [Q1,Q2,Q3] to student 24AIBEA108
 [Server] Global exam duration set to 90 minutes.
 [Server] Exam manually started by admin.
-[Server] Socket connected: gErx2gXSf8V4OKLdAAAB (IP: 127.0.0.1)
-[Server] Client Identified: Socket gErx2gXSf8V4OKLdAAAB (System: SYS-01, IP: 10.58.242.20)
-[Server] Student Auth attempt from gErx2gXSf8V4OKLdAAAB (Roll: 24AIBEA101)
+[Server] Socket connected: 6a6ThTA9UviAA2q2AAAB (IP: 127.0.0.1)
+[Server] Client Identified: Socket 6a6ThTA9UviAA2q2AAAB (System: SYS-01, IP: 10.58.242.20)
+[Server] Student Auth attempt from 6a6ThTA9UviAA2q2AAAB (Roll: 24AIBEA101)
 [Server] Bound student 24AIBEA101 to IP 127.0.0.1
-[Server] Socket connected: VjmoVKvDyoynkv8lAAAD (IP: 127.0.0.1)
-[Server] Client Identified: Socket VjmoVKvDyoynkv8lAAAD (System: SYS-02, IP: 10.58.242.21)
-[Server] Student Auth attempt from VjmoVKvDyoynkv8lAAAD (Roll: 24AIBEA102)
+[Server] Socket connected: jY18i5VuNSWfdZVbAAAD (IP: 127.0.0.1)
+[Server] Client Identified: Socket jY18i5VuNSWfdZVbAAAD (System: SYS-02, IP: 10.58.242.21)
+[Server] Student Auth attempt from jY18i5VuNSWfdZVbAAAD (Roll: 24AIBEA102)
 [Server] Bound student 24AIBEA102 to IP 127.0.0.1
-[Server] Socket connected: JzjJbIZXEt6PE16ZAAAF (IP: 127.0.0.1)
-[Server] Client Identified: Socket JzjJbIZXEt6PE16ZAAAF (System: SYS-03, IP: 10.58.242.22)
-[Server] Student Auth attempt from JzjJbIZXEt6PE16ZAAAF (Roll: 24AIBEA103)
+[Server] Socket connected: bA-57SScTGZ7KurxAAAF (IP: 127.0.0.1)
+[Server] Client Identified: Socket bA-57SScTGZ7KurxAAAF (System: SYS-03, IP: 10.58.242.22)
+[Server] Student Auth attempt from bA-57SScTGZ7KurxAAAF (Roll: 24AIBEA103)
 [Server] Bound student 24AIBEA103 to IP 127.0.0.1
 [Server] ⚠️ [Behavior Anomaly] Mohd Faizan (24AIBEA103, SYS-03): [10:42:15] Abnormally high typing speed (151 WPM) (Suspicion: 82%)
-[Server] Socket connected: HFvhEvxs3m2nW5xJAAAH (IP: 127.0.0.1)
-[Server] Client Identified: Socket HFvhEvxs3m2nW5xJAAAH (System: SYS-04, IP: 10.58.242.23)
-[Server] Student Auth attempt from HFvhEvxs3m2nW5xJAAAH (Roll: 24AIBEA104)
+[Server] Socket connected: LDopSX2WVGJ8nMMMAAAH (IP: 127.0.0.1)
+[Server] Client Identified: Socket LDopSX2WVGJ8nMMMAAAH (System: SYS-04, IP: 10.58.242.23)
+[Server] Student Auth attempt from LDopSX2WVGJ8nMMMAAAH (Roll: 24AIBEA104)
 [Server] Bound student 24AIBEA104 to IP 127.0.0.1
-[Server] Socket connected: Q926LXa6B4YUkvM8AAAJ (IP: 127.0.0.1)
-[Server] Client Identified: Socket Q926LXa6B4YUkvM8AAAJ (System: SYS-05, IP: 10.58.242.24)
-[Server] Student Auth attempt from Q926LXa6B4YUkvM8AAAJ (Roll: 24AIBEA105)
+[Server] Socket connected: -W576ZrXHoLogeIZAAAJ (IP: 127.0.0.1)
+[Server] Client Identified: Socket -W576ZrXHoLogeIZAAAJ (System: SYS-05, IP: 10.58.242.24)
+[Server] Student Auth attempt from -W576ZrXHoLogeIZAAAJ (Roll: 24AIBEA105)
 [Server] Bound student 24AIBEA105 to IP 127.0.0.1
 [Server] ⚠️ [Behavior Anomaly] Imran Ansari (24AIBEA105, SYS-05): [10:40:02] Burst Typing (74 chars) immediately after 68s idle (Suspicion: 41%)
-[Server] Socket connected: DkdNo82R3DLqzP40AAAL (IP: 127.0.0.1)
-[Server] Client Identified: Socket DkdNo82R3DLqzP40AAAL (System: SYS-06, IP: 10.58.242.25)
-[Server] Student Auth attempt from DkdNo82R3DLqzP40AAAL (Roll: 24AIBEA106)
+[Server] Socket connected: PKNyov9OtqZbFAFrAAAL (IP: 127.0.0.1)
+[Server] Client Identified: Socket PKNyov9OtqZbFAFrAAAL (System: SYS-06, IP: 10.58.242.25)
+[Server] Student Auth attempt from PKNyov9OtqZbFAFrAAAL (Roll: 24AIBEA106)
 [Server] Bound student 24AIBEA106 to IP 127.0.0.1
 saved admin_launcher_running.png 1108x797
 saved admin_web_login.png 1690x1062
 [Server] Admin logged into Web Dashboard.
-[Server] Socket connected: IaPO2mOK_imDOOTXAAAN (IP: 127.0.0.1)
-[Server] Admin dashboard connected (Socket: IaPO2mOK_imDOOTXAAAN)
+[Server] Socket connected: XXnmIKrk3Q77TN4dAAAN (IP: 127.0.0.1)
+[Server] Admin dashboard connected (Socket: XXnmIKrk3Q77TN4dAAAN)
 saved admin_web_monitor.png 1690x1062
 [Server] 🚨 [Webcam Alert] Ayesha Siddiqui (24AIBEA101, SYS-01) looking left (head) for 3s, away from the screen
 [Server] 🚨 [Webcam Alert] Mohd Faizan (24AIBEA103, SYS-03) looking right (eyes) for 2s, away from the screen
@@ -68,10 +68,10 @@ saved admin_web_webcam_alerts.png 1690x1062
 saved admin_web_students.png 1690x1062
 saved admin_web_questions.png 1690x1062
 saved admin_web_logs.png 1690x1062
-[Server] Socket disconnected: gErx2gXSf8V4OKLdAAAB
-[Server] Socket disconnected: VjmoVKvDyoynkv8lAAAD
-[Server] Socket disconnected: JzjJbIZXEt6PE16ZAAAF
-[Server] Socket disconnected: HFvhEvxs3m2nW5xJAAAH
-[Server] Socket disconnected: Q926LXa6B4YUkvM8AAAJ
-[Server] Socket disconnected: DkdNo82R3DLqzP40AAAL
-[Server] Socket disconnected: IaPO2mOK_imDOOTXAAAN
+[Server] Socket disconnected: 6a6ThTA9UviAA2q2AAAB
+[Server] Socket disconnected: jY18i5VuNSWfdZVbAAAD
+[Server] Socket disconnected: bA-57SScTGZ7KurxAAAF
+[Server] Socket disconnected: LDopSX2WVGJ8nMMMAAAH
+[Server] Socket disconnected: -W576ZrXHoLogeIZAAAJ
+[Server] Socket disconnected: PKNyov9OtqZbFAFrAAAL
+[Server] Socket disconnected: XXnmIKrk3Q77TN4dAAAN
